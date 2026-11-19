@@ -1,7 +1,12 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 
-const files = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" })
+const root = resolve(process.argv[2] || ".");
+const files = execFileSync("git", ["ls-files", "-z"], {
+  encoding: "utf8",
+  cwd: root,
+})
   .split("\0")
   .filter(Boolean);
 const errors = [];
@@ -17,9 +22,9 @@ for (const path of files) {
     )
   )
     errors.push(path + ": private/generated path");
-  const stat = statSync(path);
+  const stat = statSync(resolve(root, path));
   if (!stat.isFile() || stat.size > 5 * 1024 * 1024) continue;
-  const content = readFileSync(path);
+  const content = readFileSync(resolve(root, path));
   if (!content.includes(0) && credential.test(content.toString("utf8")))
     errors.push(path + ": credential-shaped content (value withheld)");
 }

@@ -10,4 +10,6 @@ See docs/LAUNCH.md for production resources, the six Polar prices, pilot control
 
 See docs/VERIFICATION.md for completed checks, browser evidence and the production gates still open.
 
+The private source repository is [godwwinpeace22/blogstack-platform](https://github.com/godwwinpeace22/blogstack-platform). See [docs/RELEASING.md](docs/RELEASING.md) for the original workspace's separate release checkout, CI and isolated customer/load acceptance.
+
 Canonical plans are Solo $3/$30, Studio $9/$90 and Growth $19/$190 for monthly/annual billing. Studio and Growth have unlimited blogs; Growth includes 100 GB shared storage. All plans include the public API, SEO analysis, analytics and reviewable AI within their account allowances.

@@ -51,7 +51,8 @@ export function usagePeriod(
   now = Math.floor(Date.now() / 1000),
 ): number {
   const start = access.period_anchor ?? access.trial_started_at ?? now;
-  if (!access.paid_through) return access.trial_started_at ?? start;
+  if (!access.paid_through && !access.internal_access)
+    return access.trial_started_at ?? start;
   const anchor = new Date(start * 1000);
   const month = new Date(now * 1000);
   const dateFor = (offset: number) => {

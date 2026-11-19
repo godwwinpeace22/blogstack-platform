@@ -110,3 +110,29 @@ test("internal workspaces retain shared limits and customers cannot grant themse
   );
   expect((await accountAccess(f.env, "account")).writable).toBe(0);
 });
+
+test("internal demo allowances renew monthly without renewing ordinary trial credits", async () => {
+  const f = fixture();
+  const anchor = Date.UTC(2026, 0, 31, 10, 30) / 1000;
+  f.sql.run(
+    "UPDATE account_billing SET trial_started_at=?,period_anchor=?,internal_access=1 WHERE account_id='account'",
+    [anchor, anchor],
+  );
+  const access = await accountAccess(f.env, "account");
+  expect(usagePeriod(access, Date.UTC(2026, 1, 28, 10, 29) / 1000)).toBe(
+    anchor,
+  );
+  expect(usagePeriod(access, Date.UTC(2026, 1, 28, 10, 30) / 1000)).toBe(
+    Date.UTC(2026, 1, 28, 10, 30) / 1000,
+  );
+  expect(usagePeriod(access, Date.UTC(2026, 2, 31, 10, 30) / 1000)).toBe(
+    Date.UTC(2026, 2, 31, 10, 30) / 1000,
+  );
+  expect(
+    usagePeriod(
+      { ...access, internal_access: 0 },
+      Date.UTC(2026, 2, 31, 10, 30) / 1000,
+    ),
+  ).toBe(anchor);
+  expect(access.paid_through).toBeNull();
+});

@@ -51,7 +51,7 @@ The script reuses named resources, creates missing resources and fills API/CDN c
 
 Create blogstack-db, blogstack-cache, blogstack-cdn-cache, blogstack-media, blogstack-jobs and blogstack-jobs-dead. The scanner has no DB, secrets, storage or service bindings and no public workers.dev URL. Only the API has a service binding to it.
 
-The selected account is hello@wordman.app (d37dff02b31097b9581ef596777605dc). Its authenticated Wrangler OAuth session has provisioned the BlogStack resources and applied all 17 additive migrations to the new remote database. Use node scripts/launch.mjs cloudflare ... to select this account and ignore the unrelated environment token. Do not extract stored OAuth credentials. Current deployment and verification status is in docs/VERIFICATION.md.
+The selected account is hello@wordman.app (d37dff02b31097b9581ef596777605dc). Its authenticated Wrangler OAuth session has provisioned the BlogStack resources and applied all 18 additive migrations to the remote database. Use node scripts/launch.mjs cloudflare ... to select this account and ignore the unrelated environment token. Do not extract stored OAuth credentials. Current deployment and verification status is in docs/VERIFICATION.md.
 
 Prepare production secrets without placing values in command arguments, screenshots or git:
 

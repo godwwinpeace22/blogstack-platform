@@ -8,6 +8,8 @@ Open `/operations` in the main BlogStack dashboard, signed in as the verified he
 
 The page shows service health, scheduled heartbeat, completed/running backups and labeled incident/recovery delivery tests. Manual controls use the same deployed queue and providers as scheduled work.
 
+The verified operator's BlogStack demo account has private `internal_access` enabled. It has no expiry, billing or deletion deadline, while the Studio blog/people/storage limits and monthly AI/link-check allowances still apply. This does not create paid coverage or a subscription. Ordinary customer trials and the 30/90-day expiry policy are unchanged. The flag has no customer-facing setter; a purged account cannot regain access through it. The internal workspace is skipped by expiry notices, subscription reconciliation and expiry purging. Its dashboard explicitly says “Internal demo workspace” and “No expiry.”
+
 ## Scheduled backups
 
 The worker's five-minute cron records a heartbeat and schedules health/retention jobs. It starts the daily snapshot at 03:00 WAT (UTC+1), catching up on the next invocation if that tick is missed. Sunday snapshots are weekly copies. Progress, leases and retries live in the separate operations D1 database. Queue continuations bound external calls and media copies for the Free plan; a snapshot must finish within six hours.
