@@ -294,13 +294,23 @@ export async function collectIssues(env: Env, now = epoch()) {
     ["backup", env.CF_BACKUP_TOKEN_EXPIRES],
     ["analytics", env.CF_ANALYTICS_TOKEN_EXPIRES],
   ] as const) {
-    if (!expires || Date.parse(expires) < (now + 30 * 86400) * 1000)
+    const date = new Date(expires ?? "");
+    const expiryMs = date.getTime();
+    let problem: string | undefined;
+    if (!expires?.trim()) problem = "has no expiry date configured";
+    else if (
+      !Number.isFinite(expiryMs) ||
+      date.toISOString().replace(/\.000Z$/, "Z") !==
+        expires.replace(/\.000Z$/, "Z")
+    )
+      problem = "has an invalid expiry date. Use a UTC timestamp";
+    else if (expiryMs <= now * 1000) problem = "has expired";
+    else if (expiryMs <= (now + 30 * 86400) * 1000)
+      problem = "expires within 30 days";
+    if (problem)
       issues.push({
         code: "credential:" + name,
-        message:
-          "The " +
-          name +
-          " credential expires within 30 days or its expiry is missing",
+        message: `The ${name} credential ${problem}.`,
       });
   }
   return issues;

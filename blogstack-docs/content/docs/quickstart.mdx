@@ -7,7 +7,7 @@ description: Request-time articles, native routes, metadata, sitemap and RSS.
 
 Build a personal blog, a company publication or a blog for a client. Follow these steps yourself, or use the [AI setup guide](/docs/ai-setup) to prepare a prompt for your coding assistant.
 
-1. Register and verify your email. Your no-card, 14-day Studio trial starts when you create your first blog.
+1. Register and verify your email in BlogStack Cloud or your [self-hosted installation](/docs/self-hosting). On BlogStack Cloud, creating your first blog starts a 14-day Studio trial without a card.
 2. Create a blog. In project settings, set Website blog URL to your real route, for example https://example.com/blog.
 3. Create an article, add an image and metadata, then publish it.
 4. Connect the public project slug using the [downloadable Next.js starter](https://blogstack-registry.hidden-silence-2d18.workers.dev/downloads/blogstack-nextjs-0.2.0.tar.gz). A [live Cloudflare installation](https://blogstack-blog.hidden-silence-2d18.workers.dev/blog) demonstrates the same routes.
@@ -22,7 +22,7 @@ npm install @blogstack/sdk@0.2.0 @blogstack/ui@0.2.0
 
 The reference application also uses Tailwind CSS 4. Add the UI source path to Tailwind's scan sources, and import @blogstack/ui/theme or your own matching theme tokens. Its app/globals.css is a complete example.
 
-Configure the server environment:
+Configure the server environment. Use the URL below for BlogStack Cloud or replace `BLOGSTACK_API_URL` with the dashboard origin from your own Cloudflare installation.
 
 ```tsx
 BLOGSTACK_PROJECT_SLUG=your-project

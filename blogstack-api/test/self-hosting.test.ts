@@ -360,7 +360,14 @@ describe("operator-owned full-platform installations", () => {
       ],
     };
     const configs = workerConfigs(
-      { ...config, features: { ...config.features, operations: true } },
+      {
+        ...config,
+        features: { ...config.features, operations: true },
+        credentialExpiry: {
+          backup: "2027-06-01T00:00:00Z",
+          analytics: "2027-02-16T23:59:59.000Z",
+        },
+      },
       resources,
     );
     expect(configs.app.vars.CHECKOUT_ENABLED).toBe("false");
@@ -393,6 +400,17 @@ describe("operator-owned full-platform installations", () => {
     expect(secretsFor("app", secrets)).not.toHaveProperty("CF_BACKUP_TOKEN");
     expect(secretsFor("app", secrets)).not.toHaveProperty("POLAR_ACCESS_TOKEN");
     expect(configs.ops.workers_dev).toBe(false);
+    expect(configs.ops.compatibility_flags).toContain(
+      "global_fetch_strictly_public",
+    );
+    expect(configs.ops.vars.CF_BACKUP_TOKEN_EXPIRES).toBe(
+      "2027-06-01T00:00:00Z",
+    );
+    expect(configs.ops.vars.CF_ANALYTICS_TOKEN_EXPIRES).toBe(
+      "2027-02-16T23:59:59.000Z",
+    );
+    expect(configs.app.vars).not.toHaveProperty("CF_BACKUP_TOKEN_EXPIRES");
+    expect(configs.app.vars).not.toHaveProperty("CF_ANALYTICS_TOKEN_EXPIRES");
     expect(configs.app.triggers.crons).toHaveLength(1);
     expect(configs.ops.triggers.crons).toHaveLength(0);
     expect(configs.ops.r2_buckets[1].bucket_name).toBe(
@@ -410,6 +428,8 @@ describe("operator-owned full-platform installations", () => {
       { emailFrom: "name@example.com\nBcc: victim@example.com" },
       { limits: { aiCredits: "1; DROP TABLE users" } },
       { limits: { maxBlogs: -1 } },
+      { credentialExpiry: { backup: "2027-02-30T12:00:00Z" } },
+      { credentialExpiry: { analytics: "2027-06-01T12:00:00+01:00" } },
     ])
       expect(() => validateInstall({ ...config, ...input })).toThrow();
   });

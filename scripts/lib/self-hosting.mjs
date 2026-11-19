@@ -61,6 +61,22 @@ export function validateInstall(input) {
   for (const value of Object.values(features))
     if (typeof value !== "boolean")
       throw new Error("Feature switches must be booleans");
+  const credentialExpiry = input.credentialExpiry ?? {};
+  if (typeof credentialExpiry !== "object" || Array.isArray(credentialExpiry))
+    throw new Error("credentialExpiry must be an object");
+  for (const [name, value] of Object.entries(credentialExpiry)) {
+    if (name !== "backup" && name !== "analytics")
+      throw new Error("credentialExpiry supports backup and analytics");
+    const date = typeof value === "string" ? new Date(value) : new Date(NaN);
+    if (
+      !Number.isFinite(date.getTime()) ||
+      date.toISOString().replace(/\.000Z$/, "Z") !==
+        value.replace(/\.000Z$/, "Z")
+    )
+      throw new Error(
+        `credentialExpiry.${name} must be a UTC timestamp such as 2027-06-01T00:00:00Z`,
+      );
+  }
   const limits = { ...DEFAULT_LIMITS, ...input.limits };
   if (
     limits.maxBlogs !== null &&
@@ -110,6 +126,7 @@ export function validateInstall(input) {
     operatorEmail: operatorEmail.toLowerCase(),
     emailFrom,
     features,
+    credentialExpiry,
     limits,
     localPorts,
     domains,
@@ -267,7 +284,7 @@ export function workerConfigs(config, resources, { local = false } = {}) {
       ...base,
       name: c.name + "-ops",
       main: "../blogstack-ops-worker/src/index.ts",
-      compatibility_flags: ["nodejs_compat"],
+      compatibility_flags: ["nodejs_compat", "global_fetch_strictly_public"],
       workers_dev: false,
       d1_databases: [
         { ...state, migrations_dir: "../blogstack-ops-worker/migrations" },
@@ -303,6 +320,12 @@ export function workerConfigs(config, resources, { local = false } = {}) {
         SOURCE_BUCKET_NAME: c.name + "-media",
         EMAIL_FROM: c.emailFrom,
         ALERT_EMAIL: c.operatorEmail,
+        ...(c.credentialExpiry.backup && {
+          CF_BACKUP_TOKEN_EXPIRES: c.credentialExpiry.backup,
+        }),
+        ...(c.credentialExpiry.analytics && {
+          CF_ANALYTICS_TOKEN_EXPIRES: c.credentialExpiry.analytics,
+        }),
         WORKER_NAMES: JSON.stringify([
           c.name + "-app",
           c.name + "-cdn",

@@ -1,7 +1,27 @@
-import { DOCS_URL, STARTER_URL } from "./site";
+import { APP_URL, DOCS_URL, STARTER_URL } from "./site";
+
+function publicApiOrigin(value: string): string {
+  const message =
+    "Use a BlogStack API origin such as https://publish.example.com, or an HTTP loopback origin for local development.";
+  let api: URL;
+  try {
+    api = new URL(value);
+  } catch {
+    throw new Error(message);
+  }
+  const loopback = ["localhost", "127.0.0.1", "[::1]"].includes(api.hostname);
+  if (
+    (api.protocol !== "https:" && !(api.protocol === "http:" && loopback)) ||
+    api.href !== api.origin + "/"
+  )
+    throw new Error(message);
+  return api.origin;
+}
+
 export function buildSetupPrompt(
   projectSlug = "my-blog",
   websiteUrl = "https://yourwebsite.com",
+  apiUrl = APP_URL,
 ): string {
   if (
     !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(projectSlug) ||
@@ -22,11 +42,13 @@ export function buildSetupPrompt(
     site.password
   )
     throw new Error("Use an HTTP or HTTPS website URL without credentials.");
+  const apiOrigin = publicApiOrigin(apiUrl);
   return [
     "Add a BlogStack blog to my website. Inspect the project before changing files.",
     "",
     "Blog slug: " + projectSlug,
     "Website origin: " + site.origin,
+    "BlogStack API origin: " + apiOrigin,
     "Documentation: " + DOCS_URL + "/docs/quickstart",
     "AI setup guide: " + DOCS_URL + "/docs/ai-setup",
     "Next.js source starter: " + STARTER_URL,
@@ -36,7 +58,9 @@ export function buildSetupPrompt(
     "3. Install @blogstack/sdk@0.2.0 and @blogstack/ui@0.2.0 with this project's package manager. Reuse compatible existing dependencies. Merge the starter blog routes, components and styling; do not replace unrelated configuration.",
     "4. Configure BLOGSTACK_PROJECT_SLUG=" +
       projectSlug +
-      ", BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev and SITE_URL=" +
+      ", BLOGSTACK_API_URL=" +
+      apiOrigin +
+      " and SITE_URL=" +
       site.origin +
       ". Public article reads do not require a private API key. Never request or place passwords, management keys or provider tokens in frontend code.",
     "5. Add native /blog and /blog/[slug] routes with request-time server fetching. Include article bodies in initial HTML, title/description/canonical/social metadata and BlogPosting JSON-LD. Keep private drafts out of public pages.",

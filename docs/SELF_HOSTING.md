@@ -1,8 +1,8 @@
 # Self-host the complete BlogStack platform
 
-BlogStack is MIT-licensed, including the publishing API, dashboard, media service, link scanner, analytics, AI proposal runtime, public packages and operations worker. Run it in **your own Cloudflare account** without a BlogStack Cloud account or subscription. You pay your infrastructure and email providers directly. BlogStack Cloud is the paid, managed alternative.
+BlogStack is MIT-licensed, including the publishing API, dashboard, media service, link scanner, analytics, AI proposal runtime, public packages and operations worker. Run it in **your own Cloudflare account** without a BlogStack Cloud account or subscription. You pay your infrastructure and email providers directly.
 
-The supported backend runtime is Cloudflare Workers with D1, R2 and KV. This is a complete platform installation in your account. A Docker/VPS backend runtime is not included; the separate blog frontend also runs on ordinary Node.js.
+The publishing backend runs on Cloudflare Workers with D1, R2 and KV. Your blog frontend can run on any compatible website host. BlogStack Cloud runs the publishing platform for you. With self-hosting, you control the installation, updates and backups in your own Cloudflare account.
 
 ## Requirements
 
@@ -48,6 +48,19 @@ The default enables AI and reader analytics. Pass `--without-ai` or `--without-a
 
 To include automated backups and alerts, add `--with-operations` to `init` and set `CF_BACKUP_TOKEN` as well. The installer then creates a separate state database and private backup bucket, four queues and an operations worker with no public route. Backup credentials are never uploaded to the API, CDN or link scanner. Both installation profiles use one API cron. It drains the durable D1 job outbox every minute, runs lifecycle work hourly and invokes private operations every five minutes when enabled. Operations has no separate cron; this shares the API scheduler rather than providing an independent outage alarm.
 
+For operations, add the actual expiry times issued by Cloudflare to your `.self-hosted/install.json`. These are dates only. Store the token values in `.self-hosted/secrets.json`.
+
+```json
+{
+  "credentialExpiry": {
+    "backup": "2027-06-01T00:00:00Z",
+    "analytics": "2027-06-01T00:00:00Z"
+  }
+}
+```
+
+Merge this field into your existing installation config and replace the example dates. The monitor flags missing, invalid, expired and soon-to-expire dates. When rotating either token, update its expiry date and redeploy.
+
 ## 3. Provision and deploy
 
 ```sh
@@ -68,7 +81,7 @@ Open the printed dashboard URL, register with the operator email and follow the 
 
 Use the [Next.js quickstart](https://blogstack-docs.hidden-silence-2d18.workers.dev/docs/quickstart), or the source in `examples/nextjs`. Set `BLOGSTACK_API_URL` to **your new API/dashboard URL**, not the managed BlogStack URL. Set the public project slug and website origin. Public article rendering needs no private management key.
 
-Your website can run on Cloudflare, Node.js or another compatible frontend host. SEO, private revisions, media uploads, roles, analytics and reviewable AI use your installed backend. Your content and credentials are not sent to BlogStack Cloud. Optional comments/newsletter providers and a coding assistant are separate integrations.
+The AI setup prompt builder takes the same API URL. Replace its prefilled managed URL with the dashboard origin printed by `self-host:check`. SEO, private revisions, media uploads, roles, analytics and reviewable AI use your installed backend. Optional comments and newsletter providers and a coding assistant are separate integrations.
 
 ## Budgets and access
 
@@ -80,9 +93,18 @@ No automatic provider top-up or BlogStack overage purchase is performed. Monitor
 
 ## Upgrades, backups and recovery
 
-Before upgrading, export your database and copy the matching media objects. Keep private configuration, migration state and secret recovery instructions outside the server/account as well. Pull a reviewed source revision, run `npm ci`, then `self-host:deploy`; resource IDs and generated secrets are reused. Review migration release notes before a production update. The installer does not downgrade a schema or automatically roll back data.
+Before upgrading, verify a backup of the database and matching media. Save your private installation config, provisioned resource IDs, current Git revision and secret recovery instructions with that backup. Review the migrations in the revision you intend to deploy. Check out that revision in the existing installation directory, run `npm ci`, then run `npm run self-host:deploy` and `npm run self-host:check`. This reuses your resource IDs and generated secrets. Confirm that an existing article and its images still load and that an editor can save a draft.
 
-With operations enabled, open `/operations` as the verified operator. Confirm the heartbeat, complete a backup, verify an incident/recovery email and restore into separate resources before relying on the schedule. The default daily backup starts at 02:00 UTC; SQL copies retain 30 days, Sunday copies 90 days, and media versions 90 days after their last snapshot reference. Download a completed operations snapshot with `node scripts/download-operations-backup.mjs --config .self-hosted/ops.wrangler.json --bucket my-blogstack-backups --snapshot SNAPSHOT_UUID --kind daily --directory /new/private/recovery-directory`. Use your actual bucket, snapshot kind and ID. The destination must not exist, and files/checksums are verified. Same-account copies do not protect against losing that Cloudflare account. See [RESTORE.md](RESTORE.md) for the recovery checklist; use your installation's generated configuration and resources rather than managed service IDs.
+With operations enabled, open `/operations` as the verified operator. Verify the five-minute heartbeat, a scheduled backup after 02:00 UTC and delivery of labeled test alerts. Daily SQL copies retain 30 days, Sunday copies 90 days, and media versions 90 days after their last snapshot reference. Download a completed snapshot using the full backup ID and its actual kind (`daily`, `weekly` or `manual`). Choose a new private directory for the download.
+
+```sh
+node scripts/download-operations-backup.mjs \
+  --config .self-hosted/ops.wrangler.json \
+  --bucket my-blogstack-backups --snapshot SNAPSHOT_UUID --kind daily \
+  --directory /new/private/recovery-directory
+```
+
+Keep a checksummed copy of the SQL, media and manifest on an encrypted local backup drive or in encrypted storage under a separate account you control. The private R2 backup bucket shares the source account's access and availability. Use a separate D1 database and private R2 bucket to rehearse recovery. Compare the restored object's checksum with the manifest, revoke restored sessions, and verify the article, image and private draft before considering a cutover. See [the restore guide](RESTORE.md) for the full drill, using your own generated configuration.
 
 Custom domains are optional. Add `"domains": {"app": "publish.yourdomain.com", "media": "media.yourdomain.com"}` to `install.json` using domains in your Cloudflare account, then redeploy. The installer binds these custom domains and rebuilds the dashboard with the matching API origin. Do not set a cookie domain wider than necessary. Keep `workers_dev=false` and `preview_urls=false` on the scanner and operations worker. Never add internal bindings or credentials to the scanner.
 

@@ -116,8 +116,8 @@ async function setup(count = 0) {
     RESEND_API_KEY: "test",
     EMAIL_FROM: "BlogStack <noreply@mail.example.com>",
     ALERT_EMAIL: "owner@example.com",
-    CF_BACKUP_TOKEN_EXPIRES: "2099-01-01",
-    CF_ANALYTICS_TOKEN_EXPIRES: "2099-01-01",
+    CF_BACKUP_TOKEN_EXPIRES: "2099-01-01T00:00:00Z",
+    CF_ANALYTICS_TOKEN_EXPIRES: "2099-01-01T00:00:00Z",
     HEALTH_URLS: JSON.stringify([
       { name: "app", url: "https://app.example.com/health", contains: "ok" },
     ]),
@@ -330,6 +330,41 @@ test("monitor checks source jobs, dead letters, backup freshness and Worker metr
   const codes = (await collectIssues(f.env)).map((i) => i.code);
   expect(codes).toContain("jobs:email");
   expect(codes).toContain("queue:publishing dead letters");
+});
+test("monitor reports missing, invalid and expiring credential dates", async () => {
+  const f = await setup();
+  const now = Date.parse("2026-11-19T15:00:00Z") / 1000;
+  const credentials = async () =>
+    (await collectIssues(f.env, now)).filter(({ code }) =>
+      code.startsWith("credential:"),
+    );
+
+  f.env.CF_BACKUP_TOKEN_EXPIRES = undefined;
+  f.env.CF_ANALYTICS_TOKEN_EXPIRES = "2027-02-30T23:59:59Z";
+  expect(await credentials()).toEqual([
+    {
+      code: "credential:backup",
+      message: "The backup credential has no expiry date configured.",
+    },
+    {
+      code: "credential:analytics",
+      message:
+        "The analytics credential has an invalid expiry date. Use a UTC timestamp.",
+    },
+  ]);
+
+  f.env.CF_BACKUP_TOKEN_EXPIRES = "2026-12-19T15:00:00Z";
+  f.env.CF_ANALYTICS_TOKEN_EXPIRES = "2026-11-19T15:00:00Z";
+  expect(await credentials()).toEqual([
+    {
+      code: "credential:backup",
+      message: "The backup credential expires within 30 days.",
+    },
+    {
+      code: "credential:analytics",
+      message: "The analytics credential has expired.",
+    },
+  ]);
 });
 test("alert retries and concurrent checks preserve one provider idempotency key and payload", async () => {
   const f = await setup();

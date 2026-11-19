@@ -1,21 +1,65 @@
 ---
 import { buildSetupPrompt } from "../lib/setup";
-import { DOCS_URL } from "../lib/site";
+import { APP_URL, DOCS_URL } from "../lib/site";
 ---
 <section class="m-section" id="ai-setup" aria-labelledby="setup-title"><div class="m-split">
  <div><div class="m-eyebrow">Set up with your coding assistant</div><h2 class="m-title" id="setup-title">Bring your agent.<br/><em>We'll bring the context.</em></h2><p class="m-copy">Give your coding assistant a useful starting point. Create a setup prompt with your blog details, the right packages and the installation guide, then let it help connect BlogStack to your existing code.</p><p class="m-copy">Use it with Codex, Claude Code, Cursor or your preferred coding assistant. You review the changes and stay in control of your website.</p><a class="m-link setup-guide" href={DOCS_URL+"/docs/ai-setup"}>Read the AI setup guide</a></div>
  <div class="m-shell"><div class="m-panel prompt-builder" data-prompt-builder><div class="prompt-heading"><span>Make it yours</span><span class="m-small">Setup prompt</span></div>
- <form><label for="setup-slug">Blog slug<input id="setup-slug" name="slug" value="my-blog" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="100" required autocomplete="off"/></label><label for="setup-url">Your website<input id="setup-url" name="website" type="url" value="https://yourwebsite.com" required autocomplete="url"/></label><button class="m-button" type="submit">Copy setup prompt</button><p class="copy-status m-small" role="status" aria-live="polite"></p></form>
+ <form>
+  <label for="setup-slug">Blog slug<input id="setup-slug" name="slug" value="my-blog" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="100" required autocomplete="off"/></label>
+  <label for="setup-url">Your website<input id="setup-url" name="website" type="url" value="https://yourwebsite.com" required autocomplete="url"/></label>
+  <label for="setup-api">BlogStack API URL<input id="setup-api" name="api" type="url" value={APP_URL} aria-describedby="setup-api-help" required autocomplete="off"/><span id="setup-api-help">If you self-host, enter the URL printed by the installer.</span></label>
+  <button class="m-button" type="submit">Copy setup prompt</button><p class="copy-status m-small" role="status" aria-live="polite"></p>
+ </form>
  <details><summary>Read the prompt</summary><textarea aria-label="Generated setup prompt" readonly rows="9" spellcheck="false">{buildSetupPrompt()}</textarea></details><div class="prompt-note m-small">Works with your existing coding assistant. No BlogStack AI credits needed.</div>
  </div></div>
 </div></section>
 <script>
  import { buildSetupPrompt } from "../lib/setup";
  for (const root of document.querySelectorAll<HTMLElement>("[data-prompt-builder]")) {
-   const form=root.querySelector("form")!, output=root.querySelector("textarea")!, status=root.querySelector<HTMLElement>("[role=status]")!;
-   const update=()=>buildSetupPrompt((form.elements.namedItem("slug") as HTMLInputElement).value.trim(),(form.elements.namedItem("website") as HTMLInputElement).value.trim());
-   form.addEventListener("input",()=>{status.textContent="";try{output.value=update();}catch{output.value="Enter your blog slug and website URL to generate the prompt.";}});
-   form.addEventListener("submit",async e=>{e.preventDefault();try{output.value=update();await navigator.clipboard.writeText(output.value);status.textContent="Prompt copied. Paste it into your coding assistant.";status.dataset.error="false";}catch(error){root.querySelector("details")!.open=true;output.focus();output.select();status.textContent=error instanceof Error&&error.message.startsWith("Use ") ? error.message : "Select the prompt above and copy it to your coding assistant.";status.dataset.error="true";}});
+   const form = root.querySelector("form")!;
+   const output = root.querySelector("textarea")!;
+   const status = root.querySelector<HTMLElement>("[role=status]")!;
+
+   function updatePrompt() {
+     const values = new FormData(form);
+     output.value = buildSetupPrompt(
+       String(values.get("slug")).trim(),
+       String(values.get("website")).trim(),
+       String(values.get("api")).trim(),
+     );
+   }
+
+   form.addEventListener("input", () => {
+     status.textContent = "";
+     try {
+       updatePrompt();
+     } catch {
+       output.value = "";
+     }
+   });
+
+   form.addEventListener("submit", async (event) => {
+     event.preventDefault();
+     try {
+       updatePrompt();
+     } catch (error) {
+       status.textContent = error instanceof Error ? error.message : "Check the setup fields.";
+       status.dataset.error = "true";
+       return;
+     }
+     try {
+       await navigator.clipboard.writeText(output.value);
+       status.textContent = "Prompt copied. Paste it into your coding assistant.";
+       status.dataset.error = "false";
+     } catch {
+       root.querySelector("details")!.open = true;
+       output.focus();
+       output.select();
+       status.textContent = "Copy the selected prompt to your coding assistant.";
+       status.dataset.error = "false";
+     }
+   });
  }
 </script>
 <style>.setup-guide{display:inline-block;margin-top:25px}.prompt-builder{padding:28px}.prompt-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;font-weight:500;margin-bottom:26px}.prompt-builder form{display:grid;gap:18px}.prompt-builder label{display:grid;gap:9px;font-size:.85rem;color:var(--text-muted)}.prompt-builder input,.prompt-builder textarea{width:100%;min-width:0;background:var(--bg);border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:7px;padding:12px;font:400 .85rem var(--mono)}.prompt-builder textarea{resize:vertical;font-size:.75rem;line-height:1.8;margin-top:15px}.prompt-builder button{width:100%;margin-top:5px}.copy-status{min-height:1.6em}.copy-status[data-error=true]{color:#e5c6a4}.prompt-builder details{border-top:1px solid rgba(255,255,255,.07);padding-top:18px}.prompt-builder summary{font-size:.85rem;cursor:pointer;color:var(--text-muted)}.prompt-note{margin-top:20px}.prompt-builder input:focus-visible,.prompt-builder textarea:focus-visible{outline:2px solid var(--accent);outline-offset:3px}@media(max-width:480px){.prompt-builder{padding:22px}.prompt-heading{align-items:start;flex-direction:column;gap:4px}}</style>
