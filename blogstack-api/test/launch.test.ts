@@ -247,6 +247,37 @@ describe("launch entitlements", () => {
 });
 
 describe("safe publication and analysis", () => {
+  test("new blogs opt in to reader tracking without changing existing blogs", async () => {
+    const f = fixture();
+    const cookie = await f.session();
+    const created = await request(
+      f,
+      "/projects",
+      "POST",
+      { name: "New blog", settings: { blogUrl: "https://example.com/journal" } },
+      cookie,
+    );
+    expect(created.status).toBe(201);
+    const project = await created.json();
+    expect(project.settings).toEqual({
+      blogUrl: "https://example.com/journal",
+      analyticsEnabled: false,
+    });
+    const publicInfo = () => request(f, "/public/" + project.slug);
+    expect((await (await publicInfo()).json()).analyticsEnabled).toBe(false);
+
+    const enabled = await request(
+      f,
+      "/projects/" + project.id,
+      "PATCH",
+      { settings: { analyticsEnabled: true } },
+      cookie,
+    );
+    expect(enabled.status).toBe(200);
+    expect((await (await publicInfo()).json()).analyticsEnabled).toBe(true);
+    expect((await (await request(f, "/public/p1")).json()).analyticsEnabled).toBe(true);
+  });
+
   test("private autosaves preserve live snapshots, stale revisions fail, invalid rendering cannot replace live content", async () => {
     const f = fixture(),
       p = await post(f);

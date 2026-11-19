@@ -1,0 +1,153 @@
+---
+import { DEMO_URL, DOCS_URL, SOURCE_URL } from "../lib/site";
+
+const demo = DEMO_URL.replace(/\/+$/, "");
+---
+
+<aside class="demo-proof" aria-labelledby="demo-proof-title">
+  <div class="demo-details">
+    <h2 id="demo-proof-title">See the starter running live.</h2>
+    <p>This blog uses the same Next.js routes you can add to your site.</p>
+    <nav aria-label="Live demo resources">
+      <a class="m-link demo-link" href={demo}>Open the live blog <span aria-hidden="true">↗</span></a>
+      <a class="m-link" href={demo + "/feed.xml"}>RSS feed</a>
+      <a class="m-link" href={demo + "/sitemap.xml"}>Sitemap</a>
+    </nav>
+  </div>
+  <ul class="demo-marks" aria-label="BlogStack studio and technologies">
+    <li>
+      <a href="https://www.boldlaunchstudio.com/">
+        <span class="mark studio-mark"><img src="/brand/boldlaunch-studio.png" alt="BoldLaunch Studio" width="1690" height="418" loading="lazy" /></span>
+        <span class="mark-role">Product studio</span>
+      </a>
+    </li>
+    <li>
+      <a href={SOURCE_URL + "/tree/main/examples/nextjs"}>
+        <span class="mark next-mark"><img src="/brand/nextjs-white.svg" alt="Next.js" width="278" height="56" loading="lazy" /></span>
+        <span class="mark-role">Starter source</span>
+      </a>
+    </li>
+    <li>
+      <a href={DOCS_URL + "/docs/components"}>
+        <span class="mark react-mark"><img src="/brand/react.svg" alt="" width="26" height="23" loading="lazy" />React</span>
+        <span class="mark-role">UI components</span>
+      </a>
+    </li>
+    <li>
+      <a href="/#self-hosting">
+        <span class="mark cloudflare-mark">Cloudflare</span>
+        <span class="mark-role">Hosting</span>
+      </a>
+    </li>
+  </ul>
+</aside>
+
+<style>
+  .demo-proof {
+    max-width: 1180px;
+    margin: auto;
+    padding: 44px 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr);
+    gap: 30px 36px;
+    align-items: center;
+  }
+
+  .demo-details h2 {
+    font: 400 clamp(2rem, 3.4vw, 2.65rem)/1.08 var(--serif);
+  }
+
+  .demo-details p {
+    color: var(--text-muted);
+    margin-top: 9px;
+    font-size: .9rem;
+  }
+
+  .demo-details nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-top: 16px;
+  }
+
+  .demo-link {
+    color: var(--accent);
+  }
+
+  .demo-marks {
+    border-inline-start: 1px solid var(--border);
+    padding: 12px 0 12px 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px 18px;
+    list-style: none;
+  }
+
+  .demo-marks a {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .mark {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    color: var(--text);
+  }
+
+  .studio-mark img {
+    width: 136px;
+    height: auto;
+  }
+
+  .next-mark img {
+    display: block;
+    width: 77px;
+    height: auto;
+  }
+
+  .react-mark,
+  .cloudflare-mark {
+    gap: 7px;
+    font-size: 1.12rem;
+    font-weight: 600;
+    letter-spacing: -.03em;
+  }
+
+  .mark-role {
+    color: var(--text-muted);
+    font: .67rem/1.4 var(--mono);
+  }
+
+  .demo-marks a:hover .mark-role {
+    color: var(--accent);
+  }
+
+  @media (max-width: 850px) {
+    .demo-proof {
+      grid-template-columns: 1fr;
+      padding: 36px 20px;
+    }
+
+    .demo-marks {
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--border);
+      padding: 18px 0 0;
+      justify-content: flex-start;
+      gap: 18px 32px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .demo-marks {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+  }
+</style>

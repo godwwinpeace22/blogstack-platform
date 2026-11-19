@@ -22,7 +22,7 @@ const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
    <li>{plan.customBranding?"Custom workspace branding and no attribution":"BlogStack-branded workspace"}</li>
    <li>API, JavaScript SDK and editable React UI</li>
   </ul>
-  <a href={ACCESS_URL} class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>Start 14-day Studio trial</a>
+  <a href={ACCESS_URL} class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>Get started free</a>
   <a class="annual-link" href={APP_URL+"/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a>
  </article>)}
 </div>

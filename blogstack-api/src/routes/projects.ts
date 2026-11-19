@@ -130,7 +130,7 @@ app.post(
         slug,
         c.var.userId,
         now,
-        JSON.stringify(input.settings ?? {}),
+        JSON.stringify({ analyticsEnabled: false, ...input.settings }),
       )
       .run();
     return c.json(

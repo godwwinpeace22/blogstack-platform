@@ -7,6 +7,7 @@ import Audiences from "../components/Audiences.astro";
 import ArticleGraphic from "../components/ArticleGraphic.astro";
 import BuyerQuestions from "../components/BuyerQuestions.astro";
 import GrowthTools from "../components/GrowthTools.astro";
+import LiveDemo from "../components/LiveDemo.astro";
 import PublishingFlow from "../components/PublishingFlow.astro";
 import PublishingOwnership from "../components/PublishingOwnership.astro";
 import AiAssistance from "../components/AiAssistance.astro";
@@ -34,10 +35,11 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
 
       <h1>Add a blog to<br /><em>the site you built.</em></h1>
       <p class="hero-sub">Write in BlogStack and publish at <strong>yoursite.com/blog</strong>. Edit the pages to match your design, then see how readers find your posts and which links they click.</p>
+      <p class="hero-framework"><a href={DOCS_URL + "/docs/quickstart"}>Next.js starter</a>. <a href={DOCS_URL + "/docs/sdk"}>JavaScript SDK</a> and <a href={DOCS_URL + "/docs/api-reference"}>API</a> for other frameworks.</p>
 
       <div class="hero-actions">
         <a href={ACCESS_URL} class="btn btn-primary">Start free trial</a>
-        <a href={DEMO_URL} class="btn btn-ghost">See it on a live site</a>
+        <a href={DEMO_URL} class="btn btn-demo">See it on a live site <span aria-hidden="true">↗</span></a>
       </div>
 
       <div class="hero-code-preview">
@@ -92,12 +94,13 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
 
     <div class="stats-bar">
       <div class="stat"><div class="stat-num">/blog</div><div class="stat-label">On your own domain</div></div>
-      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Editable blog layouts</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Redeploys to publish<br />with the Next.js starter</div></div>
       <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">The whole platform</div></div>
       <div class="stat"><div class="stat-num">${PLANS.solo.monthly}</div><div class="stat-label">Cloud starting price per month</div></div>
       <div class="stat"><div class="stat-num">{PLANS.growth.storageBytes / 1e9} GB</div><div class="stat-label">Media storage on Growth</div></div>
     </div>
 
+    <LiveDemo />
     <hr class="divider" />
 
     <Audiences/>
@@ -148,8 +151,8 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
             <div class="pillar-features">
               <div class="pillar-feature">Author roles and invitations</div>
               <div class="pillar-feature">Permissions for each blog</div>
-              <div class="pillar-feature">Comments integration slot</div>
-              <div class="pillar-feature">Newsletter integration slot</div>
+              <div class="pillar-feature">Bring your own comments</div>
+              <div class="pillar-feature">Bring your own newsletter</div>
               <div class="pillar-feature">Analytics and AI assistance</div>
               <div class="pillar-feature">Manage multiple publications</div>
             </div>
@@ -163,7 +166,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
     <section class="reveal">
       <div class="section-label">Blog layouts</div>
       <h2 class="section-title">A layout for the way<br /><em>you write.</em></h2>
-      <p class="section-sub">Use a grid for tutorials, a featured story for a company journal, or a clean list for personal notes. Each layout is editable source you can style in your own project.</p>
+      <p class="section-sub">Your blog pages live in your own codebase. Set the routes, typography, and layout just as you do for the rest of your site. Start with a grid, a featured story, or a clean list.</p>
 
       <div class="component-preview-wrap">
         <div class="component-preview">
@@ -475,9 +478,43 @@ app/blog/feed.xml/route.ts
       font-size: 17px;
       color: var(--text-muted);
       max-width: 520px;
-      margin: 24px auto 40px;
+      margin: 24px auto 14px;
       line-height: 1.7;
       animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-framework {
+      margin: 0 auto 32px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.9;
+      text-wrap: balance;
+    }
+
+    .hero-framework a {
+      color: var(--text);
+      text-decoration: underline;
+      text-decoration-color: var(--border-light);
+      text-underline-offset: 4px;
+    }
+
+    .hero-framework a:hover {
+      text-decoration-color: var(--accent);
+    }
+
+    .btn-demo {
+      border: 1px solid var(--border-light);
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .btn-demo span {
+      margin-inline-start: 4px;
+      color: var(--accent);
+    }
+
+    .btn-demo:hover {
+      border-color: var(--accent);
     }
 
     .hero-actions,
@@ -1121,7 +1158,7 @@ app/blog/feed.xml/route.ts
 
     .stats-bar {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 48px;
       padding: 24px 40px;
@@ -1245,6 +1282,16 @@ app/blog/feed.xml/route.ts
     @media (max-width: 520px) {
       .hero-code-preview {
         margin-top: 40px;
+      }
+
+      .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px 16px;
+      }
+
+      .stat:last-child {
+        grid-column: 1 / -1;
       }
 
       .nav-cta,
