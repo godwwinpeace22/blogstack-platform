@@ -11,7 +11,7 @@ const files = execFileSync("git", ["ls-files", "-z"], {
   .filter(Boolean);
 const errors = [];
 const privatePath =
-  /(?:^|\/)(?:\.launch|artifacts|node_modules|\.wrangler|\.dev-state|\.local-api|\.local-cdn)(?:\/|$)|(?:^|\/)(?:launch\.env|\.npmrc|\.dev\.vars(?:\..+)?|\.env(?:\..+)?)$/;
+  /(?:^|\/)(?:\.launch|artifacts|node_modules|\.wrangler|\.dev-state|\.local-api|\.local-cdn|\.self-hosted)(?:\/|$)|(?:^|\/)(?:launch\.env|\.npmrc|\.dev\.vars(?:\..+)?|\.env(?:\..+)?)$/;
 const credential =
   /(?:gh[pousr]_|github_pat_|npm_|cfat_)[A-Za-z0-9_-]{25,}|-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bAKIA[0-9A-Z]{16}\b/;
 for (const path of files) {

@@ -56,8 +56,12 @@ async function accountResponse(
     limits: limitsFor(access),
     role: await getAccountRole(env.MAIN_DB, userId, accountId),
     canWrite: !!access.writable,
-    trialEndsAt: access.internal_access ? null : access.trial_ends_at,
+    trialEndsAt:
+      access.internal_access || access.self_hosted
+        ? null
+        : access.trial_ends_at,
     internalAccess: !!access.internal_access,
+    selfHosted: !!access.self_hosted,
     paidThrough: access.paid_through,
     usage: await accountUsage(env, access),
   };

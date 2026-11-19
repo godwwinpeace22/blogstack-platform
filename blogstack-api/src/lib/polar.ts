@@ -10,6 +10,7 @@ import { accountAccess, accountUsage } from "./entitlements.js";
 import type { Bindings } from "../types.js";
 
 export function billingReady(env: Bindings): boolean {
+  if (env.DEPLOYMENT_MODE === "self_hosted") return false;
   const products = Object.keys(PLANS).flatMap((plan) =>
     ["MONTH", "YEAR"].map(
       (interval) =>
@@ -42,6 +43,8 @@ function requireBillingReady(env: Bindings) {
     });
 }
 export function polar(env: Bindings): Polar {
+  if (env.DEPLOYMENT_MODE === "self_hosted")
+    throw new HTTPException(409, { message: "Self-hosted workspaces do not use BlogStack subscriptions" });
   if (!env.POLAR_ACCESS_TOKEN)
     throw new HTTPException(503, { message: "Billing is not available yet" });
   return createPolar({

@@ -15,6 +15,7 @@ const { values } = parseArgs({
     kind: { type: "string" },
     directory: { type: "string" },
     bucket: { type: "string", default: "blogstack-backups" },
+    config: { type: "string" },
   },
 });
 if (
@@ -37,8 +38,13 @@ function download(key, filename) {
   const result = spawnSync(
     process.execPath,
     [
-      "scripts/launch.mjs",
-      "cloudflare",
+      ...(values.config
+        ? [
+            "node_modules/wrangler/bin/wrangler.js",
+            "--config",
+            resolve(values.config),
+          ]
+        : ["scripts/launch.mjs", "cloudflare"]),
       "r2",
       "object",
       "get",

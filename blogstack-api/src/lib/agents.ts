@@ -1,6 +1,5 @@
 import {
   AI_MODEL,
-  PLANS,
   aiCredits,
   analyzeSeo,
   parseDocument,
@@ -53,12 +52,9 @@ export async function estimateAgent(env: Bindings, projectId: string) {
   const access = await accountAccess(env, p.account_id),
     used = await usage(env, access);
   return {
-    availableCredits: Math.max(0, PLANS[access.plan].aiCredits - used.ai),
-    maxCredits: Math.min(
-      8,
-      Math.max(0, PLANS[access.plan].aiCredits - used.ai),
-    ),
-    monthlyCredits: PLANS[access.plan].aiCredits,
+    availableCredits: Math.max(0, access.ai_credits - used.ai),
+    maxCredits: Math.min(8, Math.max(0, access.ai_credits - used.ai)),
+    monthlyCredits: access.ai_credits,
     canRun: !!access.writable && !!env.AI,
   };
 }

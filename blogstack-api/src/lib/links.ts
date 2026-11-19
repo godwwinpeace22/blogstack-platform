@@ -1,4 +1,4 @@
-import { documentLinks, articleUrl, PLANS, safeUrl } from "@blogstack/core";
+import { documentLinks, articleUrl, safeUrl } from "@blogstack/core";
 import { HTTPException } from "hono/http-exception";
 import {
   accountAccess,
@@ -110,7 +110,7 @@ export async function startLinkScan(env: Bindings, projectId: string) {
     .bind(projectId)
     .first<{ id: string }>();
   if (current) return current.id;
-  if ((await usage(env, access)).links >= PLANS[access.plan].linkChecks)
+  if ((await usage(env, access)).links >= access.link_checks)
     throw new HTTPException(409, {
       message: "Monthly external link check allowance reached",
     });

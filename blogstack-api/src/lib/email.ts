@@ -11,6 +11,20 @@ interface SendEmailOptions {
   idempotencyKey?: string;
 }
 
+export async function sendAppEmail(
+  env: { API_URL: string; RESEND_API_KEY?: string; EMAIL_FROM: string },
+  options: SendEmailOptions,
+): Promise<void> {
+  if (!env.RESEND_API_KEY) {
+    if (["localhost", "127.0.0.1"].includes(new URL(env.API_URL).hostname)) {
+      console.info("[development email]", options.subject, options.html);
+      return;
+    }
+    throw new Error("Transactional email is not configured");
+  }
+  await sendEmail(env.RESEND_API_KEY, options);
+}
+
 export async function sendEmail(
   apiKey: string,
   options: SendEmailOptions,

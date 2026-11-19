@@ -79,10 +79,8 @@ export async function processJob(env: Bindings, id: string): Promise<void> {
       )
         await persistSnapshot(env, payload.projectId, payload.day);
     } else if (job.kind === "email") {
-      const { sendEmail } = await import("./email.js");
-      if (!env.RESEND_API_KEY)
-        throw new Error("Transactional email is not configured");
-      await sendEmail(env.RESEND_API_KEY, {
+      const { sendAppEmail } = await import("./email.js");
+      await sendAppEmail(env, {
         ...payload,
         from: env.EMAIL_FROM,
         idempotencyKey: job.id,

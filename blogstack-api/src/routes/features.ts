@@ -113,7 +113,7 @@ app.get("/:projectId/analytics", async (c) => {
     .number()
     .int()
     .min(1)
-    .max(365)
+    .max(3650)
     .parse(c.req.query("days") ?? 30);
   return c.json(await analyticsReport(c.env, c.req.param("projectId"), days));
 });

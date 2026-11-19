@@ -8,7 +8,10 @@ The Astro website uses launch-facing presentation for personal blogs, company pu
 
 The homepage and features page share sections for publishing, audiences, SEO/analytics/link health, reviewable publishing assistants, AI-assisted code setup and self-hosting. The setup builder at /get-started generates a prompt using only a public project slug and website origin. /setup-prompt.txt and /llms.txt provide machine-readable entry points. The helper uses the customer's existing coding assistant; it is not a hosted installation agent or an MCP integration and does not consume BlogStack credits.
 
-Self-hosting covers the MIT website components/SDK and Next.js frontend. The complete publishing backend is not publicly distributed. A fresh download of the public starter installed, built and served article HTML, metadata, structured data, RSS and sitemap on ordinary Node.js. Functional evidence is in local artifacts/verification/self-hosting-node.json. Dependency-maintenance advisories from that separate install are recorded in self-hosting-dependency-advisories.json; functional acceptance is not a vulnerability-free audit.
+The complete platform is MIT-licensed and self-hosting covers the publishing dashboard, API, media, link scanner, analytics, AI runtime and optional operations worker in the operator’s Cloudflare account. See docs/SELF_HOSTING.md. Self-hosted workspaces have no BlogStack subscription or expiry; operators supply their own provider resources and configure safety budgets. The frontend also runs on Node.js; a Docker/VPS backend port is not included.
+
+The earlier standalone Node.js frontend acceptance remains valid in artifacts/verification/self-hosting-node.json. Full-platform installation has separate acceptance evidence.
+
 
 ## Google Analytics
 
@@ -16,7 +19,7 @@ The operator created the free BlogStack GA4 account under hello@boldlaunchstudio
 
 Optional account data-sharing choices and enhanced measurement are disabled. This website sends an explicit page_view after consent with query/fragment-free page location and origin-only referrer. It does not send the setup form values, account data or drafts. Google signals and advertising personalization remain disabled. No Measurement Protocol API secret was created.
 
-The measurement ID is public configuration in blogstack-site/src/lib/site.ts and can be overridden by PUBLIC_GOOGLE_ANALYTICS_ID. Development mode does not load the tag. The static production build includes the ID but loads Google's script only after optional analytics is accepted. Fonts are served locally with their SIL Open Font Licenses, so they do not generate pre-consent Google requests.
+The measurement ID is supplied explicitly as PUBLIC_GOOGLE_ANALYTICS_ID when building the managed marketing site. Source clones have no default Analytics ID and do not send telemetry to BlogStack. Development mode does not load the tag. The static production build includes the ID but loads Google's script only after optional analytics is accepted. Fonts are served locally with their SIL Open Font Licenses, so they do not generate pre-consent Google requests.
 
 ## Consent and policies
 
@@ -28,4 +31,4 @@ Privacy, terms and cookie policy pages explain the separate marketing GA4 and co
 
 ## Social links
 
-The requested placeholder social links deliberately use example.com/blogstack/github, /x and /linkedin. Override PUBLIC_GITHUB_URL, PUBLIC_X_URL and PUBLIC_LINKEDIN_URL with owned profiles before sharing publicly. Do not expose the private platform repository as a public-source download.
+The requested X and LinkedIn placeholders use example.com/blogstack/x and /linkedin. GitHub points to the complete MIT platform repository. Override PUBLIC_GITHUB_URL, PUBLIC_X_URL and PUBLIC_LINKEDIN_URL with owned profiles before sharing publicly. The platform repository is now intended for public source distribution; installation credentials and customer data remain excluded.

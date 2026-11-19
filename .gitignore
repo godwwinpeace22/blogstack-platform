@@ -45,3 +45,6 @@ coverage/
 *.pfx
 blogstack-registry/public/r/
 blogstack-registry/public/downloads/
+
+# Operator-owned full-platform installations.
+.self-hosted/

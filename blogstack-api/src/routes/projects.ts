@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod/v4";
 import { HTTPException } from "hono/http-exception";
-import { safeUrl, PLANS } from "@blogstack/core";
+import { safeUrl } from "@blogstack/core";
 import { requireAuth } from "../middleware/auth.js";
 import {
   getEffectiveProjectRole,
@@ -10,7 +10,7 @@ import {
   getAccountRole,
   assertAccountRole,
 } from "../lib/permissions.js";
-import { accountAccess } from "../lib/entitlements.js";
+import { accountAccess, limitsFor } from "../lib/entitlements.js";
 import { slugify } from "../lib/slugify.js";
 import type { DbProject, HonoEnv } from "../types.js";
 
@@ -57,7 +57,7 @@ async function serialize(
 ) {
   const access = await accountAccess(c, p.account_id),
     settings = JSON.parse(p.settings || "{}"),
-    custom = PLANS[access.plan].customBranding;
+    custom = limitsFor(access).customBranding;
   return {
     id: p.id,
     accountId: p.account_id,
@@ -182,7 +182,7 @@ app.patch(
     const input = c.req.valid("json");
     const access = await accountAccess(c.env, p.account_id);
     if (
-      !PLANS[access.plan].customBranding &&
+      !limitsFor(access).customBranding &&
       (input.settings?.hideAttribution ||
         input.settings?.workspaceName ||
         input.settings?.logoUrl)

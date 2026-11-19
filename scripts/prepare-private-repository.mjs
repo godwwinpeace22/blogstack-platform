@@ -6,7 +6,7 @@ import { parseEnv } from "node:util";
 const root = process.cwd();
 const target = resolve(".launch/release-repository");
 const manifest = JSON.parse(readFileSync("package.json", "utf8"));
-const excluded = new Set(["node_modules", ".git", ".launch", "artifacts", "dist", "out", "build", ".next", ".open-next", ".output", ".astro", ".source", ".wrangler", ".turbo", ".cache", ".pnpm-store", "coverage", "playwright-report", "test-results", ".dev-state", ".local-api", ".local-cdn"]);
+const excluded = new Set(["node_modules", ".git", ".launch", "artifacts", "dist", "out", "build", ".next", ".open-next", ".output", ".astro", ".source", ".wrangler", ".turbo", ".cache", ".pnpm-store", "coverage", "playwright-report", "test-results", ".dev-state", ".local-api", ".local-cdn", ".self-hosted"]);
 const files = [];
 function allowed(name) {
   return !excluded.has(name) && ![".DS_Store", "Thumbs.db", ".npmrc", "launch.env"].includes(name) &&
@@ -23,7 +23,7 @@ function walk(path) {
   }
 }
 for (const directory of [...manifest.workspaces, "docs", "scripts", ".github"]) walk(resolve(directory));
-for (const file of [".gitignore", "README.md", "package.json", "package-lock.json", "launch.env.example", "API_HARDENING_ROADMAP.md"]) if (existsSync(file)) files.push(file);
+for (const file of [".gitignore", "README.md", "package.json", "package-lock.json", "launch.env.example", "API_HARDENING_ROADMAP.md", "LICENSE", "CONTRIBUTING.md", "SECURITY.md", "THIRD_PARTY_NOTICES.md"]) if (existsSync(file)) files.push(file);
 // Compare against known private server/test secrets without printing values.
 const secrets = new Set();
 function collect(value, key = "") {

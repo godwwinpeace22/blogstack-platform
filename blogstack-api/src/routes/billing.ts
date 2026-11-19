@@ -16,6 +16,22 @@ import {
 import { notifyJob } from "../lib/jobs.js";
 import type { HonoEnv } from "../types.js";
 const app = new Hono<HonoEnv>();
+app.use("*", async (c, next) => {
+  if (c.req.method !== "GET") {
+    const selfHosted =
+      c.env.DEPLOYMENT_MODE === "self_hosted" ||
+      (
+        await c.env.MAIN_DB.prepare(
+          "SELECT mode FROM deployment_settings WHERE id=1",
+        ).first<{ mode: string }>()
+      )?.mode === "self_hosted";
+    if (selfHosted)
+      throw new HTTPException(409, {
+        message: "Self-hosted workspaces do not use BlogStack subscriptions",
+      });
+  }
+  return next();
+});
 app.post("/billing/webhooks/polar", async (c) => {
   const headers: Record<string, string> = {};
   c.req.raw.headers.forEach((value, key) => {
@@ -62,22 +78,25 @@ app.get("/accounts/:accountId/billing", async (c) => {
     plan: a.plan,
     interval: a.interval,
     internalAccess: !!a.internal_access,
-    status: a.internal_access
-      ? "internal"
-      : a.writable
-        ? a.paid_through && a.paid_through > Math.floor(Date.now() / 1000)
-          ? "active"
-          : "trialing"
-        : a.trial_started_at
-          ? "expired"
-          : "not_started",
+    selfHosted: !!a.self_hosted,
+    status: a.self_hosted
+      ? "self_hosted"
+      : a.internal_access
+        ? "internal"
+        : a.writable
+          ? a.paid_through && a.paid_through > Math.floor(Date.now() / 1000)
+            ? "active"
+            : "trialing"
+          : a.trial_started_at
+            ? "expired"
+            : "not_started",
     hasBillingCustomer: !!a.provider_customer_id,
     hasSubscription:
       !!a.provider_subscription_id &&
       !["canceled", "incomplete_expired"].includes(a.provider_status ?? ""),
     providerStatus: a.provider_status,
     canWrite: !!a.writable,
-    trialEndsAt: a.internal_access ? null : a.trial_ends_at,
+    trialEndsAt: a.internal_access || a.self_hosted ? null : a.trial_ends_at,
     paidThrough: a.paid_through,
     deliveryEndsAt: a.access_until ? a.access_until + 30 * 86400 : null,
     deletesAt: a.access_until ? a.access_until + 90 * 86400 : null,
@@ -87,7 +106,7 @@ app.get("/accounts/:accountId/billing", async (c) => {
     limits: limitsFor(a),
     usage: await accountUsage(c.env, a),
     catalog: PLANS,
-    configured: !a.internal_access && billingReady(c.env),
+    configured: !a.internal_access && !a.self_hosted && billingReady(c.env),
   });
 });
 const selection = z.object({

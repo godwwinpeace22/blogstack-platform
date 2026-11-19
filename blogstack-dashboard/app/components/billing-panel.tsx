@@ -14,7 +14,7 @@ import { ErrorMessage, Panel } from "./feedback";
 type DashboardBilling = Omit<
   Awaited<ReturnType<typeof api.billing.get>>,
   "status"
-> & { status: string; internalAccess?: boolean };
+> & { status: string; internalAccess?: boolean; selfHosted?: boolean };
 export function BillingPanel() {
   const { activeId, accounts } = useActiveAccount(),
     qc = useQueryClient();
@@ -97,24 +97,32 @@ export function BillingPanel() {
         <>
           <Panel
             title={
-              data.internalAccess
-                ? "Internal demo workspace"
-                : "Your subscription"
+              data.selfHosted
+                ? "Self-hosted workspace"
+                : data.internalAccess
+                  ? "Internal demo workspace"
+                  : "Your subscription"
             }
           >
             <div className="flex flex-wrap justify-between gap-4">
               <div>
                 <p className="font-medium">
-                  {CATALOG[data.plan].name} · {data.status.replace("_", " ")}
+                  {data.selfHosted
+                    ? "Your infrastructure · no BlogStack subscription"
+                    : CATALOG[data.plan].name +
+                      " · " +
+                      data.status.replace("_", " ")}
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {data.internalAccess
-                    ? "No expiry. This internal workspace is not billed. Plan allowances still apply."
-                    : data.paidThrough
-                      ? "Paid access until " + date(data.paidThrough)
-                      : data.trialEndsAt
-                        ? "Trial ends " + date(data.trialEndsAt)
-                        : "Your 14-day Studio trial starts when you create your first blog."}
+                  {data.selfHosted
+                    ? "No trial or subscription expiry. Your operator sets resource budgets; infrastructure and email providers bill you directly."
+                    : data.internalAccess
+                      ? "No expiry. This internal workspace is not billed. Plan allowances still apply."
+                      : data.paidThrough
+                        ? "Paid access until " + date(data.paidThrough)
+                        : data.trialEndsAt
+                          ? "Trial ends " + date(data.trialEndsAt)
+                          : "Your 14-day Studio trial starts when you create your first blog."}
                 </p>
                 {data.cancelAtPeriodEnd ? (
                   <p className="mt-2 text-sm">
@@ -188,7 +196,7 @@ export function BillingPanel() {
               </p>
             ) : null}
           </Panel>
-          {!data.internalAccess ? (
+          {!data.internalAccess && !data.selfHosted ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <h2 className="text-xl font-semibold">Choose your plan</h2>

@@ -1,4 +1,4 @@
-import { PLANS, documentLinks, safeUrl } from "@blogstack/core";
+import { documentLinks, safeUrl } from "@blogstack/core";
 import { HTTPException } from "hono/http-exception";
 import type { Context } from "hono";
 import { z } from "zod/v4";
@@ -156,6 +156,9 @@ export async function snapshot(
     .bind(projectId)
     .first<{ account_id: string }>();
   if (!project) throw new HTTPException(404, { message: "Project not found" });
+  const dataset = env.ANALYTICS_DATASET || "blogstack_events";
+  if (!/^[A-Za-z][A-Za-z0-9_]{0,63}$/.test(dataset))
+    throw new Error("Invalid analytics dataset name");
   const where =
     "index1=" +
     literal(project.account_id) +
@@ -173,7 +176,9 @@ export async function snapshot(
       env,
       "SELECT blob2 AS post_id,blob3 AS kind," +
         metric +
-        " FROM blogstack_events WHERE " +
+        " FROM " +
+        dataset +
+        " WHERE " +
         where +
         " GROUP BY blob2,blob3 LIMIT 2500",
     ),
@@ -181,7 +186,9 @@ export async function snapshot(
       env,
       "SELECT blob4 AS dimension," +
         metric +
-        " FROM blogstack_events WHERE " +
+        " FROM " +
+        dataset +
+        " WHERE " +
         where +
         " AND blob3='view' GROUP BY blob4 ORDER BY total DESC LIMIT 100",
     ),
@@ -189,7 +196,9 @@ export async function snapshot(
       env,
       "SELECT blob2 AS post_id,blob5 AS dimension," +
         metric +
-        " FROM blogstack_events WHERE " +
+        " FROM " +
+        dataset +
+        " WHERE " +
         where +
         " AND blob3='click' GROUP BY blob2,blob5 ORDER BY total DESC LIMIT 5000",
     ),
@@ -260,10 +269,7 @@ export async function analyticsReport(
     .first<{ account_id: string }>();
   if (!project) throw new HTTPException(404, { message: "Project not found" });
   const access = await accountAccess(env, project.account_id);
-  const days = Math.max(
-    1,
-    Math.min(PLANS[access.plan].analyticsDays, requestedDays),
-  );
+  const days = Math.max(1, Math.min(access.analytics_days, requestedDays));
   const today = new Date().toISOString().slice(0, 10),
     from = new Date(Date.now() - (days - 1) * 86400000)
       .toISOString()
@@ -334,7 +340,7 @@ export async function analyticsReport(
     from,
     to: today,
     days,
-    historyDays: PLANS[access.plan].analyticsDays,
+    historyDays: access.analytics_days,
     views,
     clicks,
     clicksPer100Views: views ? (100 * clicks) / views : 0,

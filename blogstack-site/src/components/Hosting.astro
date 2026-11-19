@@ -1,18 +1,19 @@
 ---
-import { DOCS_URL, STARTER_URL } from "../lib/site";
+import { DOCS_URL, SOURCE_URL } from "../lib/site";
 ---
 <section class="m-section" id="self-hosting" aria-labelledby="hosting-title"><div class="m-split">
- <div><div class="m-eyebrow">Self-host your blog frontend</div><h2 class="m-title" id="hosting-title">Your website.<br/>Your server.<br/><em>Your choice.</em></h2><p class="m-copy">Run your blog pages wherever you run your website. Use the Next.js starter on your own Node.js server, deploy it on Cloudflare, or build with the public JavaScript SDK.</p><p class="m-copy">The frontend is yours to host and edit. BlogStack Cloud handles the publishing dashboard, API, media and AI behind it.</p><div class="m-actions"><a class="m-button" href={DOCS_URL+"/docs/self-hosting"}>Read the self-hosting guide</a><a class="m-link" href={STARTER_URL}>Download the starter</a></div></div>
- <div class="m-shell"><div class="m-panel hosting-recipe"><div class="recipe-header">A small setup. A complete blog.</div><pre><span>Install the starter</span>
-npm install
+ <div><div class="m-eyebrow">The whole platform is open source</div><h2 class="m-title" id="hosting-title">Your content.<br/>Your infrastructure.<br/><em>Your choice.</em></h2><p class="m-copy">Run the publishing dashboard, API, media and background services in your own Cloudflare account. The complete platform is MIT-licensed, with an installer that prepares your resources and deployment.</p><p class="m-copy">Self-host without a BlogStack subscription, or choose BlogStack Cloud and let us run it for you. Your website stays in your stack either way.</p><div class="m-actions"><a class="m-button" href={DOCS_URL+"/docs/self-hosting"}>Read the self-hosting guide</a><a class="m-link" href={SOURCE_URL}>Explore the source</a></div></div>
+ <div class="m-shell"><div class="m-panel hosting-recipe"><div class="recipe-header">From the source to your own workspace.</div><pre><span>Get the complete platform</span>
+git clone https://github.com/godwwinpeace22/blogstack-platform.git
+cd blogstack-platform
+npm ci
 
-<span>Set three public configuration values</span>
-BLOGSTACK_PROJECT_SLUG=my-blog
-BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev
-SITE_URL=https://yourwebsite.com
+<span>Configure your account and email sender</span>
+# Follow the self-hosting guide
+# Generated credentials stay private
 
-<span>Build and run on your server</span>
-npm run build
-npm run start</pre><div class="recipe-footer"><span>MIT components</span><span>No private API key for public pages</span></div></div></div>
+<span>Provision and deploy</span>
+npm run self-host:provision
+npm run self-host:deploy</pre><div class="recipe-footer"><span>Full MIT source</span><span>Cloudflare backend · Your provider costs</span></div></div></div>
 </div></section>
 <style>.recipe-header{font-size:.9rem;padding:22px 26px;border-bottom:1px solid rgba(255,255,255,.06)}pre{padding:26px;font:400 .78rem/1.9 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:#d7d7dc}pre span{color:var(--text-muted);display:inline-block;margin-bottom:4px}.recipe-footer{padding:18px 26px;display:flex;flex-wrap:wrap;gap:12px 22px;font-size:.72rem;color:var(--text-muted);background:rgba(255,255,255,.018)}@media(max-width:480px){pre{padding:20px;font-size:.72rem}.recipe-header{padding:20px}}</style>

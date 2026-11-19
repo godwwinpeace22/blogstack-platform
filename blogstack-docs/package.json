@@ -26,5 +26,11 @@
     "@types/react-dom": "^18.3.0",
     "typescript": "^5.7.0",
     "wrangler": "4.129.1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godwwinpeace22/blogstack-platform.git",
+    "directory": "blogstack-docs"
   }
 }

@@ -31,6 +31,9 @@ export interface Bindings {
   AI?: Ai;
   CF_ACCOUNT_ID?: string;
   CF_ANALYTICS_TOKEN?: string;
+  ANALYTICS_DATASET?: string;
+  DEPLOYMENT_MODE?: "hosted" | "self_hosted";
+  LIFECYCLE_ON_MINUTE_CRON?: string;
   POLAR_ACCESS_TOKEN?: string;
   POLAR_WEBHOOK_SECRET?: string;
   POLAR_SERVER?: "sandbox" | "production";

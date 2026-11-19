@@ -3,7 +3,11 @@ import { HTTPException } from "hono/http-exception";
 import { PLANS, articleUrl } from "@blogstack/core";
 import { postSummary } from "../lib/post-summary.js";
 import { pagination, encodeCursor } from "../lib/pagination.js";
-import { requirePublicDelivery, accountAccess } from "../lib/entitlements.js";
+import {
+  requirePublicDelivery,
+  accountAccess,
+  limitsFor,
+} from "../lib/entitlements.js";
 import { projectBlogUrl } from "../lib/links.js";
 import { collectEvent } from "../lib/analytics.js";
 import type { HonoEnv, DbPost, DbProject } from "../types.js";
@@ -61,7 +65,7 @@ app.get("/:projectSlug", async (c) => {
   const p = await project(c),
     settings = JSON.parse(p.settings || "{}"),
     access = await accountAccess(c.env, p.account_id),
-    custom = PLANS[access.plan].customBranding;
+    custom = limitsFor(access).customBranding;
   return c.json({
     name: p.name,
     slug: p.slug,

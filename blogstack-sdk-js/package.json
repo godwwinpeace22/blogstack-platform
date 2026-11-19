@@ -60,5 +60,10 @@
   "homepage": "https://blogstack-docs.hidden-silence-2d18.workers.dev",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godwwinpeace22/blogstack-platform.git",
+    "directory": "blogstack-sdk-js"
   }
 }

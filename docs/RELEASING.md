@@ -1,6 +1,6 @@
 # Source, CI and customer acceptance
 
-The private source repository is https://github.com/godwwinpeace22/blogstack-platform. It is owned by the operator-selected `godwwinpeace22` account. The npm publisher is separately `godwinpeace22`.
+The MIT-licensed source repository is https://github.com/godwwinpeace22/blogstack-platform. It is owned by the operator-selected `godwwinpeace22` account. The npm publisher is separately `godwinpeace22`.
 
 ## Working copy
 
@@ -18,7 +18,7 @@ git -C .launch/release-repository commit -m "Describe the change"
 git -C .launch/release-repository push origin main
 ```
 
-The synchronization copies allowed source files and scans for known private credentials without printing their values. It never moves original Git metadata or deletes files. If a source file was deliberately removed, review and remove its counterpart in the release checkout explicitly. For a new machine, clone the private GitHub repository normally and work directly in that clone; the separate release checkout is only needed for this original multi-repository directory.
+The synchronization copies allowed source files and scans for known private credentials without printing their values. It never moves original Git metadata or deletes files. If a source file was deliberately removed, review and remove its counterpart in the release checkout explicitly. For a new machine, clone the public GitHub repository normally and work directly in that clone; the separate release checkout is only needed for this original multi-repository directory.
 
 ## Continuous integration
 

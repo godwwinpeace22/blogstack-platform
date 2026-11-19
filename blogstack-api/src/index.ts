@@ -179,7 +179,12 @@ export default {
     env: HonoEnv["Bindings"],
     ctx: ExecutionContext,
   ) {
-    if (controller.cron === "0 * * * *") ctx.waitUntil(runLifecycle(env));
+    if (
+      controller.cron === "0 * * * *" ||
+      (env.LIFECYCLE_ON_MINUTE_CRON === "true" &&
+        Math.floor(controller.scheduledTime / 60000) % 60 === 0)
+    )
+      ctx.waitUntil(runLifecycle(env));
     else ctx.waitUntil(drainJobs(env));
   },
   async queue(

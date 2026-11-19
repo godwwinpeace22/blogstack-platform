@@ -30,7 +30,8 @@ export interface BillingStatus {
   providerStatus: string | null;
   plan: Plan;
   interval: BillingInterval | null;
-  status: "active" | "trialing" | "expired" | "not_started";
+  status: "active" | "trialing" | "expired" | "not_started" | "self_hosted";
+  selfHosted?: boolean;
   canWrite: boolean;
   trialEndsAt: number | null;
   paidThrough: number | null;

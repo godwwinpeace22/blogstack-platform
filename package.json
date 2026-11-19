@@ -28,7 +28,15 @@
     "dev:api": "wrangler dev --config .local-api/wrangler.toml --port 8787 --persist-to .dev-state",
     "dev:cdn": "wrangler dev --config .local-cdn/wrangler.toml --port 8788 --persist-to .dev-state",
     "dev:dashboard": "npm run dev -w @blogstack/dashboard",
-    "dev:example": "npm run dev -w @blogstack/example-nextjs"
+    "dev:example": "npm run dev -w @blogstack/example-nextjs",
+    "self-host": "node scripts/self-host.mjs",
+    "self-host:init": "node scripts/self-host.mjs init",
+    "self-host:provision": "node scripts/self-host.mjs provision",
+    "self-host:render": "node scripts/self-host.mjs render",
+    "self-host:migrate": "node scripts/self-host.mjs migrate",
+    "self-host:deploy": "node scripts/self-host.mjs deploy",
+    "self-host:dev": "node scripts/self-host.mjs dev --local",
+    "self-host:check": "node scripts/self-host.mjs check"
   },
   "overrides": {
     "@tanstack/router-generator": "1.120.20",
@@ -41,5 +49,10 @@
   "devDependencies": {
     "prettier": "3.6.2",
     "yaml": "2.8.1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godwwinpeace22/blogstack-platform.git"
   }
 }

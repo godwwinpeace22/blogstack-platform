@@ -50,7 +50,7 @@ export async function runLifecycle(
     "SELECT * FROM account_access WHERE trial_started_at IS NOT NULL OR provider_customer_id IS NOT NULL OR pending_plan IS NOT NULL",
   ).all<AccountAccess>();
   for (const a of accounts.results) {
-    if (a.internal_access) continue;
+    if (a.internal_access || a.self_hosted) continue;
     if (a.access_until && !a.writable) {
       if (now >= a.access_until + 90 * 86400 && !a.purged_at) {
         const purged = await env.MAIN_DB.batch([
@@ -168,16 +168,18 @@ export async function runLifecycle(
       ).bind(r.id),
     ]);
   const projects = await env.MAIN_DB.prepare(
-    "SELECT p.id,p.account_id,a.plan,a.writable,a.public_delivery FROM projects p JOIN account_access a ON a.account_id=p.account_id",
+    "SELECT p.id,p.account_id,a.plan,a.writable,a.public_delivery,a.audit_days,a.analytics_days FROM projects p JOIN account_access a ON a.account_id=p.account_id",
   ).all<{
     id: string;
     account_id: string;
     plan: keyof typeof PLANS;
     writable: number;
     public_delivery: number;
+    audit_days: number | null;
+    analytics_days: number;
   }>();
   for (const p of projects.results) {
-    const cadence = PLANS[p.plan].auditDays;
+    const cadence = p.audit_days;
     if (p.writable && cadence && env.LINK_SCANNER) {
       const last = await env.MAIN_DB.prepare(
         "SELECT MAX(created_at) AS latest FROM link_checks WHERE project_id=?",
@@ -209,7 +211,7 @@ export async function runLifecycle(
     )
       .bind(
         p.id,
-        new Date((now - PLANS[p.plan].analyticsDays * 86400) * 1000)
+        new Date((now - p.analytics_days * 86400) * 1000)
           .toISOString()
           .slice(0, 10),
       )

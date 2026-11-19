@@ -12,15 +12,16 @@ export const SUPPORT_EMAIL =
 export const ACCESS_URL = APP_URL + "/register";
 export const ACCESS_LABEL = "Start free trial";
 // A GA4 measurement ID is public configuration, not a credential.
-export const GOOGLE_ANALYTICS_ID = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || "G-J3M19JGYVZ";
+export const GOOGLE_ANALYTICS_ID = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || "";
 export const STARTER_URL =
   "https://blogstack-registry.hidden-silence-2d18.workers.dev/downloads/blogstack-nextjs-0.2.0.tar.gz";
+export const SOURCE_URL = "https://github.com/godwwinpeace22/blogstack-platform";
 export const SOCIAL_LINKS = [
   {
     label: "GitHub",
     href:
       import.meta.env.PUBLIC_GITHUB_URL ||
-      "https://example.com/blogstack/github",
+      SOURCE_URL,
   },
   {
     label: "X",

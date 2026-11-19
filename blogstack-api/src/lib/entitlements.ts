@@ -19,6 +19,12 @@ export interface AccountAccess {
   pending_interval: string | null;
   purged_at: number | null;
   internal_access: number;
+  self_hosted: number;
+  ai_credits: number;
+  link_checks: number;
+  analytics_days: number;
+  max_posts: number;
+  audit_days: number | null;
   max_blogs: number | null;
   max_people: number;
   storage_bytes: number;
@@ -50,8 +56,17 @@ export function usagePeriod(
   access: AccountAccess,
   now = Math.floor(Date.now() / 1000),
 ): number {
+  // Self-hosted accounts have no trial anchor; use calendar-month budgets.
+  if (access.self_hosted && !access.period_anchor)
+    return Math.floor(
+      Date.UTC(
+        new Date(now * 1000).getUTCFullYear(),
+        new Date(now * 1000).getUTCMonth(),
+        1,
+      ) / 1000,
+    );
   const start = access.period_anchor ?? access.trial_started_at ?? now;
-  if (!access.paid_through && !access.internal_access)
+  if (!access.paid_through && !access.internal_access && !access.self_hosted)
     return access.trial_started_at ?? start;
   const anchor = new Date(start * 1000);
   const month = new Date(now * 1000);
@@ -179,5 +194,11 @@ export function limitsFor(access: AccountAccess) {
     maxProjects: access.max_blogs,
     maxAccountMembers: access.max_people,
     storageBytes: access.storage_bytes,
+    aiCredits: access.ai_credits,
+    linkChecks: access.link_checks,
+    analyticsDays: access.analytics_days,
+    maxPostsPerProject: access.max_posts,
+    auditDays: access.audit_days,
+    customBranding: !!access.self_hosted || PLANS[access.plan].customBranding,
   };
 }
