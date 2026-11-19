@@ -9,7 +9,7 @@ const contact=import.meta.env.PUBLIC_SUPPORT_EMAIL;
 ---
 <Layout title={title+" — BlogStack"} description={description}>
  <Navbar/>
- <main class="policy"><h1>{title}</h1><p class="intro">{description}</p><p class="updated">Updated November 19, 2026{operator?" · "+operator:""}</p><slot/>{contact && <p>Contact: <a href={"mailto:"+contact}>{contact}</a></p>}</main>
+ <main id="main-content" class="policy"><h1>{title}</h1><p class="intro">{description}</p><p class="updated">Updated November 19, 2026{operator?" · "+operator:""}</p><slot/>{contact && <p>Contact: <a href={"mailto:"+contact}>{contact}</a></p>}</main>
  <Footer/>
 </Layout>
 <style>

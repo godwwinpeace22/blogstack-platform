@@ -1,119 +1,24 @@
 ---
-const navLinks = [
-  { href: "/pricing", label: "Pricing" },
-  { href: "/blog", label: "Blog" },
-  { href: "https://blogstack-docs.hidden-silence-2d18.workers.dev", label: "Docs" },
-];
+import { APP_URL, DOCS_URL, DEMO_URL, ACCESS_URL, ACCESS_LABEL } from "../lib/site";
+const links = [{ href: "/features", label: "Features" }, { href: "/pricing", label: "Pricing" }, { href: DEMO_URL, label: "Live demo" }, { href: DOCS_URL, label: "Docs" }];
 ---
-
-<header class="nav">
-  <div class="nav-inner">
-    <a href="/" class="nav-brand" aria-label="BlogStack home">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <rect width="28" height="28" rx="6" fill="#7c6af7" />
-        <rect x="7" y="8" width="14" height="2.5" rx="1.25" fill="white" />
-        <rect x="7" y="12.75" width="10" height="2.5" rx="1.25" fill="white" />
-        <rect x="7" y="17.5" width="7" height="2.5" rx="1.25" fill="white" />
-      </svg>
-      <span class="nav-brand-text">BlogStack</span>
-    </a>
-
-    <nav class="nav-links" aria-label="Main navigation">
-      {navLinks.map((link) => (
-        <a href={link.href} class="nav-link">{link.label}</a>
-      ))}
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-brand" href="/" aria-label="BlogStack home"><span aria-hidden="true"></span>BlogStack</a>
+    <nav class="site-desktop-nav" aria-label="Main navigation">
+      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname === link.href ? "page" : undefined}>{link.label}</a>)}
     </nav>
-
-    <div class="nav-actions">
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/login" class="btn-ghost">Sign in</a>
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn-primary">Start free trial</a>
-    </div>
+    <div class="site-actions"><a class="site-signin" href={APP_URL + "/login"}>Sign in</a><a class="site-access" href={ACCESS_URL}>{ACCESS_LABEL}<span aria-hidden="true"> →</span></a></div>
+    <details class="site-mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation">{links.map(link => <a href={link.href}>{link.label}</a>)}<a href={ACCESS_URL}>{ACCESS_LABEL}</a></nav></details>
   </div>
 </header>
-
 <style>
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(10, 10, 15, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .nav-inner {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    font-weight: 700;
-    font-size: 1.125rem;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 0.125rem;
-    flex: 1;
-  }
-
-  .nav-link {
-    padding: 0.375rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.9375rem;
-    color: var(--color-muted);
-    transition: color 0.15s, background 0.15s;
-  }
-
-  .nav-link:hover {
-    color: var(--color-text);
-    background: var(--color-border);
-  }
-
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-left: auto;
-  }
-
-  .btn-ghost {
-    padding: 0.4375rem 1rem;
-    font-size: 0.9375rem;
-    color: var(--color-muted);
-    border-radius: 6px;
-    transition: color 0.15s;
-  }
-  .btn-ghost:hover {
-    color: var(--color-text);
-  }
-
-  .btn-primary {
-    padding: 0.5rem 1.125rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    background: var(--color-accent);
-    color: #fff;
-    border-radius: 8px;
-    transition: opacity 0.15s, transform 0.1s;
-    white-space: nowrap;
-  }
-  .btn-primary:hover {
-    opacity: 0.88;
-    transform: translateY(-1px);
-  }
-
-  @media (max-width: 640px) {
-    .nav-links {
-      display: none;
-    }
-  }
+  .site-header{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);background:rgba(9,9,11,.94);backdrop-filter:blur(12px)}
+  .site-header-inner{max-width:1400px;margin:auto;min-height:64px;padding:10px 32px;display:flex;align-items:center;gap:28px}
+  .site-brand{display:inline-flex;gap:9px;align-items:center;font:500 15px var(--mono);letter-spacing:-.025em;color:var(--text);text-decoration:none;white-space:nowrap}
+  .site-brand>span{height:7px;width:7px;border-radius:50%;background:var(--accent)}
+  .site-desktop-nav{display:flex;gap:28px;margin:auto;font-size:13px}.site-desktop-nav a,.site-signin{color:var(--text-muted);text-decoration:none}.site-desktop-nav a:hover,.site-desktop-nav a[aria-current],.site-signin:hover{color:var(--text)}
+  .site-actions{display:flex;align-items:center;gap:20px;font-size:13px}.site-access{padding:9px 14px;background:var(--accent);color:var(--bg);border-radius:6px;text-decoration:none;font-weight:600;white-space:nowrap}.site-access:hover{background:var(--accent-dim)}
+  .site-mobile-menu{display:none;position:relative;margin-left:auto}.site-mobile-menu summary{cursor:pointer;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px}.site-mobile-menu nav{position:absolute;top:48px;right:0;min-width:210px;display:grid;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 16px 36px #09090b99}.site-mobile-menu nav a{padding:12px;color:var(--text);font-size:14px;text-decoration:none;border-radius:6px}.site-mobile-menu nav a:hover{background:var(--surface-2)}
+  @media(max-width:760px){.site-header-inner{padding:10px 20px;gap:20px}.site-desktop-nav,.site-access{display:none}.site-actions{margin-left:auto}.site-mobile-menu{display:block;margin-left:0}}
 </style>

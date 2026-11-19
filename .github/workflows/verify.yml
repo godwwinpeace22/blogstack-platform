@@ -40,9 +40,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: launch-builds
+          retention-days: 7
           path: |
             blogstack-dashboard/dist
             blogstack-site/dist
             blogstack-docs/out
             blogstack-registry/public
-            examples/nextjs/.next
+            blogstack-api/dist
+            blogstack-cdn-worker/dist
+            blogstack-link-worker/dist
+            blogstack-ops-worker/dist
+            examples/nextjs/.next/BUILD_ID
+            examples/nextjs/.next/routes-manifest.json

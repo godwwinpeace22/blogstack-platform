@@ -13,6 +13,7 @@ const {
   canonicalUrl = Astro.url.href,
 } = Astro.props;
 const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
+const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
 ---
 
 <!doctype html>
@@ -34,13 +35,16 @@ const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BlogStack — native blog pages and client publishing" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={socialImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -57,7 +61,8 @@ const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
         --border: #27272a;
         --border-light: #3f3f46;
         --text: #fafafa;
-        --text-muted: #71717a;
+        --text-muted: #a1a1aa;
+        --muted: #a1a1aa;
         --text-dim: #3f3f46;
         --accent: #e8ff47;
         --accent-dim: #c8df27;
@@ -102,6 +107,10 @@ const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
         line-height: 1.6;
         overflow-x: hidden;
       }
+      a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+      .skip-content{position:fixed;top:-80px;left:16px;z-index:1000;padding:10px 16px;background:var(--accent);color:var(--bg);border-radius:5px}
+      .skip-content:focus{top:8px}
+      @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.reveal{opacity:1!important;transform:none!important}}
 
       body::before {
         content: "";
@@ -143,7 +152,8 @@ const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
     </style>
   </head>
   <body>
-    {preview && <p style="padding:10px 20px;text-align:center;border-bottom:1px solid #27272a;color:#a1a1aa;font-size:13px">Private preview · New accounts and checkout are currently closed.</p>}
+    <a class="skip-content" href="#main-content">Skip to content</a>
+    {preview && <p style="padding:10px 20px;text-align:center;border-bottom:1px solid #27272a;color:#a1a1aa;font-size:13px">Private preview · Access is by invitation. Paid checkout is not open yet.</p>}
     <slot />
   </body>
 </html>

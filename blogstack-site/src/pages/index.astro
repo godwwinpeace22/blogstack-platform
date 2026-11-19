@@ -1,31 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import PricingPlans from "../components/PricingPlans.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 ---
 
 <Layout
   title="BlogStack — Add a complete blog to any website"
   description="Install native, editable blog pages in your existing website, then hand publishing to your client."
 >
-  <nav class="landing-nav">
-    <a href="/" class="nav-logo">
-      <div class="dot"></div>
-      BlogStack
-    </a>
-    <ul class="nav-links">
-      <li><a href="/#components">Features</a></li>
-      <li><a href="#sdk">Frameworks</a></li>
-      <li><a href="#editor">Platform</a></li>
-      <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/login" class="btn btn-ghost">Sign in</a>
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary">Get started →</a>
-    </div>
-  </nav>
+  <Navbar/>
 
-  <main>
+  <main id="main-content">
     <div class="hero">
       <div class="hero-grid"></div>
       <div class="hero-glow"></div>
@@ -39,7 +26,7 @@ import PricingPlans from "../components/PricingPlans.astro";
       <p class="hero-sub">Install native blog pages that match the site, then hand writing and publishing to your client. You own the frontend; BlogStack runs everything behind it.</p>
 
       <div class="hero-actions">
-        <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary">Add your blog →</a>
+        <a href={DEMO_URL} class="btn btn-primary">See the live blog →</a>
         <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev/docs/quickstart" class="btn btn-ghost">Read the installation guide</a>
       </div>
 
@@ -185,7 +172,7 @@ Use your agency name and logo</pre>
               <div class="toolbar-pill">Featured</div>
               <div class="toolbar-pill">Minimal list</div>
             </div>
-            <div class="component-preview-label">Preview</div>
+            <div class="component-preview-label">Layout preview · example content</div>
           </div>
           <div class="component-canvas">
             <div class="blog-cards-grid">
@@ -193,7 +180,7 @@ Use your agency name and logo</pre>
                 <div class="blog-card-img"><div class="blog-card-img-pattern"></div></div>
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Engineering</div>
-                  <div class="blog-card-title">How we reduced p99 latency by 40% using edge caching</div>
+                  <div class="blog-card-title">Publish a blog inside your own website</div>
                   <div class="blog-card-meta"><span>Mar 12</span><div class="blog-card-meta-dot"></div><span>8 min read</span></div>
                 </div>
               </div>
@@ -201,7 +188,7 @@ Use your agency name and logo</pre>
                 <div class="blog-card-img blog-card-img-blue"><div class="blog-card-img-pattern"></div></div>
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Product</div>
-                  <div class="blog-card-title">Introducing dark mode for all components</div>
+                  <div class="blog-card-title">Hand publishing to your client</div>
                   <div class="blog-card-meta"><span>Mar 8</span><div class="blog-card-meta-dot"></div><span>4 min read</span></div>
                 </div>
               </div>
@@ -209,7 +196,7 @@ Use your agency name and logo</pre>
                 <div class="blog-card-img blog-card-img-green"><div class="blog-card-img-pattern"></div></div>
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Tutorial</div>
-                  <div class="blog-card-title">Building a multi-tenant blog with Next.js App Router</div>
+                  <div class="blog-card-title">Keep drafts private until they are ready</div>
                   <div class="blog-card-meta"><span>Feb 28</span><div class="blog-card-meta-dot"></div><span>12 min read</span></div>
                 </div>
               </div>
@@ -290,23 +277,13 @@ app/blog/feed.xml/route.ts
       <h2>Your blog.<br /><em>Your stack.</em></h2>
       <p>Add the blog your website needs, then give your client a place to publish.</p>
       <div class="cta-actions-row">
-        <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary cta-btn">Start your 14-day trial →</a>
+        <a href={ACCESS_URL} class="btn btn-primary cta-btn">{ACCESS_LABEL} →</a>
         <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev" class="btn btn-ghost cta-btn">Read the docs</a>
       </div>
     </div>
   </main>
 
-  <footer class="landing-footer">
-    <div class="footer-logo"><div class="footer-logo-dot"></div>BlogStack</div>
-    <ul class="footer-links">
-      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
-      <li><a href="/support">Support</a></li>
-      <li><a href="/#components">Features</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li><li><a href="/refunds">Refunds</a></li>
-    </ul>
-    <div class="footer-copy">© 2026 BlogStack</div>
-  </footer>
+  <Footer/>
 
   <style is:global>
     .landing-nav {
@@ -408,7 +385,7 @@ app/blog/feed.xml/route.ts
     }
 
     .hero {
-      min-height: 100vh;
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1186,7 +1163,7 @@ app/blog/feed.xml/route.ts
       letter-spacing: 0.04em;
     }
 
-    .reveal {
+    .reveal.will-reveal {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
@@ -1342,6 +1319,6 @@ app/blog/feed.xml/route.ts
       });
     }, { threshold: 0.1 });
 
-    document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+    document.querySelectorAll(".reveal").forEach((element) => { element.classList.add("will-reveal"); observer.observe(element); });
   </script>
 </Layout>

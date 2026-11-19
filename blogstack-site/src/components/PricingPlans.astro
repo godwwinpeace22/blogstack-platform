@@ -1,5 +1,6 @@
 ---
 import { PLANS,type Plan } from "@blogstack/core";
+import { SIGNUP_OPEN, ACCESS_URL, ACCESS_LABEL, APP_URL } from "../lib/site";
 const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
 ---
 <div class="plans-grid">
@@ -21,8 +22,8 @@ const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
    <li>{plan.customBranding?"Agency branding and attribution removal":"BlogStack-branded client workspace"}</li>
    <li>API, JavaScript SDK and editable React UI</li>
   </ul>
-  <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>Start 14-day Studio trial →</a>
-  <a class="annual-link" href={"https://blogstack-app.hidden-silence-2d18.workers.dev/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a>
+  <a href={ACCESS_URL} class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>{SIGNUP_OPEN ? "Start 14-day Studio trial" : ACCESS_LABEL} →</a>
+  {SIGNUP_OPEN ? <a class="annual-link" href={APP_URL+"/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a> : <p class="annual-link">Monthly and annual billing at launch</p>}
  </article>)}
 </div>
 <p class="allowances">USD, per account. Applicable taxes are calculated at checkout. All allowances are shared across blogs. Each blog supports 1,000 posts; images can be up to 10 MiB. AI and link-check allowances reset monthly, including on annual subscriptions. No automatic overage charges.</p>
