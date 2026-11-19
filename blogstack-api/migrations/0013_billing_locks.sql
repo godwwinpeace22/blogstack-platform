@@ -1,0 +1,2 @@
+CREATE TABLE billing_locks(id TEXT PRIMARY KEY,token TEXT NOT NULL,expires_at INTEGER NOT NULL);
+CREATE TABLE billing_checkouts(account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,provider_id TEXT NOT NULL,plan TEXT NOT NULL,interval TEXT NOT NULL,url TEXT NOT NULL);

@@ -1,0 +1,49 @@
+---
+title: Components
+description: Server-provided data, native article routes and integration slots.
+---
+
+## Package and registry
+
+Use @blogstack/ui components in a React application, or install editable source from the shadcn-compatible registry. Tailwind CSS 4 and theme variables are required for the provided styling.
+
+```tsx
+import { BlogIndex } from "@blogstack/ui/components/blog-index";
+import { BlogPost } from "@blogstack/ui/components/blog-post";
+import { BlogContent } from "@blogstack/ui/components/blog-content";
+```
+
+BlogIndex accepts projectSlug, apiUrl, initialPosts, initialTags, initialNextCursor, postHref and showAttribution. It includes search, tag filtering, pagination and loading/error states.
+
+BlogPost accepts projectSlug, slug, apiUrl, initialPost, backHref, showAttribution and analytics. Pass server-fetched initialPost for an article body in initial HTML. Without initialPost it fetches on the client.
+
+BlogContent uses the same DOM-free HTML sanitizer during server and browser rendering. Rendering does not load the editor runtime.
+
+In Next.js, define function props such as postHref inside a client wrapper rather than passing a function from a server component. See the reference components/blog-listing.tsx.
+
+## Comments and newsletters
+
+The article component has named commentsSlot and newsletterSlot props. Bring a component or form from your provider; provider accounts and charges remain separate.
+
+```tsx
+<BlogPost
+  projectSlug="journal"
+  slug={post.slug}
+  initialPost={post}
+  commentsSlot={<YourCommentsComponent articleId={post.id} />}
+  newsletterSlot={
+    <form action="https://YOUR-PROVIDER.example/subscribe" method="post">
+      <label>Email <input type="email" name="email" required /></label>
+      <button type="submit">Subscribe</button>
+    </form>
+  }
+/>
+```
+
+Use your provider's documented form URL, consent text and field names. BlogStack does not store subscribers, deliver campaigns or moderate comments in this release.
+
+## Branding
+
+Solo uses the default public badge and BlogStack client workspace. Studio and Growth offer a public attribution removal setting and agency workspace name/logo. The server integration reads public.info and passes showAttribution, avoiding a client-only branding change.
+
+The source components remain editable under MIT. Shared sign-in and billing retain BlogStack identity.

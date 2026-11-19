@@ -1,0 +1,17 @@
+---
+import Layout from "./Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+interface Props{title:string;description:string}
+const {title,description}=Astro.props;
+const operator=import.meta.env.PUBLIC_OPERATOR_NAME;
+const contact=import.meta.env.PUBLIC_SUPPORT_EMAIL;
+---
+<Layout title={title+" — BlogStack"} description={description}>
+ <Navbar/>
+ <main class="policy"><h1>{title}</h1><p class="intro">{description}</p><p class="updated">Updated November 19, 2026{operator?" · "+operator:""}</p><slot/>{contact && <p>Contact: <a href={"mailto:"+contact}>{contact}</a></p>}</main>
+ <Footer/>
+</Layout>
+<style>
+.policy{max-width:800px;margin:0 auto;padding:80px 24px}.policy h1{font-size:44px;letter-spacing:-1.5px;margin:0 0 20px}.intro{font-size:18px;color:var(--text-muted,#a1a1aa);line-height:1.7}.updated{font-size:12px;color:var(--text-muted,#a1a1aa);margin:16px 0 44px}.policy :global(h2){font-size:22px;margin:36px 0 12px}.policy :global(p),.policy :global(li){line-height:1.8;color:var(--text-muted,#a1a1aa)}.policy :global(a){color:var(--accent,#c4f26a);text-decoration:underline}
+</style>

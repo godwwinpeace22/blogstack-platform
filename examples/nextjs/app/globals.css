@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "@blogstack/ui/theme";
+@source "../../../node_modules/@blogstack/ui/src";
+@source "../../../../node_modules/@blogstack/ui/src";
+body {
+  background: var(--background);
+  color: var(--foreground);
+}

@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.output/
+.worker.js
+*.js.map
+out/
+build/
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Cloudflare
+.wrangler/
+
+# Turbo
+.turbo/
+
+# Coverage
+coverage/
+*.lcov
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/settings.json
+
+# Generated SDK output (Fern)
+packages/sdk-python/
+packages/sdk-php/
+
+# Generated preview stylesheet
+examples/public/demo.css

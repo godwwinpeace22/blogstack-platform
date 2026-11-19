@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://blogstack-site.hidden-silence-2d18.workers.dev/sitemap.xml

@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlogStack.io — Blog infrastructure for developers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --surface-2: #18181b;
+    --border: #27272a;
+    --border-light: #3f3f46;
+    --text: #fafafa;
+    --text-muted: #71717a;
+    --text-dim: #3f3f46;
+    --accent: #e8ff47;
+    --accent-dim: #c8df27;
+    --accent-subtle: rgba(232,255,71,0.08);
+    --accent-subtle-2: rgba(232,255,71,0.04);
+    --red: #ff4747;
+    --blue: #47b3ff;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Instrument Serif', serif;
+    --sans: 'Geist', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 56px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(9,9,11,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo .dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: var(--sans);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    border: none;
+    white-space: nowrap;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border-light); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: var(--accent-dim); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(232,255,71,0.07) 0%, transparent 70%);
+    top: 20%; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 6px;
+    border: 1px solid rgba(232,255,71,0.3);
+    border-radius: 100px;
+    background: var(--accent-subtle);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-badge-dot {
+    width: 5px; height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    animation: fadeUp 0.6s 0.1s ease both;
+    position: relative;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 24px auto 40px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: fadeUp 0.6s 0.3s ease both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-actions .btn { padding: 10px 22px; font-size: 14px; }
+
+  .hero-code-preview {
+    margin-top: 80px;
+    width: 100%;
+    max-width: 860px;
+    animation: fadeUp 0.8s 0.4s ease both;
+    position: relative;
+  }
+
+  .code-window {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: left;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+  }
+
+  .code-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-dot:nth-child(1) { background: #ff5f56; }
+  .code-dot:nth-child(2) { background: #ffbd2e; }
+  .code-dot:nth-child(3) { background: #27c93f; }
+
+  .code-filename {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 8px;
+  }
+
+  .code-tabs {
+    display: flex;
+    gap: 0;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .code-tab {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .code-tab.active {
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border-color: rgba(232,255,71,0.2);
+  }
+
+  pre {
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-x: auto;
+    color: #a1a1aa;
+  }
+
+  .t-keyword { color: #c084fc; }
+  .t-fn { color: #60a5fa; }
+  .t-str { color: #86efac; }
+  .t-comment { color: #3f3f46; }
+  .t-type { color: #fbbf24; }
+  .t-var { color: var(--text); }
+  .t-accent { color: var(--accent); }
+  .t-prop { color: #f9a8d4; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION LAYOUT */
+  section {
+    padding: 100px 40px;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .section-sub {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 40px;
+  }
+
+  /* FEATURE GRID */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: var(--bg);
+    padding: 36px 32px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .feature-card:hover { background: var(--surface); }
+
+  .feature-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent-subtle-2);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .feature-card:hover::after { opacity: 1; }
+
+  .feature-icon {
+    width: 36px; height: 36px;
+    margin-bottom: 20px;
+    color: var(--accent);
+  }
+
+  .feature-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* THREE PILLARS */
+  .pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .pillar {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .pillar:hover { border-color: var(--border-light); transform: translateY(-2px); }
+
+  .pillar-header {
+    padding: 24px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .pillar-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border: 1px solid rgba(232,255,71,0.2);
+  }
+
+  .pillar-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .pillar-body { padding: 24px; }
+
+  .pillar-body h3 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .pillar-body p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+
+  .pillar-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pillar-feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .pillar-feature::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  /* CODE SHOWCASE */
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 64px;
+    align-items: start;
+  }
+
+  .showcase-info { padding-top: 24px; }
+
+  .showcase-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .showcase-step:last-child { border-bottom: none; margin-bottom: 0; }
+
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border: 1px solid rgba(232,255,71,0.2);
+    border-radius: 6px;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .step-content p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+  /* COMPONENT SHOWCASE */
+  .component-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .component-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+
+  .component-toolbar-left {
+    display: flex;
+    gap: 6px;
+  }
+
+  .toolbar-pill {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .toolbar-pill.active, .toolbar-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-subtle);
+  }
+
+  .component-canvas {
+    padding: 32px;
+    background: #0d0d0f;
+  }
+
+  /* Blog card components */
+  .blog-card-demo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .blog-card-demo:hover {
+    border-color: var(--border-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .blog-card-img {
+    height: 140px;
+    background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #1a1a1f 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .blog-card-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(232,255,71,0.05), transparent);
+  }
+
+  .blog-card-img-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.02) 20px,
+      rgba(255,255,255,0.02) 21px
+    );
+  }
+
+  .blog-card-body { padding: 16px; }
+
+  .blog-card-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .blog-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .blog-card-meta-dot { width: 3px; height: 3px; background: var(--border-light); border-radius: 50%; }
+
+  .blog-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 64px;
+  }
+
+  .pricing-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    background: var(--surface);
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .pricing-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(232,255,71,0.04) 0%, var(--surface) 100%);
+  }
+
+  .pricing-featured-badge {
+    position: absolute;
+    top: -10px; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 600;
+  }
+
+  .pricing-plan {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .pricing-price {
+    font-family: var(--serif);
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .pricing-price sup {
+    font-family: var(--sans);
+    font-size: 20px;
+    vertical-align: top;
+    margin-top: 8px;
+    display: inline-block;
+    color: var(--text-muted);
+  }
+
+  .pricing-period {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+
+  .pricing-features {
+    list-style: none;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pricing-features li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .pricing-features li .check {
+    color: var(--accent);
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .btn-outline-accent {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .btn-outline-accent:hover {
+    background: var(--accent-subtle);
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 100px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    width: 800px; height: 400px;
+    background: radial-gradient(ellipse, rgba(232,255,71,0.05) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .cta-section h2 em { font-style: italic; color: var(--accent); }
+
+  .cta-section p {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 440px;
+    margin: 0 auto 40px;
+    line-height: 1.7;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover { color: var(--text); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+  }
+
+  /* INLINE CODE */
+  code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Tab content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="dot"></div>
+    BlogStack
+  </a>
+  <ul class="nav-links">
+    <li><a href="#components">Components</a></li>
+    <li><a href="#sdk">SDK</a></li>
+    <li><a href="#editor">Editor</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#" class="btn btn-ghost">Sign in</a>
+    <a href="#" class="btn btn-primary">Get started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Now in public beta — free for indie developers
+  </div>
+
+  <h1>Blog infrastructure<br>for <em>serious</em> developers</h1>
+  <p class="hero-sub">Prebuilt UI components, a type-safe SDK, and an embeddable editor. Ship your blog in hours, not weeks.</p>
+
+  <div class="hero-actions">
+    <a href="#" class="btn btn-primary">Start building free →</a>
+    <a href="#" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      View on GitHub
+    </a>
+  </div>
+
+  <!-- Code preview -->
+  <div class="hero-code-preview">
+    <div class="code-window">
+      <div class="code-titlebar">
+        <div class="code-dots">
+          <div class="code-dot"></div>
+          <div class="code-dot"></div>
+          <div class="code-dot"></div>
+        </div>
+        <span class="code-filename">blog.tsx</span>
+        <div class="code-tabs" style="margin-left:auto">
+          <div class="code-tab active" onclick="switchTab(this,'sdk')">SDK</div>
+          <div class="code-tab" onclick="switchTab(this,'components')">Components</div>
+          <div class="code-tab" onclick="switchTab(this,'editor')">Editor</div>
+        </div>
+      </div>
+      <div id="tab-sdk" class="tab-content active">
+<pre><span class="t-keyword">import</span> { <span class="t-type">BlogStack</span> } <span class="t-keyword">from</span> <span class="t-str">'@blogstack/sdk'</span>
+
+<span class="t-comment">// Initialize with your project key</span>
+<span class="t-keyword">const</span> <span class="t-var">client</span> = <span class="t-keyword">new</span> <span class="t-type">BlogStack</span>({ apiKey: <span class="t-str">'bsk_live_...'</span> })
+
+<span class="t-comment">// Fetch posts with full type safety</span>
+<span class="t-keyword">const</span> { <span class="t-var">posts</span>, <span class="t-var">total</span> } = <span class="t-keyword">await</span> client.<span class="t-fn">posts</span>.<span class="t-fn">list</span>({
+  status: <span class="t-str">'published'</span>,
+  tag: <span class="t-str">'engineering'</span>,
+  limit: <span class="t-accent">10</span>,
+  page: <span class="t-accent">1</span>,
+})
+
+<span class="t-comment">// Fetch a single post by slug</span>
+<span class="t-keyword">const</span> <span class="t-var">post</span> = <span class="t-keyword">await</span> client.<span class="t-fn">posts</span>.<span class="t-fn">getBySlug</span>(<span class="t-str">'hello-world'</span>)
+
+<span class="t-comment">// Subscribe to new posts via webhook</span>
+client.<span class="t-fn">webhooks</span>.<span class="t-fn">on</span>(<span class="t-str">'post.published'</span>, <span class="t-keyword">async</span> (<span class="t-var">post</span>) =&gt; {
+  <span class="t-keyword">await</span> <span class="t-fn">revalidatePath</span>(<span class="t-str">`/blog/<span class="t-var">${post.slug}</span>`</span>)
+})</pre>
+      </div>
+      <div id="tab-components" class="tab-content">
+<pre><span class="t-keyword">import</span> { <span class="t-type">BlogList</span>, <span class="t-type">BlogCard</span>, <span class="t-type">BlogPost</span> } <span class="t-keyword">from</span> <span class="t-str">'@blogstack/ui'</span>
+
+<span class="t-comment">// Drop in a full blog listing — fully customizable</span>
+<span class="t-keyword">export default function</span> <span class="t-fn">BlogPage</span>() {
+  <span class="t-keyword">return</span> (
+    &lt;<span class="t-type">BlogList</span>
+      <span class="t-prop">projectId</span>=<span class="t-str">"proj_abc123"</span>
+      <span class="t-prop">layout</span>=<span class="t-str">"grid"</span>
+      <span class="t-prop">theme</span>=<span class="t-str">"dark"</span>
+      <span class="t-prop">postsPerPage</span>={<span class="t-accent">9</span>}
+      <span class="t-prop">components</span>={{
+        <span class="t-var">Card</span>: <span class="t-type">MyCustomCard</span>,  <span class="t-comment">// BYO components</span>
+      }}
+    /&gt;
+  )
+}
+
+<span class="t-comment">// Or use individual components</span>
+<span class="t-keyword">const</span> <span class="t-var">card</span> = &lt;<span class="t-type">BlogCard</span> <span class="t-prop">post</span>={<span class="t-var">post</span>} <span class="t-prop">variant</span>=<span class="t-str">"featured"</span> /&gt;</pre>
+      </div>
+      <div id="tab-editor" class="tab-content">
+<pre><span class="t-keyword">import</span> { <span class="t-type">BlogEditor</span> } <span class="t-keyword">from</span> <span class="t-str">'@blogstack/editor'</span>
+
+<span class="t-comment">// Embed the full editor in your admin panel</span>
+<span class="t-keyword">export default function</span> <span class="t-fn">AdminBlogPage</span>() {
+  <span class="t-keyword">return</span> (
+    &lt;<span class="t-type">BlogEditor</span>
+      <span class="t-prop">projectId</span>=<span class="t-str">"proj_abc123"</span>
+      <span class="t-prop">onPublish</span>={(<span class="t-var">post</span>) =&gt; <span class="t-fn">toast</span>(<span class="t-str">'Published!'</span>)}
+      <span class="t-prop">features</span>={{
+        <span class="t-var">aiAssist</span>: <span class="t-keyword">true</span>,
+        <span class="t-var">seoPanel</span>: <span class="t-keyword">true</span>,
+        <span class="t-var">mediaLibrary</span>: <span class="t-keyword">true</span>,
+        <span class="t-var">scheduling</span>: <span class="t-keyword">true</span>,
+      }}
+    /&gt;
+  )
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">12k+</div>
+    <div class="stat-label">Developers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3.2M</div>
+    <div class="stat-label">Posts served</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">99.9%</div>
+    <div class="stat-label">Uptime SLA</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">&lt;50ms</div>
+    <div class="stat-label">API latency p99</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">18</div>
+    <div class="stat-label">UI components</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- THREE PILLARS -->
+<section id="components" class="reveal">
+  <div class="section-label">// What you get</div>
+  <h2 class="section-title">Everything a blog needs.<br><em>Nothing it doesn't.</em></h2>
+  <p class="section-sub">Three focused packages. Use all of them or just what you need.</p>
+
+  <div class="pillars">
+    <!-- UI Components -->
+    <div class="pillar">
+      <div class="pillar-header">
+        <div class="pillar-tag">@blogstack/ui</div>
+        <div class="pillar-num">01</div>
+      </div>
+      <div class="pillar-body">
+        <h3>shadcn-style UI components</h3>
+        <p>Copy-paste React components styled with Tailwind. Own your code — we don't lock you into a component library.</p>
+        <div class="pillar-features">
+          <div class="pillar-feature">BlogCard (5 variants)</div>
+          <div class="pillar-feature">BlogList with pagination</div>
+          <div class="pillar-feature">PostPage layout</div>
+          <div class="pillar-feature">TagFilter + Search</div>
+          <div class="pillar-feature">AuthorCard</div>
+          <div class="pillar-feature">RelatedPosts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SDK -->
+    <div class="pillar">
+      <div class="pillar-header">
+        <div class="pillar-tag">@blogstack/sdk</div>
+        <div class="pillar-num">02</div>
+      </div>
+      <div class="pillar-body">
+        <h3>Type-safe fetch SDK</h3>
+        <p>A tiny, zero-dependency client with full TypeScript support. Works anywhere — Next.js, Remix, Astro, Nuxt, vanilla JS.</p>
+        <div class="pillar-features">
+          <div class="pillar-feature">Full TypeScript types</div>
+          <div class="pillar-feature">SWR / React Query hooks</div>
+          <div class="pillar-feature">Webhook subscriptions</div>
+          <div class="pillar-feature">Pagination helpers</div>
+          <div class="pillar-feature">Edge-runtime compatible</div>
+          <div class="pillar-feature">ISR / SSG helpers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="pillar">
+      <div class="pillar-header">
+        <div class="pillar-tag">@blogstack/editor</div>
+        <div class="pillar-num">03</div>
+      </div>
+      <div class="pillar-body">
+        <h3>Embeddable editor</h3>
+        <p>Drop a full-featured rich text editor into your own admin panel. Your branding, your routes, your auth.</p>
+        <div class="pillar-features">
+          <div class="pillar-feature">Rich text + MDX support</div>
+          <div class="pillar-feature">AI writing assistant</div>
+          <div class="pillar-feature">SEO metadata panel</div>
+          <div class="pillar-feature">Media library + uploads</div>
+          <div class="pillar-feature">Post scheduling</div>
+          <div class="pillar-feature">Draft / preview mode</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- COMPONENT PREVIEW -->
+<section class="reveal">
+  <div class="section-label">// UI Components</div>
+  <h2 class="section-title">Beautiful by default.<br><em>Yours to own.</em></h2>
+  <p class="section-sub">Pre-styled with Tailwind, built on Radix primitives. Copy the source, customise freely.</p>
+
+  <div style="margin-top: 48px;">
+    <div class="component-preview">
+      <div class="component-toolbar">
+        <div class="component-toolbar-left">
+          <div class="toolbar-pill active">Grid layout</div>
+          <div class="toolbar-pill">Featured</div>
+          <div class="toolbar-pill">Minimal list</div>
+        </div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-muted);">Preview</div>
+      </div>
+      <div class="component-canvas">
+        <div class="blog-cards-grid">
+          <div class="blog-card-demo">
+            <div class="blog-card-img"><div class="blog-card-img-pattern"></div></div>
+            <div class="blog-card-body">
+              <div class="blog-card-tag">Engineering</div>
+              <div class="blog-card-title">How we reduced p99 latency by 40% using edge caching</div>
+              <div class="blog-card-meta">
+                <span>Mar 12</span>
+                <div class="blog-card-meta-dot"></div>
+                <span>8 min read</span>
+              </div>
+            </div>
+          </div>
+          <div class="blog-card-demo">
+            <div class="blog-card-img" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"><div class="blog-card-img-pattern"></div></div>
+            <div class="blog-card-body">
+              <div class="blog-card-tag">Product</div>
+              <div class="blog-card-title">Introducing dark mode for all components</div>
+              <div class="blog-card-meta">
+                <span>Mar 8</span>
+                <div class="blog-card-meta-dot"></div>
+                <span>4 min read</span>
+              </div>
+            </div>
+          </div>
+          <div class="blog-card-demo">
+            <div class="blog-card-img" style="background: linear-gradient(135deg, #1a1f1a 0%, #0f1f0f 100%)"><div class="blog-card-img-pattern"></div></div>
+            <div class="blog-card-body">
+              <div class="blog-card-tag">Tutorial</div>
+              <div class="blog-card-title">Building a multi-tenant blog with Next.js App Router</div>
+              <div class="blog-card-meta">
+                <span>Feb 28</span>
+                <div class="blog-card-meta-dot"></div>
+                <span>12 min read</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SDK SECTION -->
+<section id="sdk" class="reveal">
+  <div class="showcase-grid">
+    <div class="showcase-info">
+      <div class="section-label">// SDK</div>
+      <h2 class="section-title" style="font-size: clamp(32px,4vw,48px)">Fetch posts<br>from <em>anywhere</em></h2>
+      <p class="section-sub" style="margin-bottom: 40px;">Works with every framework. TypeScript-first. Tiny bundle.</p>
+
+      <div class="showcase-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Install the SDK</h4>
+          <p><code>npm i @blogstack/sdk</code> — 3.2kb gzipped, zero dependencies.</p>
+        </div>
+      </div>
+      <div class="showcase-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Grab your project key</h4>
+          <p>Create a project in the dashboard and copy your <code>bsk_live_</code> key.</p>
+        </div>
+      </div>
+      <div class="showcase-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Fetch posts with full types</h4>
+          <p>Use the React Query hooks or call the client directly in any server or edge context.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-window" style="height: fit-content; margin-top: 8px;">
+      <div class="code-titlebar">
+        <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <span class="code-filename">useBlog.ts</span>
+      </div>
+<pre><span class="t-comment">// React Query hook (auto-generated)</span>
+<span class="t-keyword">import</span> { <span class="t-fn">usePosts</span> } <span class="t-keyword">from</span> <span class="t-str">'@blogstack/sdk/react'</span>
+
+<span class="t-keyword">function</span> <span class="t-fn">BlogPage</span>() {
+  <span class="t-keyword">const</span> { <span class="t-var">data</span>, <span class="t-var">isLoading</span> } = <span class="t-fn">usePosts</span>({
+    tag: <span class="t-str">'engineering'</span>,
+    limit: <span class="t-accent">6</span>,
+  })
+
+  <span class="t-keyword">return</span> <span class="t-var">data</span>.<span class="t-var">posts</span>.<span class="t-fn">map</span>(<span class="t-var">post</span> =&gt; (
+    &lt;<span class="t-type">BlogCard</span>
+      <span class="t-prop">key</span>={<span class="t-var">post</span>.<span class="t-var">id</span>}
+      <span class="t-prop">post</span>={<span class="t-var">post</span>} <span class="t-comment">// fully typed</span>
+    /&gt;
+  ))
+}
+
+<span class="t-comment">// Works with Next.js generateStaticParams</span>
+<span class="t-keyword">export async function</span> <span class="t-fn">generateStaticParams</span>() {
+  <span class="t-keyword">const</span> <span class="t-var">posts</span> = <span class="t-keyword">await</span> client.<span class="t-fn">posts</span>.<span class="t-fn">slugs</span>()
+  <span class="t-keyword">return</span> <span class="t-var">posts</span>.<span class="t-fn">map</span>(<span class="t-var">slug</span> =&gt; ({ <span class="t-var">slug</span> }))
+}</pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FEATURES -->
+<section id="editor" class="reveal">
+  <div class="section-label">// Built-in features</div>
+  <h2 class="section-title">Everything you'd build<br><em>so you don't have to.</em></h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <h3>Rich text editor</h3>
+      <p>Full MDX support with custom components, code highlighting, embeds, and a slash-command menu.</p>
+    </div>
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <h3>SEO metadata</h3>
+      <p>Built-in title, description, OG image, and canonical URL fields. Auto-generates structured data JSON-LD.</p>
+    </div>
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+      <h3>Media library</h3>
+      <p>Upload and manage images with automatic WebP conversion, responsive srcsets, and CDN delivery.</p>
+    </div>
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 0v10l6 3"/></svg>
+      <h3>Post scheduling</h3>
+      <p>Schedule posts to publish at a future time. Drafts, reviews, and publish states all included.</p>
+    </div>
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <h3>AI writing assist</h3>
+      <p>Generate outlines, expand bullet points, improve tone, and auto-generate meta descriptions.</p>
+    </div>
+    <div class="feature-card">
+      <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+      <h3>Analytics</h3>
+      <p>Page views, read-time, unique visitors, and referrers — privacy-first, no cookies required.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRICING -->
+<section id="pricing" class="reveal">
+  <div style="text-align: center; margin-bottom: 0;">
+    <div class="section-label" style="justify-content: center; display: flex;">// Pricing</div>
+    <h2 class="section-title">Simple, <em>honest</em> pricing</h2>
+    <p class="section-sub" style="margin: 0 auto;">No seat fees. No surprise overages. Scale as you grow.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-plan">Hobby</div>
+      <div class="pricing-price"><sup>$</sup>0</div>
+      <div class="pricing-period">forever free</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> 1 project</li>
+        <li><span class="check">✓</span> 50 posts</li>
+        <li><span class="check">✓</span> All UI components</li>
+        <li><span class="check">✓</span> SDK access</li>
+        <li><span class="check">✓</span> 1GB media storage</li>
+        <li><span class="check" style="color:var(--border-light)">✗</span> <span style="opacity:0.4">Editor component</span></li>
+        <li><span class="check" style="color:var(--border-light)">✗</span> <span style="opacity:0.4">AI assist</span></li>
+      </ul>
+      <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center; padding:10px;">Get started</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-featured-badge">Most popular</div>
+      <div class="pricing-plan">Pro</div>
+      <div class="pricing-price"><sup>$</sup>29</div>
+      <div class="pricing-period">per project / month</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Unlimited posts</li>
+        <li><span class="check">✓</span> All UI components</li>
+        <li><span class="check">✓</span> SDK + webhooks</li>
+        <li><span class="check">✓</span> Embeddable editor</li>
+        <li><span class="check">✓</span> AI writing assist</li>
+        <li><span class="check">✓</span> 20GB media storage</li>
+        <li><span class="check">✓</span> Analytics dashboard</li>
+      </ul>
+      <a href="#" class="btn btn-primary" style="width:100%; justify-content:center; padding:10px;">Start 14-day trial</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-plan">Team</div>
+      <div class="pricing-price"><sup>$</sup>79</div>
+      <div class="pricing-period">per project / month</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Everything in Pro</li>
+        <li><span class="check">✓</span> Multi-author roles</li>
+        <li><span class="check">✓</span> Review workflow</li>
+        <li><span class="check">✓</span> Custom domain</li>
+        <li><span class="check">✓</span> Priority support</li>
+        <li><span class="check">✓</span> 100GB media storage</li>
+        <li><span class="check">✓</span> SLA guarantee</li>
+      </ul>
+      <a href="#" class="btn btn-outline-accent btn-ghost">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CTA -->
+<div class="cta-section reveal">
+  <h2>Your blog.<br><em>Your stack.</em></h2>
+  <p>Stop rebuilding the same blog infrastructure. Ship something real.</p>
+  <div style="display:flex; gap: 12px; justify-content:center; flex-wrap: wrap;">
+    <a href="#" class="btn btn-primary" style="padding: 12px 28px; font-size: 15px;">Start building free →</a>
+    <a href="#" class="btn btn-ghost" style="padding: 12px 28px; font-size: 15px;">Read the docs</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div style="width:6px;height:6px;background:var(--accent);border-radius:50%"></div>
+    BlogStack
+  </div>
+  <ul class="footer-links">
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">GitHub</a></li>
+    <li><a href="#">Discord</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">Privacy</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 BlogStack, Inc.</div>
+</footer>
+
+<script>
+  // Tab switching
+  function switchTab(el, name) {
+    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

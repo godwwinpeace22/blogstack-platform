@@ -1,0 +1,22 @@
+---
+title: SEO
+description: Technical SEO and actionable checks on every plan.
+---
+
+The Next.js reference integration supplies server-rendered article bodies, titles, descriptions, canonical URLs, Open Graph, Twitter previews, BlogPosting JSON-LD, RSS and a blog sitemap.
+
+Set the real website blog URL in project settings before publishing. Published slugs stay fixed. Republishing a private draft keeps the current live snapshot until the new render succeeds.
+
+## Editor checks
+
+The SEO panel analyzes the current draft revision without using AI credits. It checks metadata, heading hierarchy, image descriptions, internal links and an optional target keyword. Findings include their reasons; they do not predict or guarantee search rankings.
+
+Use seoTitle and seoDescription to override the article title/excerpt in search previews. coverImage supplies the social image. canonicalUrl supports republished articles and accepts an absolute HTTP(S) destination.
+
+noIndex writes no-index metadata and excludes that article from the generated blog sitemap. Private dashboard previews send no-index headers and do not use the visitor tracker.
+
+## Host integration
+
+Use publicationMetadata and articleJsonLd from @blogstack/sdk, or the corresponding helpers from @blogstack/ui/client. JSON-LD is escaped for embedding in a script element.
+
+Add the blog sitemap to existing host rules. Do not replace the host's sitemap or robots configuration. A public API response alone cannot add metadata to an arbitrary customer website; your server route must render it.

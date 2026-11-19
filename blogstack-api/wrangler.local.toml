@@ -1,0 +1,25 @@
+name = "blogstack-api-local"
+main = "src/index.ts"
+compatibility_date = "2026-09-14"
+compatibility_flags = ["nodejs_compat"]
+[[d1_databases]]
+binding = "MAIN_DB"
+database_name = "blogstack-db"
+database_id = "00000000-0000-0000-0000-000000000001"
+migrations_dir = "migrations"
+[[kv_namespaces]]
+binding = "CACHE"
+id = "00000000000000000000000000000001"
+[[kv_namespaces]]
+binding = "CDN_CACHE"
+id = "00000000000000000000000000000002"
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "blogstack-media"
+[vars]
+SIGNUP_MODE = "open"
+API_URL = "http://localhost:8787"
+FRONTEND_URL = "http://localhost:3001"
+CDN_URL = "http://localhost:8788"
+EMAIL_FROM = "BlogStack local test"
+# Real AI, analytics, scanner and billing bindings are deliberately absent locally.

@@ -1,0 +1,65 @@
+---
+title: Next.js quickstart
+description: Request-time articles, native routes, metadata, sitemap and RSS.
+---
+
+## Create and connect a project
+
+BlogStack is currently in private preview. Signup is limited to the operator and invited clients; checkout is disabled.
+
+1. Register and verify your email. Your no-card, 14-day Studio trial starts when you create your first blog.
+2. Create a blog. In project settings, set Website blog URL to your real route, for example https://example.com/blog.
+3. Create an article, add an image and metadata, then publish it.
+4. Connect the public project slug using the [downloadable Next.js starter](https://blogstack-registry.hidden-silence-2d18.workers.dev/downloads/blogstack-nextjs-0.2.0.tar.gz). A [live Cloudflare installation](https://blogstack-blog.hidden-silence-2d18.workers.dev/blog) demonstrates the same routes.
+
+Extract the starter into a new directory, run `npm install`, copy `.env.example` to `.env.local`, and configure the values below. Run `npm run dev` locally or `npm run build` for a production check. For an existing application, copy only the blog routes and supporting files and merge the styles; keep your website's current pages and configuration.
+
+Install packages in your Next.js App Router application:
+
+```tsx
+npm install @blogstack/sdk@0.2.0 @blogstack/ui@0.2.0
+```
+
+The reference application also uses Tailwind CSS 4. Add the UI source path to Tailwind's scan sources, and import @blogstack/ui/theme or your own matching theme tokens. Its app/globals.css is a complete example.
+
+Configure the server environment:
+
+```tsx
+BLOGSTACK_PROJECT_SLUG=your-project
+BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev
+SITE_URL=https://example.com
+```
+
+Copy the reference lib/blog.ts, components/blog-listing.tsx and app/blog routes into your application, adjusting import paths. There is no private API key in this integration.
+
+## Deploy on Cloudflare
+
+The verified production installation uses Next.js 15.5.29, `@opennextjs/cloudflare` 1.20.17 and Wrangler 4.165.0. Follow the [official OpenNext Cloudflare setup](https://opennext.js.org/cloudflare/get-started) to add the Worker entry point, assets binding, `WORKER_SELF_REFERENCE` service binding and `nodejs_compat` flag to your own account. Use the same project slug, API origin and website origin during build and at runtime. No Vercel account is required.
+
+Within the BlogStack repository, `scripts/prepare-production-install.mjs` generates this configuration in a new standalone directory; its usage is documented in the starter README.
+
+## Rendering and navigation
+
+The example fetches at request time with cache: no-store and passes initialPosts/initialPost to the components. Article titles, body HTML, metadata and JSON-LD are present in the initial HTML. Publishing and unpublishing take effect on the next request.
+
+Native article URLs use /blog/[slug]. The generic Blog component also supports a client-side query-string reader, but use native server routes for an indexed website.
+
+## Preserve your website SEO configuration
+
+Add /blog/sitemap.xml beside your current sitemap in your existing robots configuration. Keep the main sitemap and current robots rules. The reference app shows separate main and blog sitemaps; do not replace an existing website's sitemap or robots file wholesale.
+
+Expose /blog/feed.xml by forwarding the public RSS endpoint. No-index articles are absent from the blog sitemap, while canonical overrides are retained in article metadata.
+
+## Install editable source
+
+After the registry is deployed, install an individual component with:
+
+```tsx
+npx shadcn@latest add https://blogstack-registry.hidden-silence-2d18.workers.dev/r/blog-post.json
+```
+
+The registry is shadcn compatible and the components remain MIT licensed. For local registry development, build blogstack-registry and run npm run serve there, then use http://localhost:4173/r/blog-post.json.
+
+## Invite the client
+
+Use Project → Members to invite a client. The invitation survives signup and verification. Client access does not start a separate trial in their own billing account.

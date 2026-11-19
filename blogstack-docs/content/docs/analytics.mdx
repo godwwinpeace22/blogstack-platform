@@ -1,0 +1,29 @@
+---
+title: Links and analytics
+description: Health reports and optional visitor activity.
+---
+
+## Link health
+
+Publishing extracts article links into the project inventory. Known internal article routes are checked locally. Network checks run asynchronously in a separate scanner, use a 24-hour cache and report when each destination was checked.
+
+Results distinguish healthy, broken, redirected, unsafe and inconclusive. A timeout, blocked request, rate limit or server failure is inconclusive. Orphaned articles have no inbound link from another published article in that blog.
+
+Manual scans are available on all plans. Studio schedules weekly audits; Growth schedules daily audits, subject to the shared monthly allowance. Each article indexes up to 500 links. Reports paginate the inventory in pages of 100; the API accepts up to 200 entries per page and supports status filters.
+
+## Visitor activity
+
+Enable tracking in project settings, then opt in with analytics on BlogPost or use startBlogAnalytics from the public SDK. The Next.js example reads the project preference and passes it to the article.
+
+The dashboard reports views, popular articles, referrer domains, clicked destinations and clicks per 100 views. Cloudflare Analytics Engine handles events; D1 stores daily summaries for plan-specific history. Sampled figures are labeled estimates.
+
+Raw IP addresses, full user agents and URL query strings are not stored in the analytics dataset. The collector uses the request IP transiently for rate limiting. The tracker respects Do Not Track and Global Privacy Control and does not set analytics cookies.
+
+```tsx
+import { analyticsOptOut } from "@blogstack/sdk";
+analyticsOptOut(true);
+```
+
+Tracking leaves original link destinations and browser navigation intact. It excludes previews and dashboard activity. Cookie-free tracking can still require a privacy notice or consent depending on your website's obligations.
+
+Reports retain 30 days on Solo, 180 on Studio and 365 on Growth. Today is queried live; recent days can update as delayed events arrive.

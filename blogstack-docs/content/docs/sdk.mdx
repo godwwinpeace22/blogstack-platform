@@ -1,0 +1,49 @@
+---
+title: JavaScript SDK
+description: Public delivery and scoped management APIs.
+---
+
+The SDK provides ESM/CJS builds, TypeScript declarations and optional React Query hooks. It uses the Fetch API.
+
+```tsx
+import { BlogStackClient } from "@blogstack/sdk";
+
+const client = new BlogStackClient();
+const page = await client.public.listPosts("journal", { limit: 10 });
+const article = await client.public.getPost("journal", "hello");
+const info = await client.public.info("journal");
+```
+
+Public pages never need a management API key.
+
+## Server-side management
+
+```tsx
+const client = new BlogStackClient({
+  apiKey: process.env.BLOGSTACK_API_KEY,
+});
+const draft = await client.posts.get(projectId, postId);
+await client.posts.update(projectId, postId, {
+  revision: draft.revision,
+  title: "Updated private title",
+});
+```
+
+Create scoped keys in Project → API keys. The plaintext is shown once. Keys are project-bound and inherit the creator's current project permissions. Never include a key in browser code, public environment variables or a repository.
+
+## React Query hooks
+
+Import hooks from @blogstack/sdk/react. They require a QueryClientProvider. Scope the client with accountId and a sessionKey identifying the signed-in user; call setSession and setAccount when the context changes, cancel requests and clear the cache on logout/account changes.
+
+```tsx
+const posts = usePosts(client, projectId);
+const create = useCreatePost(client, projectId);
+```
+
+The hosted dashboard implements this lifecycle in AccountProvider.
+
+## Additional resources
+
+client.seo, client.links, client.analytics, client.agents and client.billing expose the launch interfaces. Billing and proposal acceptance require a person in an authenticated session.
+
+Python/PHP SDKs and framework-specific adapters are not included in this release.

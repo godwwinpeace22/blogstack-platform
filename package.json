@@ -1,0 +1,45 @@
+{
+  "name": "blogstack-platform",
+  "private": true,
+  "workspaces": [
+    "blogstack-api",
+    "blogstack-ingest-worker",
+    "blogstack-registry",
+    "blogstack-docs",
+    "blogstack-editor",
+    "blogstack-site",
+    "blogstack-cdn-worker",
+    "blogstack-sdk-js",
+    "blogstack-dashboard",
+    "blogstack-ui-react",
+    "blogstack-core",
+    "blogstack-link-worker",
+    "examples/nextjs",
+    "blogstack-ops-worker"
+  ],
+  "scripts": {
+    "build:packages": "npm run build -w @blogstack/core && npm run build -w @blogstack/sdk && npm run build -w @blogstack/ui && npm run build -w @blogstack/editor",
+    "build": "npm run build:packages && npm run build -w @blogstack/dashboard && npm run build -w @blogstack/registry && npm run build -w @blogstack/web && npm run build -w @blogstack/docs && npm run build -w @blogstack/example-nextjs",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "node scripts/test.mjs",
+    "check:launch": "node scripts/check-launch.mjs",
+    "setup:local": "node scripts/setup-local.mjs",
+    "migrate:local": "wrangler d1 migrations apply MAIN_DB --local --config .local-api/wrangler.toml --persist-to .dev-state",
+    "dev:api": "wrangler dev --config .local-api/wrangler.toml --port 8787 --persist-to .dev-state",
+    "dev:cdn": "wrangler dev --config .local-cdn/wrangler.toml --port 8788 --persist-to .dev-state",
+    "dev:dashboard": "npm run dev -w @blogstack/dashboard",
+    "dev:example": "npm run dev -w @blogstack/example-nextjs"
+  },
+  "overrides": {
+    "@tanstack/router-generator": "1.120.20",
+    "@tanstack/router-utils": "1.120.17",
+    "@tanstack/virtual-file-routes": "1.120.17"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "prettier": "3.6.2",
+    "yaml": "2.8.1"
+  }
+}

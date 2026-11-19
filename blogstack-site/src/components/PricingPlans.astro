@@ -1,0 +1,31 @@
+---
+import { PLANS,type Plan } from "@blogstack/core";
+const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
+---
+<div class="plans-grid">
+ {plans.map(([id,plan])=><article class:list={["plan-card",{featured:id==="studio"}]}>
+  <p class="plan-name">{plan.name}</p>
+  <h2 class="price">{"$"+plan.monthly}<span>/month</span></h2>
+  <p class="annual">or {"$"+plan.annual}/year · save two months</p>
+  <ul>
+   <li>{plan.maxProjects===null?"Unlimited blogs":"1 blog"}</li>
+   <li>{plan.maxAccountMembers} people across your account</li>
+   <li>{plan.storageBytes/1e9} GB shared media storage</li>
+   <li>Hosted publishing dashboard</li>
+   <li>Technical SEO and on-page checks</li>
+   <li>Page-view and link-click analytics</li>
+   <li>{plan.analyticsDays}-day analytics history</li>
+   <li>{plan.linkChecks.toLocaleString("en-US")} external link checks/month</li>
+   <li>{plan.auditDays===null?"Manual":plan.auditDays===1?"Daily":"Weekly"} link audits</li>
+   <li>{plan.aiCredits} AI credits/month</li>
+   <li>{plan.customBranding?"Agency branding and attribution removal":"BlogStack-branded client workspace"}</li>
+   <li>API, JavaScript SDK and editable React UI</li>
+  </ul>
+  <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>Start 14-day Studio trial →</a>
+  <a class="annual-link" href={"https://blogstack-app.hidden-silence-2d18.workers.dev/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a>
+ </article>)}
+</div>
+<p class="allowances">USD, per account. Applicable taxes are calculated at checkout. All allowances are shared across blogs. Each blog supports 1,000 posts; images can be up to 10 MiB. AI and link-check allowances reset monthly, including on annual subscriptions. No automatic overage charges.</p>
+<style>
+.plans-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;text-align:left}.plan-card{display:flex;flex-direction:column;border:1px solid var(--border,#28282e);border-radius:18px;background:var(--surface,#111114);padding:30px}.plan-card.featured{border-color:var(--accent,#c4f26a)}.plan-name{font-size:16px;color:var(--muted,#a1a1aa);margin:0 0 18px}.price{font-size:48px;font-weight:650;letter-spacing:-2px;margin:0;line-height:1.15}.price span{font-size:14px;font-weight:400;letter-spacing:0;color:var(--muted,#a1a1aa)}.annual{font-size:13px;color:var(--muted,#a1a1aa);margin:12px 0 24px}.plan-card ul{list-style:none;padding:0;margin:0 0 30px;flex:1}.plan-card li{font-size:13px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--border,#28282e)}.plan-card .btn{display:block;text-align:center;padding:12px 8px;border-radius:7px;text-decoration:none;border:1px solid var(--border,#28282e);font-size:13px}.plan-card .btn-primary{background:var(--accent,#c4f26a);color:#111}.annual-link{margin-top:15px;text-align:center;font-size:12px;color:var(--muted,#a1a1aa)}.allowances{margin:24px 0 0;max-width:900px;color:var(--muted,#a1a1aa);font-size:12px;line-height:1.8}@media(max-width:850px){.plans-grid{grid-template-columns:1fr}.plan-card{padding:25px}.price{font-size:40px}}
+</style>

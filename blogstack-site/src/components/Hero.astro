@@ -1,0 +1,180 @@
+---
+---
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Built for developers and agencies</div>
+    <h1 class="hero-headline">
+      Add a Complete Blog<br />
+      <span class="accent">to Any Website</span>
+    </h1>
+    <p class="hero-sub">
+      Install native blog pages that match the site, then hand writing and publishing
+      to your client. You own the frontend; BlogStack runs everything behind it.
+    </p>
+    <div class="hero-actions">
+      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn-primary">
+        Start free trial
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+      <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev" class="btn-ghost">Read the docs</a>
+    </div>
+
+    <div class="hero-code">
+      <div class="code-topbar">
+        <span class="code-dot dot-red"></span>
+        <span class="code-dot dot-yellow"></span>
+        <span class="code-dot dot-green"></span>
+        <span class="code-title">publish.ts</span>
+      </div>
+      <pre><code>import &#123; BlogStackClient &#125; from "@blogstack/sdk";
+
+const client = new BlogStackClient();
+const article = await client.public.getPost(
+  "my-project",
+  "hello-world"
+);
+
+// Public reads need no private API key.</code></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: 7rem 1.5rem 5rem;
+    text-align: center;
+  }
+
+  .hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 0.3rem 0.875rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 2rem;
+  }
+
+  .hero-headline {
+    font-size: clamp(2.5rem, 6vw, 4.25rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .accent {
+    background: linear-gradient(135deg, #7c6af7, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.125rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    max-width: 580px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 4rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: 8px;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .btn-primary:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border-radius: 8px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-muted);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* Code block */
+  .hero-code {
+    background: #111118;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .code-topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    background: #0d0d14;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .code-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .dot-red    { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green  { background: #28c840; }
+
+  .code-title {
+    margin-left: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+  }
+
+  pre {
+    margin: 0;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.75;
+  }
+
+  .kw  { color: #a78bfa; }
+  .br  { color: #e2e8f0; }
+  .str { color: #86efac; }
+  .op  { color: #a78bfa; }
+  .punc{ color: #94a3b8; }
+</style>

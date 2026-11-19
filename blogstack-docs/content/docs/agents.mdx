@@ -1,0 +1,28 @@
+---
+title: AI assistants
+description: Reviewable writing, SEO and linking proposals.
+---
+
+Writing, SEO and linking profiles use one bounded Workers AI runtime. They inspect authorized blog content and propose changes. They cannot publish, delete content, change settings or apply edits themselves.
+
+A run makes at most four model calls. Available tools list published articles, read a selected draft or published article, inspect SEO findings and inspect the blog's link report. Tools are project scoped and permissions are checked again while the run executes.
+
+## Review workflow
+
+1. Save the current draft.
+2. Choose a profile and describe the request.
+3. Review the maximum credit reservation shown before starting.
+4. Inspect each proposed field and accept selected changes or reject the proposal.
+5. Accepted changes become a private draft. Publish separately when ready.
+
+A proposal cannot be accepted against a newer draft revision. API keys can request a proposal but cannot perform human acceptance. Articles and tool output are treated as untrusted input.
+
+Long documents are bounded by context and output limits. Full-content rewrites require the complete draft to fit; otherwise request metadata improvements or work from a shorter draft.
+
+## Credits and privacy
+
+One credit covers up to 4,000 input tokens and 1,000 output tokens across the entire run. Usage is rounded up using the larger input/output requirement. A run reserves up to eight available credits and returns unused reservations. Failed runs do not charge credits.
+
+Monthly credits are 10/100/500 for Solo/Studio/Growth. The no-card Studio trial includes 100 credits total. Annual billing refreshes allowances monthly. There are no automatic purchases or overage charges.
+
+The model is Cloudflare Workers AI's llama-3.3-70b-instruct-fp8-fast. Requested content and relevant excerpts are processed by Cloudflare. Model credentials remain server-side. Review factual accuracy before publishing.

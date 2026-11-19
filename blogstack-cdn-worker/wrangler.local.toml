@@ -1,0 +1,16 @@
+name = "blogstack-cdn-local"
+main = "src/index.ts"
+compatibility_date = "2026-09-14"
+compatibility_flags = ["nodejs_compat"]
+[[d1_databases]]
+binding = "MAIN_DB"
+database_name = "blogstack-db"
+database_id = "00000000-0000-0000-0000-000000000001"
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "blogstack-media"
+[[kv_namespaces]]
+binding = "CDN_CACHE"
+id = "00000000000000000000000000000002"
+[vars]
+API_BASE_URL = "http://localhost:8787"

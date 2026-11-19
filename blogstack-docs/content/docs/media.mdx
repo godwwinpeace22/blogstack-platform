@@ -1,0 +1,14 @@
+---
+title: Media and export
+description: Reserved uploads, immutable files and complete exports.
+---
+
+The dashboard supports JPEG, PNG, GIF, WebP and AVIF images up to 10 MiB. Files are delivered through the media CDN after confirmation. Automatic conversion and generated responsive variants are not included in this release.
+
+The SDK media.upload flow requests a signed URL with the file's size and MIME type, uploads directly to the media worker, then confirms against R2. Pending uploads reserve shared storage for 15 minutes. Byte size and an image signature are checked by the upload worker; confirmation reads the actual stored object.
+
+Signed upload URLs are short-lived bearer capabilities and use no session cookies. Keep them private. A confirmed object cannot be overwritten.
+
+Project settings provide a JSON export and authenticated media downloads. Exports include published snapshots and draft revisions. Public delivery can pause before exports expire, so use the authenticated download paths rather than public URLs when exporting an expired account.
+
+Deleting a media record or project records durable R2 cleanup work. Expired abandoned uploads are also removed by lifecycle jobs.

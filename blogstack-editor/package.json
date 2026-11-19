@@ -1,0 +1,55 @@
+{
+  "name": "@blogstack/editor",
+  "version": "0.2.0",
+  "description": "BlockNote publishing editor for the BlogStack hosted dashboard",
+  "author": "BlogStack",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@blocknote/core": "^0.19.0",
+    "@blocknote/mantine": "^0.19.0",
+    "@blocknote/react": "^0.19.0",
+    "@blogstack/ui": "^0.2.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "jsdom": "^26.1.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.2.4"
+  },
+  "homepage": "https://blogstack-docs.hidden-silence-2d18.workers.dev",
+  "publishConfig": {
+    "access": "public"
+  }
+}

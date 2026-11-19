@@ -1,0 +1,15 @@
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import mdx from "@astrojs/mdx";
+
+// https://astro.build/config
+export default defineConfig({
+  site: "https://blogstack-site.hidden-silence-2d18.workers.dev",
+  output: "static",
+  integrations: [react(), mdx()],
+  vite: {
+    ssr: {
+      external: ["node:path"],
+    },
+  },
+});

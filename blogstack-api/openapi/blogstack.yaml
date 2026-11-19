@@ -1,0 +1,2937 @@
+openapi: 3.1.0
+info:
+  title: BlogStack API
+  version: 0.2.0
+  description: BlogStack paid launch API. Management requires a verified session or scoped project key. Public
+    delivery uses published snapshots only. Billing and AI proposal review require a human session. Legacy
+    plan labels never grant paid access.
+  contact:
+    name: BlogStack Support
+    url: https://blogstack-site.hidden-silence-2d18.workers.dev
+    url: https://blogstack-site.hidden-silence-2d18.workers.dev/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://blogstack-app.hidden-silence-2d18.workers.dev
+    description: Production
+  - url: http://localhost:8787
+    description: Local development (wrangler dev)
+security:
+  - cookieAuth: []
+  - apiKeyAuth: []
+tags:
+  - name: accounts
+    description: Account management and plan info
+  - name: projects
+    description: Project CRUD and statistics
+  - name: members
+    description: Account-level and project-level team management
+  - name: invitations
+    description: Token-based invitation flow for new collaborators
+  - name: posts
+    description: Private drafts, previews, explicit publish and unpublish
+  - name: media
+    description: File upload via presigned R2 URLs
+  - name: tags
+    description: Post tag management
+  - name: api-keys
+    description: Programmatic API key management
+  - name: public
+    description: Unauthenticated public delivery endpoints
+  - name: billing
+  - name: seo
+  - name: links
+  - name: analytics
+  - name: agent-runs
+paths:
+  /accounts/me:
+    get:
+      operationId: getAccount
+      summary: Get current account
+      description: Returns account details including plan, limits, and owner info.
+      tags:
+        - accounts
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      operationId: updateAccount
+      summary: Update account name
+      tags:
+        - accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDetail"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /accounts/members:
+    get:
+      operationId: listAccountMembers
+      summary: List all account members
+      description: Returns all members under the current account (account_admin and account_editor roles).
+      tags:
+        - members
+      responses:
+        "200":
+          description: Account members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountMember"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: inviteAccountMember
+      summary: Invite an account member
+      description: Creates an invitation for a new account-level member. Requires account_admin or owner role.
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteAccountMemberRequest"
+      responses:
+        "201":
+          description: Invitation created and email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invitation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /accounts/members/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/UserId"
+    patch:
+      operationId: updateAccountMember
+      summary: Change account member role
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role
+              properties:
+                role:
+                  $ref: "#/components/schemas/AccountRole"
+      responses:
+        "200":
+          description: Updated member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountMember"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      operationId: removeAccountMember
+      summary: Remove an account member
+      tags:
+        - members
+      responses:
+        "204":
+          description: Member removed
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects:
+    get:
+      operationId: listProjects
+      summary: List projects for the current account
+      tags:
+        - projects
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: createProject
+      summary: Create a project
+      description: Creates a blog in the selected billing account. Solo allows one blog. Studio and Growth have no
+        numerical blog cap. The first owned blog starts the 14-day Studio trial.
+      tags:
+        - projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProjectRequest"
+      responses:
+        "201":
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+          description: Plan limit reached or insufficient permissions
+  /projects/{projectId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: getProject
+      summary: Get project details
+      tags:
+        - projects
+      responses:
+        "200":
+          description: Project with settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      operationId: updateProject
+      summary: Update project settings
+      tags:
+        - projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProjectRequest"
+      responses:
+        "200":
+          description: Updated project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      operationId: deleteProject
+      summary: Delete a project
+      description: Permanently deletes the project and all associated posts, media, and tags. Requires owner or
+        account_admin role.
+      tags:
+        - projects
+      responses:
+        "204":
+          description: Project deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/stats:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: getProjectStats
+      summary: Get project statistics
+      tags:
+        - projects
+      responses:
+        "200":
+          description: Project statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectStats"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /projects/{projectId}/members:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listProjectMembers
+      summary: List project members
+      tags:
+        - members
+      responses:
+        "200":
+          description: Project members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProjectMember"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: inviteProjectMember
+      summary: Invite a project member
+      description: Sends an email invitation for a project-scoped collaborator. Requires project_admin,
+        account_admin, or owner role.
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InviteProjectMemberRequest"
+      responses:
+        "201":
+          description: Invitation created and email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invitation"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/members/{userId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/UserId"
+    patch:
+      operationId: updateProjectMember
+      summary: Change project member role
+      tags:
+        - members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - role
+              properties:
+                role:
+                  $ref: "#/components/schemas/ProjectRole"
+      responses:
+        "200":
+          description: Updated member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectMember"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      operationId: removeProjectMember
+      summary: Remove a project member
+      tags:
+        - members
+      responses:
+        "204":
+          description: Member removed
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /invitations/{token}:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getInvitation
+      summary: Look up an invitation by token
+      description: Public endpoint — no auth required. Used to show invite details before sign-up.
+      tags:
+        - invitations
+      security: []
+      responses:
+        "200":
+          description: Invitation details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvitationDetail"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          description: Invitation expired
+  /invitations/{token}/accept:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: acceptInvitation
+      summary: Accept an invitation
+      description: Creates the project_member or account_member row. Requires user to be signed in first.
+      tags:
+        - invitations
+      responses:
+        "200":
+          description: Invitation accepted and membership created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  redirectTo:
+                    type: string
+                    description: URL to redirect the user to after acceptance
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "410":
+          description: Invitation expired or already accepted
+  /projects/{projectId}/posts:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listPosts
+      summary: List posts in a project
+      tags:
+        - posts
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/PostStatus"
+        - name: tag
+          in: query
+          description: Filter by tag slug
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Full-text search on post title
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          description: Opaque continuation cursor from nextCursor. Pass back unchanged; timestamp-only cursors are no
+            longer accepted.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Paginated post list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedPosts"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: createPost
+      summary: Create a draft post
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostRequest"
+      responses:
+        "201":
+          description: Created draft post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/posts/{postId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/PostId"
+    get:
+      operationId: getPost
+      summary: Get a post by ID
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Post with tags and author
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostWithTags"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      operationId: updatePost
+      summary: Update a post
+      description: |
+        Writers can only update their own posts.
+        Editors and project_admins can update any post in the project.
+      tags:
+        - posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostRequest"
+      responses:
+        "200":
+          description: Updated post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      operationId: deletePost
+      summary: Delete a post
+      tags:
+        - posts
+      responses:
+        "204":
+          description: Post and all post_tags deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/posts/{postId}/publish:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/PostId"
+    post:
+      operationId: publishPost
+      summary: Publish a post immediately
+      description: Render the saved draft before replacing the live snapshot. Optional expected revision rejects
+        stale publication.
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Published post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                revision:
+                  type: integer
+                  minimum: 1
+  /projects/{projectId}/posts/{postId}/duplicate:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/PostId"
+    post:
+      operationId: duplicatePost
+      summary: Duplicate a post
+      description: Clones the post as a draft with slug suffixed `-copy`.
+      tags:
+        - posts
+      responses:
+        "201":
+          description: Duplicated post (status=draft)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/media:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listMedia
+      summary: List media in a project
+      tags:
+        - media
+      parameters:
+        - name: cursor
+          in: query
+          schema:
+            type: string
+          description: Opaque continuation cursor from nextCursor. Pass back unchanged; timestamp-only cursors are no
+            longer accepted.
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 200
+      responses:
+        "200":
+          description: Paginated media list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedMedia"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /projects/{projectId}/media/presign:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    post:
+      operationId: presignMediaUpload
+      summary: Create a signed CDN upload URL
+      description: Returns a single-use PUT URL valid for 15 minutes. Upload JPEG, PNG, GIF, WebP or AVIF up to 10
+        MiB, then confirm the upload. Uploaded objects are immutable and hidden until confirmed.
+      tags:
+        - media
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - filename
+                - mimeType
+              properties:
+                filename:
+                  type: string
+                  maxLength: 255
+                mimeType:
+                  type: string
+                  enum:
+                    - image/jpeg
+                    - image/png
+                    - image/gif
+                    - image/webp
+                    - image/avif
+      responses:
+        "200":
+          description: Presigned upload details
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - presignedUrl
+                  - mediaId
+                  - key
+                properties:
+                  presignedUrl:
+                    type: string
+                    format: uri
+                    description: PUT this URL with Content-Type matching the requested mimeType
+                  mediaId:
+                    type: string
+                    description: Use in the subsequent /confirm call
+                  key:
+                    type: string
+                    description: R2 object key
+                  expiresAt:
+                    type: integer
+                    description: Expiration as Unix seconds
+                  maxSize:
+                    type: integer
+                    description: Maximum upload size in bytes
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          description: Unsupported MIME type (only image/* allowed)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /projects/{projectId}/media/confirm/{mediaId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: mediaId
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: confirmMediaUpload
+      summary: Confirm upload and store media metadata
+      description: Send an empty JSON object after uploading. Size and content type are verified from R2; client
+        size and dimensions are ignored. Repeated confirmation returns the same media record. Dimensions
+        remain null until trusted processing is available.
+      tags:
+        - media
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                width:
+                  type: integer
+                height:
+                  type: integer
+                size:
+                  type: integer
+                  description: File size in bytes
+      responses:
+        "200":
+          description: Confirmed media record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Media"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: R2 upload is missing
+  /projects/{projectId}/media/{mediaId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: mediaId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      operationId: deleteMedia
+      summary: Delete a media file
+      description: |
+        Deletes the file from R2, purges all CDN KV cache variants (all width/format combinations),
+        and removes the D1 metadata record.
+      tags:
+        - media
+      responses:
+        "204":
+          description: Media deleted from R2, CDN cache, and database
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /projects/{projectId}/tags:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listTags
+      summary: List tags with post count
+      tags:
+        - tags
+      responses:
+        "200":
+          description: Tags with post counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TagWithCount"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      operationId: createTag
+      summary: Create a tag
+      tags:
+        - tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTagRequest"
+      responses:
+        "201":
+          description: Created tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          description: Tag slug already exists in this project
+  /projects/{projectId}/tags/{tagId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: tagId
+        in: path
+        required: true
+        schema:
+          type: string
+    patch:
+      operationId: updateTag
+      summary: Update a tag
+      tags:
+        - tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTagRequest"
+      responses:
+        "200":
+          description: Updated tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      operationId: deleteTag
+      summary: Delete a tag and all post associations
+      tags:
+        - tags
+      responses:
+        "204":
+          description: Tag and post_tags deleted
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/tags/merge:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    post:
+      operationId: mergeTags
+      summary: Merge one tag into another
+      description: Reassigns all post_tags from sourceId to targetId, then deletes the source tag.
+      tags:
+        - tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sourceId
+                - targetId
+              properties:
+                sourceId:
+                  type: string
+                  description: Tag to merge from (will be deleted)
+                targetId:
+                  type: string
+                  description: Tag to merge into (preserved)
+      responses:
+        "200":
+          description: Merge complete — returns the surviving tag
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TagWithCount"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /projects/{projectId}/api-keys:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listApiKeys
+      summary: List API keys (prefix + name only, never reveals hash)
+      tags:
+        - api-keys
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApiKey"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+      description: " Requires a project-admin session; keys cannot manage keys. Creation returns plaintext once.
+        Requires a project-admin session; keys cannot manage keys. Creation returns plaintext once. Requires a
+        project-admin session; keys cannot manage keys. Creation returns plaintext once."
+    post:
+      operationId: createApiKey
+      summary: Create an API key
+      description: >-
+        Generates a new `bsk_live_` key. The `plaintext` field in the response is returned
+
+        **exactly once** — it cannot be retrieved again. Store it immediately.
+         Requires a project-admin session; keys cannot manage keys. Creation returns plaintext once. Requires a project-admin session; keys cannot manage keys. Creation returns plaintext once. Requires a project-admin session; keys cannot manage keys. Creation returns plaintext once.
+      tags:
+        - api-keys
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 100
+                  description: Human-readable label for this key
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                      - projects:read
+                      - posts:read
+                      - posts:write
+                      - media:read
+                      - media:write
+                      - tags:read
+                      - tags:write
+                expiresAt:
+                  type: integer
+                  description: Optional future Unix timestamp in seconds
+      responses:
+        "201":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/ApiKey"
+                  - type: object
+                    properties:
+                      plaintext: &a1
+                        type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /projects/{projectId}/api-keys/{keyId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: keyId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      operationId: deleteApiKey
+      summary: Revoke an API key
+      tags:
+        - api-keys
+      responses:
+        "204":
+          description: Key revoked
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /public/{projectSlug}/posts:
+    parameters:
+      - $ref: "#/components/parameters/ProjectSlug"
+    get:
+      operationId: getPublicPosts
+      summary: List published posts (no auth)
+      description: Returns published posts. Reads from KV cache first, falls back to D1.
+      tags:
+        - public
+      security: []
+      parameters:
+        - name: tag
+          in: query
+          schema:
+            type: string
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          schema:
+            type: string
+          description: Opaque continuation cursor from nextCursor. Pass back unchanged; timestamp-only cursors are no
+            longer accepted.
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        "200":
+          description: Published posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedPublicPosts"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /public/{projectSlug}/posts/{slug}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectSlug"
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: getPublicPost
+      summary: Get a single published post (no auth)
+      description: Returns rendered HTML from KV cache or `rendered_html` column.
+      tags:
+        - public
+      security: []
+      responses:
+        "200":
+          description: Published post with pre-rendered HTML
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicPost"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /public/{projectSlug}/tags:
+    parameters:
+      - $ref: "#/components/parameters/ProjectSlug"
+    get:
+      operationId: getPublicTags
+      summary: List tags for a project (no auth)
+      tags:
+        - public
+      security: []
+      responses:
+        "200":
+          description: Tags with post counts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TagWithCount"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /public/{projectSlug}/feed.xml:
+    parameters:
+      - $ref: "#/components/parameters/ProjectSlug"
+    get:
+      operationId: getRssFeed
+      summary: RSS 2.0 feed (no auth)
+      tags:
+        - public
+      security: []
+      responses:
+        "200":
+          description: RSS 2.0 XML feed of recent published posts
+          content:
+            application/rss+xml:
+              schema:
+                type: string
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /projects/{projectId}/posts/{postId}/unpublish:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - $ref: "#/components/parameters/PostId"
+    post:
+      operationId: unpublishPost
+      summary: Unpublish an article and preserve its draft
+      description: Removes the live snapshot from public delivery. Saved draft content remains available.
+      tags:
+        - posts
+      responses:
+        "200":
+          description: Published post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /health:
+    get:
+      operationId: health
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: Worker is responding
+  /accounts/invitations:
+    parameters: []
+    get:
+      operationId: listAccountInvitations
+      summary: List pending account invitations
+      tags:
+        - invitations
+      responses:
+        "200":
+          description: Pending invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invitation"
+  /accounts/invitations/{invitationId}:
+    parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      operationId: cancelAccountInvitation
+      summary: Cancel a pending invitation
+      tags:
+        - invitations
+      responses:
+        "204":
+          description: Cancelled
+        "404":
+          description: Invitation not found
+  /accounts/invitations/{invitationId}/resend:
+    parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: resendAccountInvitation
+      summary: Resend a pending invitation
+      tags:
+        - invitations
+      responses:
+        "200":
+          description: Invitation with refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invitation"
+        "404":
+          description: Invitation not found
+  /projects/{projectId}/invitations:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+    get:
+      operationId: listProjectInvitations
+      summary: List pending project invitations
+      tags:
+        - invitations
+      responses:
+        "200":
+          description: Pending invitations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invitation"
+  /projects/{projectId}/invitations/{invitationId}:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      operationId: cancelProjectInvitation
+      summary: Cancel a pending invitation
+      tags:
+        - invitations
+      responses:
+        "204":
+          description: Cancelled
+        "404":
+          description: Invitation not found
+  /projects/{projectId}/invitations/{invitationId}/resend:
+    parameters:
+      - $ref: "#/components/parameters/ProjectId"
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: resendProjectInvitation
+      summary: Resend a pending invitation
+      tags:
+        - invitations
+      responses:
+        "200":
+          description: Invitation with refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invitation"
+        "404":
+          description: Invitation not found
+  /accounts:
+    get:
+      operationId: get__accounts
+      summary: List accessible billing accounts
+      tags:
+        - accounts
+      description: Verified session only.
+      parameters: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /public/plans:
+    get:
+      operationId: get__public_plans
+      summary: Canonical plan catalog
+      tags:
+        - public
+      description: USD prices and shared allowances.
+      parameters: []
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      security: []
+  /public/{projectSlug}:
+    get:
+      operationId: get__public_projectSlug_
+      summary: Public project settings and branding
+      tags:
+        - public
+      description: No management key required.
+      parameters:
+        - name: projectSlug
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      security: []
+  /public/{projectSlug}/sitemap.xml:
+    get:
+      operationId: get__public_projectSlug_sitemap.xml
+      summary: Blog sitemap excluding no-index posts
+      tags:
+        - public
+      description: XML; host-site blog URLs.
+      parameters:
+        - name: projectSlug
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Sitemap XML
+          content:
+            application/xml:
+              schema: *a1
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      security: []
+  /public/{projectSlug}/events:
+    post:
+      operationId: post__public_projectSlug_events
+      summary: Optional reader activity collection
+      tags:
+        - public
+      description: Origin validated, bot filtered, rate limited and privacy preserving. Successful collection returns 204.
+      parameters:
+        - name: projectSlug
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "204":
+          description: Accepted or intentionally ignored
+        "400":
+          description: Invalid event
+        "429":
+          description: Rate limited
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postId: *a1
+                type:
+                  type: string
+                  enum:
+                    - view
+                    - click
+                destination: *a1
+                referrer: *a1
+                preview: &a3
+                  type: boolean
+      security: []
+  /accounts/{accountId}/billing:
+    get:
+      operationId: get__accounts_accountId_billing
+      summary: Subscription, usage and allowances
+      tags:
+        - billing
+      description: Account owner session only. Access follows confirmed payment service dates.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BillingStatus"
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /accounts/{accountId}/billing/checkout:
+    post:
+      operationId: post__accounts_accountId_billing_checkout
+      summary: Create owner checkout
+      tags:
+        - billing
+      description: Account owner session only. Access follows confirmed payment service dates.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: &a2
+              type: object
+              required:
+                - plan
+                - interval
+              properties:
+                plan:
+                  $ref: "#/components/schemas/Plan"
+                interval:
+                  type: string
+                  enum:
+                    - month
+                    - year
+  /accounts/{accountId}/billing/change:
+    post:
+      operationId: post__accounts_accountId_billing_change
+      summary: Request a plan change
+      tags:
+        - billing
+      description: Account owner session only. Access follows confirmed payment service dates.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: *a2
+  /accounts/{accountId}/billing/portal:
+    post:
+      operationId: post__accounts_accountId_billing_portal
+      summary: Customer payment portal
+      tags:
+        - billing
+      description: Account owner session only. Access follows confirmed payment service dates.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /accounts/{accountId}/billing/sync:
+    post:
+      operationId: post__accounts_accountId_billing_sync
+      summary: Reconcile provider state
+      tags:
+        - billing
+      description: Account owner session only. Access follows confirmed payment service dates.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/seo:
+    get:
+      operationId: get__projects_projectId_seo
+      summary: Revision-specific SEO findings
+      tags:
+        - seo
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: postId
+          in: query
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/links:
+    get:
+      operationId: get__projects_projectId_links
+      summary: Link inventory, health and orphaned articles
+      tags:
+        - links
+      description: Cursor-paginated inventory. Checked timestamps retain the original cache result time. Known
+        internal article routes are resolved locally without external quota.
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: cursor
+          in: query
+          schema: *a1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 200
+            default: 100
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: &a6
+              - unchecked
+              - healthy
+              - broken
+              - redirected
+              - inconclusive
+              - unsafe
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LinkReport"
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/analytics:
+    get:
+      operationId: get__projects_projectId_analytics
+      summary: Authorized sampling-aware reader aggregates
+      tags:
+        - analytics
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: days
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 365
+            default: 30
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/agent-runs:
+    get:
+      operationId: get__projects_projectId_agent_runs
+      summary: Recent AI requests
+      tags:
+        - agent-runs
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+    post:
+      operationId: post__projects_projectId_agent_runs
+      summary: Start a bounded reviewable agent request
+      tags:
+        - agent-runs
+      description: No publish, delete or settings tools. At most four model calls.
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "202":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentInput"
+  /projects/{projectId}/links/scans:
+    post:
+      operationId: post__projects_projectId_links_scans
+      summary: Request asynchronous link checks
+      tags:
+        - links
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "202":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/links/{linkId}:
+    patch:
+      operationId: patch__projects_projectId_links_linkId_
+      summary: Ignore or include an indexed link
+      tags:
+        - links
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: linkId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ignored: *a3
+  /projects/{projectId}/agent-runs/estimate:
+    get:
+      operationId: get__projects_projectId_agent_runs_estimate
+      summary: Available AI credits and maximum reservation
+      tags:
+        - agent-runs
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/agent-runs/{runId}:
+    get:
+      operationId: get__projects_projectId_agent_runs_runId_
+      summary: Run status and proposals
+      tags:
+        - agent-runs
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: runId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/agent-runs/{runId}/proposals/{proposalId}/review:
+    post:
+      operationId: post__projects_projectId_agent_runs_runId_proposals_proposalId_review
+      summary: Accept selected changes or reject proposal
+      tags:
+        - agent-runs
+      description: Human session only. Stale revisions are rejected; accepted changes remain a draft.
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: runId
+          in: path
+          required: true
+          schema: *a1
+        - name: proposalId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - accept
+                    - reject
+                fields:
+                  type: array
+                  items: *a1
+  /projects/{projectId}/posts/{postId}/preview:
+    get:
+      operationId: get__projects_projectId_posts_postId_preview
+      summary: Private no-index rendered preview
+      tags:
+        - posts
+      description: ""
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: postId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/export:
+    get:
+      operationId: get__projects_projectId_export
+      summary: Content, drafts, tag relationships and media manifest
+      tags:
+        - projects
+      description: Project-admin session only; retained until the 90-day export deadline.
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /projects/{projectId}/media/{mediaId}/download:
+    get:
+      operationId: get__projects_projectId_media_mediaId_download
+      summary: Authenticated retained media download
+      tags:
+        - media
+      description: Project-admin session only.
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema: *a1
+        - name: mediaId
+          in: path
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Media binary
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+  /billing/webhooks/polar:
+    post:
+      operationId: post__billing_webhooks_polar
+      summary: Signed Polar billing notifications
+      tags:
+        - billing
+      description: Requires valid Standard Webhooks headers. Deduplicates durable events and reconciles provider state.
+      parameters:
+        - name: webhook-id
+          in: header
+          required: true
+          schema: *a1
+        - name: webhook-timestamp
+          in: header
+          required: true
+          schema: *a1
+        - name: webhook-signature
+          in: header
+          required: true
+          schema: *a1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: Invalid request
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied
+        "409":
+          description: Revision or account allowance conflict
+        "410":
+          description: Delivery/retention ended
+      security: []
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: better-auth.session_token
+      description: Session cookie set by Better Auth after sign-in
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Project API key (format bsk_live_...)
+  parameters:
+    ProjectId:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: string
+    PostId:
+      name: postId
+      in: path
+      required: true
+      schema:
+        type: string
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    ProjectSlug:
+      name: projectSlug
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Insufficient permissions for this action
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+  schemas:
+    Plan:
+      type: string
+      enum:
+        - solo
+        - studio
+        - growth
+      description: Shared billing-account plan. Studio/Growth have unlimited blogs. Canonical prices and allowances
+        are returned by /public/plans.
+    PostStatus:
+      type: string
+      enum:
+        - draft
+        - published
+    AccountRole:
+      type: string
+      enum:
+        - account_admin
+        - account_editor
+      description: |
+        - account_admin: manage all projects, invite members (no billing)
+        - account_editor: read/write access to all projects, no management
+    ProjectRole:
+      type: string
+      enum:
+        - project_admin
+        - editor
+        - writer
+      description: |
+        - project_admin: project settings, invite members, publish
+        - editor: publish and edit any post in project
+        - writer: create and edit own posts only
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - createdAt
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          format: uri
+          nullable: true
+        createdAt:
+          type: integer
+          description: Unix timestamp (seconds)
+    Account:
+      type: object
+      required:
+        - id
+        - ownerId
+        - plan
+        - createdAt
+      properties:
+        id:
+          type: string
+        ownerId:
+          type: string
+        plan:
+          $ref: "#/components/schemas/Plan"
+        createdAt:
+          type: integer
+        canWrite: *a3
+    AccountDetail:
+      allOf:
+        - $ref: "#/components/schemas/Account"
+        - type: object
+          properties:
+            owner:
+              $ref: "#/components/schemas/User"
+            limits:
+              type: object
+            usage:
+              type: object
+            role:
+              type:
+                - string
+                - "null"
+            trialEndsAt:
+              type:
+                - integer
+                - "null"
+            paidThrough:
+              type:
+                - integer
+                - "null"
+    Project:
+      type: object
+      required:
+        - id
+        - accountId
+        - name
+        - slug
+        - createdBy
+        - createdAt
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          type: integer
+        settings:
+          $ref: "#/components/schemas/ProjectSettings"
+        canWrite: *a3
+        canCustomizeBranding: *a3
+        role:
+          $ref: "#/components/schemas/ProjectRole"
+        branding:
+          type: object
+          properties:
+            showAttribution: *a3
+            workspaceName: *a1
+            logoUrl: &a4
+              type:
+                - string
+                - "null"
+    ProjectSettings:
+      type: object
+      properties:
+        ogImage:
+          type: string
+          format: uri
+          nullable: true
+        robotsTxt:
+          type: string
+          nullable: true
+          description: Legacy stored preference. Preserve and configure robots in the host website; BlogStack does not
+            overwrite it.
+        sitemapEnabled:
+          type: boolean
+          default: true
+        rssEnabled:
+          type: boolean
+          default: true
+        blogUrl:
+          type: string
+          format: uri
+          description: Actual website blog URL, HTTPS except localhost. No query or fragment.
+        hideAttribution: *a3
+        workspaceName: *a1
+        logoUrl: *a4
+        analyticsEnabled: *a3
+    ProjectWithStats:
+      allOf:
+        - $ref: "#/components/schemas/Project"
+        - type: object
+          properties:
+            postCount:
+              type: integer
+            memberCount:
+              type: integer
+            viewCount:
+              type: integer
+    ProjectStats:
+      type: object
+      properties:
+        postCount:
+          type: integer
+        publishedCount:
+          type: integer
+        draftCount:
+          type: integer
+        scheduledCount:
+          type: integer
+        memberCount:
+          type: integer
+        mediaCount:
+          type: integer
+        totalViews:
+          type: integer
+        viewsThisMonth:
+          type: integer
+    Post:
+      type: object
+      required:
+        - id
+        - projectId
+        - title
+        - slug
+        - content
+        - status
+        - authorId
+        - createdAt
+        - updatedAt
+        - revision
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+          description: BlockNote JSON document string
+        renderedHtml:
+          type: string
+          nullable: true
+          description: Pre-rendered HTML with Shiki code highlighting. Set on publish.
+        status:
+          $ref: "#/components/schemas/PostStatus"
+        authorId:
+          type: string
+        publishedAt:
+          type: integer
+          nullable: true
+        scheduledAt:
+          type: integer
+          nullable: true
+        createdAt:
+          type: integer
+        updatedAt:
+          type: integer
+        excerpt: *a4
+        coverImage: *a4
+        seoTitle: *a4
+        seoDescription: *a4
+        canonicalUrl: *a4
+        noIndex: *a3
+        primaryKeyword: *a4
+        revision: &a5
+          type: integer
+        publishedRevision: *a5
+        hasUnpublishedChanges: *a3
+        everPublished: *a3
+        tagIds:
+          type: array
+          items: *a1
+    PostWithTags:
+      allOf:
+        - $ref: "#/components/schemas/Post"
+        - type: object
+          properties:
+            tags:
+              type: array
+              items:
+                $ref: "#/components/schemas/Tag"
+            author:
+              $ref: "#/components/schemas/User"
+    PublicPost:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - renderedHtml
+        - publishedAt
+      description: Minimal post shape returned by public endpoints
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        renderedHtml:
+          type: string
+          description: Full HTML ready to render inside an article element
+        publishedAt:
+          type: integer
+        author:
+          type: object
+          properties:
+            id: *a1
+            name: *a4
+            avatarUrl: *a4
+        tags:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tag"
+        excerpt: *a4
+        coverImage: *a4
+        readingMinutes:
+          type: integer
+          minimum: 1
+        seoTitle: *a4
+        seoDescription: *a4
+        canonicalUrl: *a4
+        noIndex: *a3
+        primaryKeyword: *a4
+        updatedAt: *a5
+    Media:
+      type: object
+      required:
+        - id
+        - projectId
+        - key
+        - url
+        - filename
+        - createdAt
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        key:
+          type: string
+          description: R2 object key (e.g. proj_abc/550e8400.jpg)
+        url:
+          type: string
+          format: uri
+          description: CDN base URL (blogstack-cdn.hidden-silence-2d18.workers.dev/{projectId}/{key})
+        filename:
+          type: string
+        size:
+          type: integer
+          nullable: true
+          description: File size in bytes
+        width:
+          type: integer
+          nullable: true
+        height:
+          type: integer
+          nullable: true
+        mimeType:
+          type: string
+          nullable: true
+        uploadedBy:
+          type: string
+          nullable: true
+        createdAt:
+          type: integer
+    Tag:
+      type: object
+      required:
+        - id
+        - projectId
+        - name
+        - slug
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        description:
+          type: string
+          nullable: true
+        ogImage:
+          type: string
+          format: uri
+          nullable: true
+    TagWithCount:
+      allOf:
+        - $ref: "#/components/schemas/Tag"
+        - type: object
+          properties:
+            postCount:
+              type: integer
+    AccountMember:
+      type: object
+      required:
+        - accountId
+        - userId
+        - role
+        - invitedAt
+      properties:
+        accountId:
+          type: string
+        userId:
+          type: string
+        role:
+          $ref: "#/components/schemas/AccountRole"
+        invitedBy:
+          type: string
+        invitedAt:
+          type: integer
+        joinedAt:
+          type: integer
+          nullable: true
+        user:
+          $ref: "#/components/schemas/User"
+    ProjectMember:
+      type: object
+      required:
+        - projectId
+        - userId
+        - role
+        - invitedAt
+      properties:
+        projectId:
+          type: string
+        userId:
+          type: string
+        role:
+          $ref: "#/components/schemas/ProjectRole"
+        invitedBy:
+          type: string
+        invitedAt:
+          type: integer
+        joinedAt:
+          type: integer
+          nullable: true
+        user:
+          $ref: "#/components/schemas/User"
+    Invitation:
+      type: object
+      required:
+        - id
+        - email
+        - role
+        - token
+        - expiresAt
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+          nullable: true
+        accountId:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        invitedBy:
+          type: string
+        token:
+          type: string
+        expiresAt:
+          type: integer
+        acceptedAt:
+          type: integer
+          nullable: true
+    InvitationDetail:
+      allOf:
+        - $ref: "#/components/schemas/Invitation"
+        - type: object
+          properties:
+            projectName:
+              type: string
+              nullable: true
+            accountName:
+              type: string
+              nullable: true
+            inviterName:
+              type: string
+              nullable: true
+    ApiKey:
+      type: object
+      required:
+        - id
+        - projectId
+        - name
+        - keyPrefix
+        - createdAt
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        name:
+          type: string
+        keyPrefix:
+          type: string
+          description: First 16 characters for identification
+        createdBy:
+          type: string
+        lastUsedAt:
+          type: integer
+          nullable: true
+        createdAt:
+          type: integer
+        scopes:
+          type: array
+          items: *a1
+        expiresAt:
+          type:
+            - integer
+            - "null"
+        revokedAt:
+          type:
+            - integer
+            - "null"
+    CreateProjectRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: ^[a-z0-9-]+$
+          description: URL-safe slug, unique across all projects
+        settings:
+          $ref: "#/components/schemas/ProjectSettings"
+    UpdateProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        settings:
+          $ref: "#/components/schemas/ProjectSettings"
+    InviteAccountMemberRequest:
+      type: object
+      required:
+        - email
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          $ref: "#/components/schemas/AccountRole"
+    InviteProjectMemberRequest:
+      type: object
+      required:
+        - email
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          $ref: "#/components/schemas/ProjectRole"
+    CreatePostRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        slug:
+          type: string
+          pattern: ^[a-z0-9-]+$
+          description: Auto-generated from title if omitted
+        content:
+          type: string
+          description: BlockNote JSON string (empty document if omitted)
+        tagIds:
+          type: array
+          items:
+            type: string
+        excerpt: *a4
+        coverImage: *a4
+        seoTitle: *a4
+        seoDescription: *a4
+        canonicalUrl: *a4
+        noIndex: *a3
+        primaryKeyword: *a4
+    UpdatePostRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 500
+        slug:
+          type: string
+          pattern: ^[a-z0-9-]+$
+        content:
+          type: string
+          description: BlockNote JSON string
+        tagIds:
+          type: array
+          items:
+            type: string
+        excerpt: *a4
+        coverImage: *a4
+        seoTitle: *a4
+        seoDescription: *a4
+        canonicalUrl: *a4
+        noIndex: *a3
+        primaryKeyword: *a4
+        revision:
+          type: integer
+          minimum: 1
+          description: Expected saved draft revision; stale writes return 409.
+      required:
+        - revision
+    CreateTagRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        slug:
+          type: string
+          pattern: ^[a-z0-9-]+$
+          description: Auto-generated from name if omitted
+        description:
+          type: string
+          maxLength: 500
+        ogImage:
+          type: string
+          format: uri
+    UpdateTagRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          pattern: ^[a-z0-9-]+$
+        description:
+          type: string
+          maxLength: 500
+        ogImage:
+          type: string
+          format: uri
+    PaginatedPosts:
+      type: object
+      required:
+        - data
+        - total
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        total:
+          type: integer
+        nextCursor:
+          type: string
+          nullable: true
+    PaginatedPublicPosts:
+      type: object
+      required:
+        - data
+        - total
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublicPost"
+        total:
+          type: integer
+        nextCursor:
+          type: string
+          nullable: true
+    PaginatedMedia:
+      type: object
+      required:
+        - data
+        - total
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Media"
+        total:
+          type: integer
+        nextCursor:
+          type: string
+          nullable: true
+    Error:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code (e.g. UNAUTHORIZED, NOT_FOUND)
+        requestId:
+          type: string
+          description: Unique request ID for support debugging
+    ValidationError:
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            issues:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+    BillingStatus:
+      type: object
+      properties:
+        accountId: *a1
+        plan:
+          $ref: "#/components/schemas/Plan"
+        interval:
+          type:
+            - string
+            - "null"
+          enum:
+            - month
+            - year
+            - null
+        status:
+          type: string
+          enum:
+            - active
+            - trialing
+            - expired
+            - not_started
+        canWrite: *a3
+        configured: *a3
+        usage:
+          type: object
+        limits:
+          type: object
+        pendingPlan:
+          type:
+            - string
+            - "null"
+        pendingInterval:
+          type:
+            - string
+            - "null"
+        trialEndsAt:
+          type:
+            - integer
+            - "null"
+        paidThrough:
+          type:
+            - integer
+            - "null"
+        cancelAtPeriodEnd: *a3
+        hasSubscription: *a3
+        hasBillingCustomer: *a3
+        providerStatus: *a4
+    AgentInput:
+      type: object
+      required:
+        - postId
+        - profile
+        - prompt
+      properties:
+        postId: *a1
+        profile:
+          type: string
+          enum:
+            - writing
+            - seo
+            - linking
+        prompt:
+          type: string
+          minLength: 1
+          maxLength: 4000
+    LinkEntry:
+      type: object
+      properties:
+        id: *a1
+        postId: *a1
+        url: *a1
+        anchor: *a1
+        kind: *a1
+        status:
+          type: string
+          enum: *a6
+        httpStatus:
+          type:
+            - integer
+            - "null"
+        finalUrl: *a4
+        checkedAt:
+          type:
+            - integer
+            - "null"
+        ignored:
+          type: integer
+          enum:
+            - 0
+            - 1
+        insecure: *a3
+    LinkReport:
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: "#/components/schemas/LinkEntry"
+        scans:
+          type: array
+          items:
+            type: object
+            properties:
+              id: *a1
+              status: *a1
+              checked: *a5
+              error: *a4
+              createdAt: *a5
+              completedAt:
+                type:
+                  - integer
+                  - "null"
+        orphaned:
+          type: array
+          items:
+            type: object
+            properties:
+              id: *a1
+              title: *a1
+              slug: *a1
+        nextCursor: *a4
+        limited: *a3

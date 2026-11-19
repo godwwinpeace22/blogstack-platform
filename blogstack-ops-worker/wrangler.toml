@@ -1,0 +1,63 @@
+name = "blogstack-ops"
+account_id = "d37dff02b31097b9581ef596777605dc"
+main = "src/index.ts"
+compatibility_date = "2026-11-19"
+compatibility_flags = ["global_fetch_strictly_public"]
+workers_dev = false
+preview_urls = false
+
+[[d1_databases]]
+binding = "STATE"
+database_name = "blogstack-ops-db"
+database_id = "9ad9c1de-99d8-4512-8b1f-10ac5b7cc50f"
+migrations_dir = "migrations"
+
+[[d1_databases]]
+binding = "SOURCE_DB"
+database_name = "blogstack-db"
+database_id = "f56811e5-e2fa-4f0f-9a0b-381daedda240"
+
+[[r2_buckets]]
+binding = "SOURCE_MEDIA"
+bucket_name = "blogstack-media"
+
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "blogstack-backups"
+
+[[queues.producers]]
+binding = "JOBS"
+queue = "blogstack-ops-jobs"
+[[queues.producers]]
+binding = "MAIN_QUEUE"
+queue = "blogstack-jobs"
+[[queues.producers]]
+binding = "MAIN_DEAD"
+queue = "blogstack-jobs-dead"
+[[queues.producers]]
+binding = "OPS_DEAD"
+queue = "blogstack-ops-dead"
+
+[[queues.consumers]]
+queue = "blogstack-ops-jobs"
+max_batch_size = 1
+max_batch_timeout = 1
+max_retries = 5
+dead_letter_queue = "blogstack-ops-dead"
+
+[triggers]
+crons = ["*/5 * * * *"]
+[observability]
+enabled = true
+
+[vars]
+OPS_ENABLED = "true"
+CF_ACCOUNT_ID = "d37dff02b31097b9581ef596777605dc"
+SOURCE_DATABASE_ID = "f56811e5-e2fa-4f0f-9a0b-381daedda240"
+SOURCE_BUCKET_NAME = "blogstack-media"
+EMAIL_FROM = "BlogStack <noreply@mail.boldlaunchstudio.com>"
+ALERT_EMAIL = "hello@boldlaunchstudio.com"
+CF_BACKUP_TOKEN_EXPIRES = "2027-11-19T23:59:59Z"
+CF_ANALYTICS_TOKEN_EXPIRES = "2027-02-16T23:59:59Z"
+WORKER_NAMES = '["blogstack-app","blogstack-cdn","blogstack-link-scanner","blogstack-blog","blogstack-ops"]'
+HEALTH_URLS = '[{"name":"dashboard API","url":"https://blogstack-app.hidden-silence-2d18.workers.dev/health","contains":"ok"},{"name":"marketing site","url":"https://blogstack-site.hidden-silence-2d18.workers.dev/","contains":"BlogStack"},{"name":"documentation","url":"https://blogstack-docs.hidden-silence-2d18.workers.dev/docs/quickstart","contains":"BlogStack"},{"name":"component registry","url":"https://blogstack-registry.hidden-silence-2d18.workers.dev/r/blog-post.json","contains":"blog-post"},{"name":"published blog","url":"https://blogstack-blog.hidden-silence-2d18.workers.dev/blog/publish-a-blog-inside-your-own-website","contains":"BlogStack gives developers"}]'

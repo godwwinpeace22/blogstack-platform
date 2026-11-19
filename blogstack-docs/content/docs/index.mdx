@@ -1,0 +1,27 @@
+---
+title: Introduction
+description: Native blog pages and a hosted client publishing workspace.
+---
+
+BlogStack connects a website you build to a hosted publishing workspace. Your routes, components and styles stay in your application. Authors manage content in the BlogStack dashboard.
+
+Start with the [Next.js quickstart](/docs/quickstart). The public JavaScript client is framework independent; the launch reference integration uses Next.js App Router.
+
+## What ships
+
+- Editable MIT React components: blog index, article, cards, search, tags and pagination.
+- Private drafts, revision checks, preview, image uploads and explicit publish/unpublish.
+- SEO metadata, JSON-LD, sitemap, RSS and deterministic editor findings.
+- Link health and optional cookieless page-view/link-click analytics.
+- Writing, SEO and linking assistants that prepare changes for a person to review.
+- Scoped project API keys, account teams and project-scoped client invitations.
+
+The editor package is an editable rich text primitive used by the hosted dashboard. It does not supply embedded authentication or a standalone embedded admin. Native embedded admin, collaboration, multilingual publishing, customer webhooks and scheduled publishing are deferred.
+
+## Access and billing
+
+An account owns the subscription and shares allowances across its blogs. Account admins and editors can work across the account according to their role. Project invitations give access to that project only. Only the account owner manages billing.
+
+Studio and Growth have unlimited blogs with no per-blog charge. People and media storage have shared account limits. Read [plans and lifecycle](/docs/plans).
+
+Public content is retrieved by project slug without an API key. Keep private management keys on your server.

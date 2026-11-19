@@ -1,0 +1,53 @@
+---
+title: API reference
+description: Launch route groups and access requirements.
+---
+
+The API uses JSON and returns structured error bodies with error and code. Public delivery is read-only except the validated optional analytics collector. Management requires a verified session or a scoped project API key.
+
+## Public
+
+| Method | Route | Purpose |
+|---|---|---|
+| GET | /public/:projectSlug | Website URL, branding and analytics preference |
+| GET | /public/:projectSlug/posts | Published articles, cursor pagination, q and tag filters |
+| GET | /public/:projectSlug/posts/:slug | Published snapshot and metadata |
+| GET | /public/:projectSlug/tags | Published tags |
+| GET | /public/:projectSlug/sitemap.xml | Indexable article URLs |
+| GET | /public/:projectSlug/feed.xml | RSS |
+| POST | /public/:projectSlug/events | Optional validated view/click event |
+
+## Project management
+
+GET/POST /projects lists or creates projects. GET/PATCH/DELETE /projects/:projectId reads settings or manages a project according to the current role.
+
+GET/POST /projects/:projectId/posts lists or creates drafts. GET/PATCH/DELETE /projects/:projectId/posts/:postId manages a draft. PATCH requires revision; stale writes return 409. POST to the article's /publish or /unpublish endpoint changes the public snapshot. GET /preview returns a private no-index preview.
+
+GET/POST/PATCH/DELETE tag, member and API-key resources are available through their SDK resources. Project keys cannot create more keys, invite members, export a workspace or access billing.
+
+| Interface | Purpose |
+|---|---|
+| /projects/:projectId/seo?postId=… | Current draft findings |
+| /projects/:projectId/links | Inventory and scan history |
+| /projects/:projectId/links/scans | Request a scan |
+| /projects/:projectId/analytics?days=30 | Authorized aggregate reports |
+| /projects/:projectId/agent-runs | Estimate, start and inspect runs |
+| /projects/:projectId/agent-runs/:runId/proposals/:proposalId/review | Human session acceptance/rejection |
+| /projects/:projectId/export | Session-based workspace JSON export |
+| /projects/:projectId/media/:mediaId/download | Authenticated retained media |
+
+AI review accepts action accept/reject and optional fields. Accepted proposals validate their original revision and save a draft. They never publish.
+
+## Accounts and billing
+
+GET /accounts lists accessible billing accounts. GET /accounts/me reads the selected account. Authenticated callers can select a permitted account with X-BlogStack-Account-Id; a project request always derives the project's actual owning account.
+
+Only an owner session may use /accounts/:accountId/billing and its /checkout, /change, /portal and /sync endpoints. Checkout/change accepts plan solo/studio/growth and interval month/year. No browser plan label or legacy account field grants paid access.
+
+POST /billing/webhooks/polar accepts signed provider notifications only.
+
+## Errors and limits
+
+401 means no valid authentication, 403 means the current principal lacks permission, 402 means editing coverage expired, 409 means a revision conflict or shared quota limit and 410 means public delivery or content retention ended. Validation errors return 400. Handle these conditions without retrying a mutation blindly.
+
+Use the typed JavaScript SDK for complete request and response contracts. The repository OpenAPI file is generated separately and is not the source of billing or access decisions.

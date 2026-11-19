@@ -1,0 +1,31 @@
+name = "blogstack-cdn"
+account_id = "d37dff02b31097b9581ef596777605dc"
+main = "src/index.ts"
+compatibility_date = "2026-09-14"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = false
+
+[observability]
+enabled = true
+
+[[r2_buckets]]
+binding     = "R2"
+bucket_name = "blogstack-media"
+
+[[kv_namespaces]]
+# MUST match the CDN_CACHE namespace ID in blogstack-api/wrangler.toml
+binding = "CDN_CACHE"
+id      = "b643f37abaaa45afbea68f7d49f6b603"
+
+[vars]
+API_BASE_URL = "https://blogstack-app.hidden-silence-2d18.workers.dev"
+
+# Secrets
+# CDN_SECRET — shared HMAC key with api-worker for signed CDN URLs
+
+# Must point to the same D1 database as the API (pending/confirmed media).
+[[d1_databases]]
+binding = "MAIN_DB"
+database_name = "blogstack-db"
+database_id = "f56811e5-e2fa-4f0f-9a0b-381daedda240"

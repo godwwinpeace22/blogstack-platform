@@ -1,0 +1,10 @@
+name = "blogstack-link-scanner"
+account_id = "d37dff02b31097b9581ef596777605dc"
+main = "src/index.ts"
+compatibility_date = "2026-09-14"
+compatibility_flags = ["global_fetch_strictly_public"]
+workers_dev = false
+preview_urls = false
+# Intentionally has no databases, secrets, storage, or internal service bindings.
+[observability]
+enabled = true

@@ -1,0 +1,22 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import PricingPlans from "../components/PricingPlans.astro";
+const faqs=[
+ ["Do I need a card for the trial?","No. Your 14-day Studio trial starts when you create your first owned blog. It includes unlimited blogs, 5 GB, 10 people and 100 AI credits for the trial."],
+ ["How do AI credits work?","One credit covers up to 4,000 input tokens and 1,000 output tokens across a request. Larger requests can use multiple credits. We show a reservation before a request and return unused credits. Agents propose changes for you to review; they cannot publish."],
+ ["What does link analytics include?","Page views, referrer domains, article-link clicks and destinations, plus link health checks and orphaned-article reports. Sampled totals are labeled as estimates."],
+ ["Can I use my existing website?","Yes. Your website owns its routes, domain and design. Use the Next.js reference integration, editable React components or the framework-independent public JavaScript client."],
+ ["What does no branding mean?","Studio and Growth include an attribution-removal setting and agency name/logo inside the hosted client workspace. Shared login and billing keep BlogStack identity. The MIT-licensed frontend source remains editable on every plan."],
+ ["Are comments and newsletters included?","Integration slots support your existing providers. Their accounts and charges are separate. Native moderation, subscriber management and newsletter delivery are not included in this release."],
+ ["What happens when I cancel?","Access continues through the paid period. At expiry editing stops, public delivery continues for 30 days, and content export remains available for 90 days before deletion after advance warnings."],
+ ["Can I change plans?","Upgrades take effect after a confirmed prorated payment. Downgrades and billing-interval changes apply at renewal. Usage must fit the destination plan; we do not delete blogs automatically to make a downgrade fit."],
+];
+---
+<Layout title="BlogStack pricing — Solo $3, Studio $9, Growth $19" description="Managed blog publishing with SEO, link analytics and reviewable AI. Unlimited blogs from $9/month and 100 GB on Growth.">
+ <Navbar/>
+ <main class="pricing-page"><header><p class="eyebrow">Pricing</p><h1>Your blogs.<br/><em>One account.</em></h1><p>Publish on your own website, invite your clients and keep the costs clear.</p><p class="trial">14 days free on Studio · No card required</p></header><PricingPlans/><section class="faq"><h2>Before you subscribe</h2><div>{faqs.map(([question,answer])=><article><h3>{question}</h3><p>{answer}</p></article>)}</div></section></main>
+ <Footer/>
+ <style>.pricing-page{max-width:1180px;margin:auto;padding:135px 32px 80px}header{max-width:800px;margin-bottom:55px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}h1{font-size:clamp(45px,7vw,82px);line-height:1.05;letter-spacing:-.05em;margin:20px 0}h1 em{font-family:var(--serif,Georgia);font-weight:400}header>p{color:var(--muted);line-height:1.8}.trial{font-size:13px}.faq{margin-top:80px}.faq>div{display:grid;grid-template-columns:1fr 1fr;gap:28px 50px}.faq h2{font-size:30px;margin-bottom:35px}.faq h3{font-size:16px}.faq p{color:var(--muted);font-size:14px;line-height:1.8}@media(max-width:700px){.pricing-page{padding:110px 20px 55px}.faq>div{grid-template-columns:1fr}}</style>
+</Layout>

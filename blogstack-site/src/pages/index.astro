@@ -1,0 +1,1347 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PricingPlans from "../components/PricingPlans.astro";
+---
+
+<Layout
+  title="BlogStack — Add a complete blog to any website"
+  description="Install native, editable blog pages in your existing website, then hand publishing to your client."
+>
+  <nav class="landing-nav">
+    <a href="/" class="nav-logo">
+      <div class="dot"></div>
+      BlogStack
+    </a>
+    <ul class="nav-links">
+      <li><a href="/#components">Features</a></li>
+      <li><a href="#sdk">Frameworks</a></li>
+      <li><a href="#editor">Platform</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
+      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/login" class="btn btn-ghost">Sign in</a>
+      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary">Get started →</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-glow"></div>
+
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Built for developers and agencies
+      </div>
+
+      <h1>Add a complete blog<br />to <em>any website</em></h1>
+      <p class="hero-sub">Install native blog pages that match the site, then hand writing and publishing to your client. You own the frontend; BlogStack runs everything behind it.</p>
+
+      <div class="hero-actions">
+        <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary">Add your blog →</a>
+        <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev/docs/quickstart" class="btn btn-ghost">Read the installation guide</a>
+      </div>
+
+      <div class="hero-code-preview">
+        <div class="code-window">
+          <div class="code-titlebar">
+            <div class="code-dots">
+              <div class="code-dot"></div>
+              <div class="code-dot"></div>
+              <div class="code-dot"></div>
+            </div>
+            <span class="code-filename">blog.tsx</span>
+            <div class="code-tabs">
+              <button type="button" class="code-tab active" data-tab-target="sdk">Install</button>
+              <button type="button" class="code-tab" data-tab-target="components">Components</button>
+              <button type="button" class="code-tab" data-tab-target="editor">Handover</button>
+            </div>
+          </div>
+          <div id="tab-sdk" class="tab-content active">
+<pre>npm install @blogstack/sdk @blogstack/ui
+
+1. Create a BlogStack project
+2. Copy the Next.js reference routes
+3. Set your project slug and website URL
+4. Invite your client from the dashboard
+
+✓ Native blog index and article pages
+✓ Metadata, JSON-LD, sitemap and RSS
+✓ Your website, domain and design</pre>
+          </div>
+          <div id="tab-components" class="tab-content">
+<pre><span class="t-keyword">import</span> { <span class="t-type">Blog</span> } <span class="t-keyword">from</span> <span class="t-str">'@/components/ui/blog'</span>
+
+<span class="t-comment">// A complete blog, installed as editable source</span>
+<span class="t-keyword">export default function</span> <span class="t-fn">BlogPage</span>() &#123;
+  <span class="t-keyword">return</span> (
+    &lt;<span class="t-type">Blog</span>
+      <span class="t-prop">projectSlug</span>=<span class="t-str">"acme"</span>
+      <span class="t-prop">title</span>=<span class="t-str">"Acme journal"</span>
+      <span class="t-prop">layout</span>=<span class="t-str">"editorial"</span>
+    /&gt;
+  )
+&#125;
+
+<span class="t-comment">// Search, tags, pagination and article pages are included</span></pre>
+          </div>
+          <div id="tab-editor" class="tab-content">
+<pre>In the BlogStack dashboard:
+
+Project → Members → Invite client
+Role: Editor
+
+✓ Client writes in a focused workspace
+✓ Access stays limited to the project
+✓ Autosaves remain private drafts
+✓ Publishing requires an explicit action
+
+Studio and Growth:
+Use your agency name and logo</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Complete templates</div></div>
+      <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">Editable components</div></div>
+      <div class="stat"><div class="stat-num">Any</div><div class="stat-label">Fetch-compatible host</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Source-owned UI</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Iframes required</div></div>
+    </div>
+
+    <hr class="divider" />
+
+    <section id="components" class="reveal">
+      <div class="section-label">// What you get</div>
+      <h2 class="section-title">Everything a publication needs.<br /><em>One connected stack.</em></h2>
+      <p class="section-sub">Install the native frontend, hand publishing to the client, and let BlogStack run the operational layer.</p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-header"><div class="pillar-tag">@blogstack/ui</div><div class="pillar-num">01</div></div>
+          <div class="pillar-body">
+            <h3>A complete, editable blog</h3>
+            <p>Install production-ready React pages styled with Tailwind. Start with the whole experience, then change any source you need.</p>
+            <div class="pillar-features">
+              <div class="pillar-feature">Blog index and article pages</div>
+              <div class="pillar-feature">Search, tags and pagination</div>
+              <div class="pillar-feature">Loading, empty and retry states</div>
+              <div class="pillar-feature">Editable Tailwind source</div>
+              <div class="pillar-feature">Host-owned routes and links</div>
+              <div class="pillar-feature">Optional supporting components</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="pillar-header"><div class="pillar-tag">@blogstack/sdk</div><div class="pillar-num">02</div></div>
+          <div class="pillar-body">
+            <h3>Framework-native integration</h3>
+            <p>Start with the Next.js reference integration for native routes and server rendering. The public JavaScript client works in any Fetch-compatible environment.</p>
+            <div class="pillar-features">
+              <div class="pillar-feature">SSR, SSG or client rendering</div>
+              <div class="pillar-feature">Metadata and JSON-LD</div>
+              <div class="pillar-feature">Sitemap and RSS generation</div>
+              <div class="pillar-feature">Type-safe JavaScript SDK</div>
+              <div class="pillar-feature">Edge-runtime compatible</div>
+              <div class="pillar-feature">Headless escape hatch</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="pillar-header"><div class="pillar-tag">BlogStack Cloud</div><div class="pillar-num">03</div></div>
+          <div class="pillar-body">
+            <h3>Client handover and operations</h3>
+            <p>Invite the client to write and publish while BlogStack manages private drafts, media, SEO checks and content delivery.</p>
+            <div class="pillar-features">
+              <div class="pillar-feature">Client roles and invitations</div>
+              <div class="pillar-feature">Project-scoped client access</div>
+              <div class="pillar-feature">Comments integration slot</div>
+              <div class="pillar-feature">Newsletter integration slot</div>
+              <div class="pillar-feature">Analytics and AI assistance</div>
+              <div class="pillar-feature">Multi-project agency view</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section class="reveal">
+      <div class="section-label">// Native frontend</div>
+      <h2 class="section-title">Looks like your website.<br /><em>Because it is.</em></h2>
+      <p class="section-sub">Real routes, real markup, and editable Tailwind source inside the application. No iframe and no separately themed hosted blog.</p>
+
+      <div class="component-preview-wrap">
+        <div class="component-preview">
+          <div class="component-toolbar">
+            <div class="component-toolbar-left">
+              <div class="toolbar-pill active">Grid layout</div>
+              <div class="toolbar-pill">Featured</div>
+              <div class="toolbar-pill">Minimal list</div>
+            </div>
+            <div class="component-preview-label">Preview</div>
+          </div>
+          <div class="component-canvas">
+            <div class="blog-cards-grid">
+              <div class="blog-card-demo">
+                <div class="blog-card-img"><div class="blog-card-img-pattern"></div></div>
+                <div class="blog-card-body">
+                  <div class="blog-card-tag">Engineering</div>
+                  <div class="blog-card-title">How we reduced p99 latency by 40% using edge caching</div>
+                  <div class="blog-card-meta"><span>Mar 12</span><div class="blog-card-meta-dot"></div><span>8 min read</span></div>
+                </div>
+              </div>
+              <div class="blog-card-demo">
+                <div class="blog-card-img blog-card-img-blue"><div class="blog-card-img-pattern"></div></div>
+                <div class="blog-card-body">
+                  <div class="blog-card-tag">Product</div>
+                  <div class="blog-card-title">Introducing dark mode for all components</div>
+                  <div class="blog-card-meta"><span>Mar 8</span><div class="blog-card-meta-dot"></div><span>4 min read</span></div>
+                </div>
+              </div>
+              <div class="blog-card-demo">
+                <div class="blog-card-img blog-card-img-green"><div class="blog-card-img-pattern"></div></div>
+                <div class="blog-card-body">
+                  <div class="blog-card-tag">Tutorial</div>
+                  <div class="blog-card-title">Building a multi-tenant blog with Next.js App Router</div>
+                  <div class="blog-card-meta"><span>Feb 28</span><div class="blog-card-meta-dot"></div><span>12 min read</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section id="sdk" class="reveal">
+      <div class="showcase-grid">
+        <div class="showcase-info">
+          <div class="section-label">// Next.js integration</div>
+          <h2 class="section-title showcase-title">Use your framework.<br /><em>Keep your routes.</em></h2>
+          <p class="section-sub showcase-sub">The public JavaScript client works independently of a framework. Start with the complete Next.js example for native routes and server-rendered articles.</p>
+
+          <div class="showcase-step"><div class="step-num">1</div><div class="step-content"><h4>Choose the existing site</h4><p>Connect your public project slug and set the blog URL in project settings.</p></div></div>
+          <div class="showcase-step"><div class="step-num">2</div><div class="step-content"><h4>Generate the complete blog</h4><p>Use the Next.js reference integration for article routes, SEO metadata, sitemap and RSS.</p></div></div>
+          <div class="showcase-step"><div class="step-num">3</div><div class="step-content"><h4>Invite the client</h4><p>They publish through BlogStack while the agency keeps control of the website and project.</p></div></div>
+        </div>
+
+        <div class="code-window showcase-window">
+          <div class="code-titlebar">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <span class="code-filename">blogstack.config.ts</span>
+          </div>
+<pre>BLOGSTACK_PROJECT_SLUG=acme
+BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev
+SITE_URL=https://your-website.example
+
+<span class="t-comment">// Native Next.js routes</span>
+app/blog/page.tsx
+app/blog/[slug]/page.tsx
+app/blog/sitemap.xml/route.ts
+app/blog/feed.xml/route.ts
+
+<span class="t-comment">// Merge the blog sitemap into your existing robots config.</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section id="editor" class="reveal">
+      <div class="section-label">// Complete publication</div>
+      <h2 class="section-title">Content, audience, and operations.<br /><em>Handled together.</em></h2>
+
+      <div class="feature-grid">
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><h3>Rich text editor</h3><p>Write with images, headings, lists, quotes and highlighted code in the hosted publishing dashboard.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>SEO metadata</h3><p>Built-in title, description, OG image, and canonical URL fields. Auto-generates structured data JSON-LD.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><h3>Media library</h3><p>Upload and manage images up to 10 MiB each, with shared account storage and CDN delivery.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 0v10l6 3"/></svg><h3>Safe drafts</h3><p>Save revisions privately and publish when ready. Your live article stays unchanged while you edit.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><h3>AI writing assist</h3><p>Generate outlines, expand bullet points, improve tone, and auto-generate meta descriptions.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><h3>Analytics</h3><p>Page views, referrer domains and article-link clicks, with opt-out and clearly labeled estimates.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4z"/></svg><h3>Comments</h3><p>Bring your own comments component through a named integration slot. Provider accounts and fees are separate.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg><h3>Newsletter</h3><p>Add a subscription form from your email provider through the newsletter slot. Delivery and subscriber management stay with your provider.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9h8M8 15h8"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg><h3>API and reviewable AI</h3><p>Let writing, SEO and linking assistants prepare changes for review. Publishing stays in your control.</p></div>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section id="pricing" class="reveal">
+      <div class="pricing-intro">
+        <div class="section-label pricing-label">// Pricing</div>
+        <h2 class="section-title">Simple, <em>honest</em> pricing</h2>
+        <p class="section-sub pricing-sub">No seat fees. No surprise overages. Scale as you grow.</p>
+      </div>
+
+      <PricingPlans/>
+    </section>
+
+    <hr class="divider" />
+
+    <div class="cta-section reveal">
+      <h2>Your blog.<br /><em>Your stack.</em></h2>
+      <p>Add the blog your website needs, then give your client a place to publish.</p>
+      <div class="cta-actions-row">
+        <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary cta-btn">Start your 14-day trial →</a>
+        <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev" class="btn btn-ghost cta-btn">Read the docs</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="footer-logo"><div class="footer-logo-dot"></div>BlogStack</div>
+    <ul class="footer-links">
+      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
+      <li><a href="/support">Support</a></li>
+      <li><a href="/#components">Features</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li><li><a href="/refunds">Refunds</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 BlogStack</div>
+  </footer>
+
+  <style is:global>
+    .landing-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover,
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: var(--sans);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+      border-color: var(--border-light);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dim);
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 100%);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(232, 255, 71, 0.07) 0%, transparent 70%);
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px 4px 6px;
+      border: 1px solid rgba(232, 255, 71, 0.3);
+      border-radius: 100px;
+      background: var(--accent-subtle);
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+      letter-spacing: 0.04em;
+    }
+
+    .hero-badge-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      max-width: 900px;
+      animation: fadeUp 0.6s 0.1s ease both;
+      position: relative;
+    }
+
+    .hero h1 em,
+    .section-title em,
+    .cta-section h2 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 24px auto 40px;
+      line-height: 1.7;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions,
+    .cta-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero-actions {
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .hero-actions .btn,
+    .cta-btn {
+      padding: 10px 22px;
+      font-size: 14px;
+    }
+
+    .hero-code-preview {
+      margin-top: 80px;
+      width: 100%;
+      max-width: 860px;
+      animation: fadeUp 0.8s 0.4s ease both;
+      position: relative;
+    }
+
+    .code-window,
+    .component-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: left;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    .code-titlebar,
+    .component-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .code-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-dot:nth-child(1) { background: #ff5f56; }
+    .code-dot:nth-child(2) { background: #ffbd2e; }
+    .code-dot:nth-child(3) { background: #27c93f; }
+
+    .code-filename,
+    .component-preview-label,
+    .toolbar-pill,
+    .pricing-plan,
+    .footer-copy,
+    code {
+      font-family: var(--mono);
+    }
+
+    .code-filename,
+    .component-preview-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .code-tabs {
+      display: flex;
+      gap: 0;
+      margin-left: auto;
+    }
+
+    .code-tab,
+    .toolbar-pill {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+
+    .code-tab {
+      cursor: pointer;
+    }
+
+    .code-tab.active,
+    .toolbar-pill.active,
+    .toolbar-pill:hover {
+      color: var(--accent);
+      background: var(--accent-subtle);
+      border-color: rgba(232, 255, 71, 0.2);
+    }
+
+    pre {
+      padding: 24px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+      color: #a1a1aa;
+      margin: 0;
+    }
+
+    .t-keyword { color: #c084fc; }
+    .t-fn { color: #60a5fa; }
+    .t-str { color: #86efac; }
+    .t-comment { color: #3f3f46; }
+    .t-type { color: #fbbf24; }
+    .t-var { color: var(--text); }
+    .t-accent { color: var(--accent); }
+    .t-prop { color: #f9a8d4; }
+
+    section {
+      padding: 100px 40px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .section-sub,
+    .step-content p,
+    .cta-section p {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .section-sub {
+      max-width: 480px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 40px;
+    }
+
+    .pillars,
+    .showcase-grid,
+    .pricing-grid {
+      display: grid;
+      gap: 24px;
+      margin-top: 64px;
+    }
+
+    .pillars,
+    .pricing-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .showcase-grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+
+    .pillar,
+    .pricing-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .pillar:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+    }
+
+    .pillar-header,
+    .pillar-body,
+    .pricing-card {
+      padding: 24px;
+    }
+
+    .pillar-header {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 20px;
+    }
+
+    .pillar-tag,
+    .step-num,
+    .pricing-featured-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pillar-tag,
+    .step-num {
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border: 1px solid rgba(232, 255, 71, 0.2);
+    }
+
+    .pillar-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .pillar-body h3 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .pillar-body p,
+    .feature-card p,
+    .pricing-features li {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .pillar-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .pillar-feature {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .pillar-feature::before {
+      content: "→";
+      color: var(--accent);
+      font-size: 11px;
+    }
+
+    .component-preview-wrap {
+      margin-top: 48px;
+    }
+
+    .component-toolbar {
+      justify-content: space-between;
+    }
+
+    .component-toolbar-left {
+      display: flex;
+      gap: 6px;
+    }
+
+    .component-canvas {
+      padding: 32px;
+      background: #0d0d0f;
+    }
+
+    .blog-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .blog-card-demo {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .blog-card-demo:hover {
+      border-color: var(--border-light);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .blog-card-img {
+      height: 140px;
+      background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #1a1a1f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-card-img-blue { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+    .blog-card-img-green { background: linear-gradient(135deg, #1a1f1a 0%, #0f1f0f 100%); }
+
+    .blog-card-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(232, 255, 71, 0.05), transparent);
+    }
+
+    .blog-card-img-pattern {
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 21px);
+    }
+
+    .blog-card-body {
+      padding: 16px;
+    }
+
+    .blog-card-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .blog-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .blog-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .blog-card-meta-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--border-light);
+      border-radius: 50%;
+    }
+
+    .showcase-info {
+      padding-top: 24px;
+    }
+
+    .showcase-title {
+      font-size: clamp(32px, 4vw, 48px);
+    }
+
+    .showcase-sub {
+      margin-bottom: 40px;
+    }
+
+    .showcase-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .showcase-step:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .step-content h4,
+    .feature-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .showcase-window {
+      height: fit-content;
+      margin-top: 8px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 60px;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      padding: 36px 32px;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .feature-card:hover {
+      background: var(--surface);
+    }
+
+    .feature-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--accent-subtle-2);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .feature-card:hover::after {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .pricing-intro {
+      text-align: center;
+      margin-bottom: 0;
+    }
+
+    .pricing-label {
+      justify-content: center;
+      display: flex;
+    }
+
+    .pricing-sub {
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      padding: 32px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, rgba(232, 255, 71, 0.04) 0%, var(--surface) 100%);
+    }
+
+    .pricing-featured-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #000;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    .pricing-plan {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .pricing-price {
+      font-family: var(--serif);
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price sup {
+      font-family: var(--sans);
+      font-size: 20px;
+      vertical-align: top;
+      margin-top: 8px;
+      display: inline-block;
+      color: var(--text-muted);
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check {
+      color: var(--accent);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .check-disabled {
+      color: var(--border-light);
+    }
+
+    .muted-disabled {
+      opacity: 0.4;
+    }
+
+    .pricing-btn-ghost,
+    .pricing-btn-primary,
+    .btn-outline-accent {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .btn-outline-accent {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-outline-accent:hover {
+      background: var(--accent-subtle);
+    }
+
+    .cta-section {
+      padding: 100px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: "";
+      position: absolute;
+      width: 800px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(232, 255, 71, 0.05) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-family: var(--serif);
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .cta-section p {
+      max-width: 440px;
+      margin: 0 auto 40px;
+    }
+
+    .landing-footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-logo-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    code {
+      font-size: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      padding: 24px 40px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .code-tab:focus-visible,
+    .btn:focus-visible,
+    .nav-links a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 980px) {
+      .pillars,
+      .pricing-grid,
+      .showcase-grid,
+      .feature-grid,
+      .blog-cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .landing-nav {
+        padding: 0 20px;
+      }
+
+      section,
+      .hero,
+      .cta-section,
+      .landing-footer,
+      .stats-bar {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .divider {
+        margin: 0 20px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .landing-nav {
+        flex-wrap: wrap;
+        height: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        gap: 12px;
+      }
+
+      .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .nav-cta {
+        margin-left: auto;
+      }
+
+      .hero {
+        padding-top: 170px;
+      }
+
+      .hero h1 {
+        font-size: clamp(42px, 14vw, 72px);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .nav-cta,
+      .hero-actions,
+      .cta-actions-row,
+      .footer-links {
+        width: 100%;
+      }
+
+      .nav-cta,
+      .hero-actions,
+      .cta-actions-row {
+        flex-direction: column;
+      }
+
+      .nav-cta .btn,
+      .hero-actions .btn,
+      .cta-actions-row .btn {
+        width: 100%;
+      }
+
+      .code-titlebar,
+      .component-toolbar {
+        flex-wrap: wrap;
+      }
+
+      .code-tabs {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .code-tab {
+        flex: 1;
+      }
+
+      .pricing-card {
+        padding: 24px;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    const tabButtons = Array.from(document.querySelectorAll(".code-tab"));
+    const tabPanels = Array.from(document.querySelectorAll(".tab-content"));
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.getAttribute("data-tab-target");
+        tabButtons.forEach((tab) => tab.classList.remove("active"));
+        tabPanels.forEach((panel) => panel.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById(`tab-${target}`)?.classList.add("active");
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+  </script>
+</Layout>

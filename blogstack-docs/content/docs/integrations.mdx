@@ -1,0 +1,59 @@
+---
+title: Comments and newsletter integrations
+description: Named slots for customer-owned Giscus comments and Buttondown forms.
+---
+
+BlogStack supplies the commentsSlot and newsletterSlot interfaces. Provider accounts, moderation, subscriber management and delivery stay with the chosen provider.
+
+## Giscus comments
+
+Configure a public GitHub repository with Discussions and install the Giscus app. Get the repository/category IDs from the [Giscus configurator](https://giscus.app/) and follow the [official React wrapper documentation](https://github.com/giscus/giscus-component).
+
+Install @giscus/react in the customer website, then define a client component:
+
+```tsx
+"use client";
+import Giscus from "@giscus/react";
+
+export function ArticleComments({ postId }: { postId: string }) {
+  return (
+    <Giscus
+      repo="YOUR-OWNER/YOUR-REPO"
+      repoId="YOUR-REPOSITORY-ID"
+      category="YOUR-CATEGORY"
+      categoryId="YOUR-CATEGORY-ID"
+      mapping="specific"
+      term={postId}
+      strict="1"
+      lang="en"
+      loading="lazy"
+    />
+  );
+}
+```
+
+Pass `commentsSlot={<ArticleComments postId={post.id}/>}` to BlogPost from a client wrapper. Use a stable article ID so title changes do not create another discussion.
+
+## Buttondown newsletter
+
+Use your newsletter's username and a native form, following [Buttondown's embed guide](https://docs.buttondown.com/building-your-subscriber-base). Do not replace the form submission with fetch; the provider may need to display a CAPTCHA or validation page.
+
+```tsx
+export function NewsletterForm() {
+  return (
+    <form
+      action="https://buttondown.com/api/emails/embed-subscribe/YOUR-USERNAME"
+      method="post"
+    >
+      <label htmlFor="newsletter-email">Email for article updates</label>
+      <input id="newsletter-email" type="email" name="email" required />
+      <input type="hidden" name="embed" value="1" />
+      <button type="submit">Subscribe</button>
+    </form>
+  );
+}
+```
+
+Pass `newsletterSlot={<NewsletterForm/>}` to BlogPost. Add your provider-specific notices and consent text.
+
+These are optional integration examples. Native comment moderation and newsletter delivery are outside the BlogStack launch.

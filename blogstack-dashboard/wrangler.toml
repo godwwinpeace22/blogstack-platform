@@ -1,0 +1,8 @@
+name = "blogstack-dashboard"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+[vars]
+VITE_API_URL = "https://blogstack-app.hidden-silence-2d18.workers.dev"
+VITE_CDN_URL = "https://blogstack-cdn.hidden-silence-2d18.workers.dev"

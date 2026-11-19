@@ -1,0 +1,17 @@
+{
+  "name": "@blogstack/registry",
+  "version": "0.0.0",
+  "private": true,
+  "description": "shadcn/ui registry builder for @blogstack/ui components",
+  "type": "module",
+  "scripts": {
+    "build": "node src/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "serve": "node src/serve.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}
