@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type MiddlewareHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod/v4";
@@ -16,7 +16,7 @@ import {
 import { notifyJob } from "../lib/jobs.js";
 import type { HonoEnv } from "../types.js";
 const app = new Hono<HonoEnv>();
-app.use("*", async (c, next) => {
+const selfHostedBillingGuard: MiddlewareHandler<HonoEnv> = async (c, next) => {
   if (c.req.method !== "GET") {
     const selfHosted =
       c.env.DEPLOYMENT_MODE === "self_hosted" ||
@@ -31,7 +31,10 @@ app.use("*", async (c, next) => {
       });
   }
   return next();
-});
+};
+app.use("/billing/webhooks/polar", selfHostedBillingGuard);
+app.use("/accounts/:accountId/billing", selfHostedBillingGuard);
+app.use("/accounts/:accountId/billing/*", selfHostedBillingGuard);
 app.post("/billing/webhooks/polar", async (c) => {
   const headers: Record<string, string> = {};
   c.req.raw.headers.forEach((value, key) => {

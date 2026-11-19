@@ -186,6 +186,21 @@ export default {
     )
       ctx.waitUntil(runLifecycle(env));
     else ctx.waitUntil(drainJobs(env));
+    if (
+      env.OPERATIONS_ON_MINUTE_CRON === "true" &&
+      env.OPERATIONS &&
+      Math.floor(controller.scheduledTime / 60000) % 5 === 0
+    ) {
+      ctx.waitUntil(
+        env.OPERATIONS.fetch("https://operations/tick", {
+          method: "POST",
+        }).then(async (response) => {
+          await response.body?.cancel();
+          if (!response.ok)
+            throw new Error("Private operations scheduler failed");
+        }),
+      );
+    }
   },
   async queue(
     batch: MessageBatch<{ jobId: string }>,

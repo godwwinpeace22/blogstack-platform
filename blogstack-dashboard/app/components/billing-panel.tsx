@@ -80,9 +80,10 @@ export function BillingPanel() {
   }, [activeId, owner, billing.data?.configured, action.mutate]);
   if (!owner)
     return (
-      <Panel title="Subscription">
+      <Panel title="Account settings">
         <p className="text-sm text-muted-foreground">
-          Your workspace owner manages the subscription and shared allowances.
+          Your workspace owner manages account settings and shared resource
+          budgets.
         </p>
       </Panel>
     );
@@ -92,7 +93,7 @@ export function BillingPanel() {
   return (
     <div className="space-y-6">
       <ErrorMessage error={billing.error || action.error} />
-      {billing.isLoading ? <p role="status">Loading subscription…</p> : null}
+      {billing.isLoading ? <p role="status">Loading account…</p> : null}
       {data ? (
         <>
           <Panel

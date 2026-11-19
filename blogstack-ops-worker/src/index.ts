@@ -34,6 +34,10 @@ export default {
         { error: "Operations are not enabled" },
         { status: 503 },
       );
+    if (request.method === "POST" && path === "/tick") {
+      await tick(env);
+      return Response.json({ scheduled: true }, { status: 202 });
+    }
     if (request.method === "POST" && path === "/backup")
       return Response.json(await startBackup(env, true), { status: 202 });
     if (request.method === "POST" && path === "/monitor")

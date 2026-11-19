@@ -10,6 +10,14 @@ export const DEFAULT_LIMITS = Object.freeze({
   maxPosts: 10_000,
   auditDays: 1,
 });
+export function assertMigrationTarget(accountCount, mode) {
+  if (!Number.isSafeInteger(accountCount) || accountCount < 0)
+    throw new Error("Could not verify the target database");
+  if (accountCount > 0 && mode !== "self_hosted")
+    throw new Error(
+      "Refusing to migrate or convert a managed database with existing accounts. Use a fresh self-hosted database.",
+    );
+}
 const bounds = {
   maxPeople: [1, 1_000_000],
   storageBytes: [1, 1_000_000_000_000_000],
@@ -254,6 +262,7 @@ export function workerConfigs(config, resources, { local = false } = {}) {
       service: c.name + "-ops",
     });
     configs.app.vars.MEDIA_DELETE_GRACE_SECONDS = "172800";
+    configs.app.vars.OPERATIONS_ON_MINUTE_CRON = "true";
     configs.ops = {
       ...base,
       name: c.name + "-ops",
@@ -285,7 +294,8 @@ export function workerConfigs(config, resources, { local = false } = {}) {
           },
         ],
       },
-      triggers: { crons: ["*/5 * * * *"] },
+      // The API's one-minute cron invokes /tick through its private binding.
+      triggers: { crons: [] },
       vars: {
         OPS_ENABLED: "true",
         CF_ACCOUNT_ID: c.accountId,

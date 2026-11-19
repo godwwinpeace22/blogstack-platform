@@ -17,9 +17,11 @@ import {
   workerConfigs,
   secretsFor,
   selfHostedSql,
+  assertMigrationTarget,
 } from "./lib/self-hosting.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+process.umask(0o077);
 process.chdir(root);
 const dir = join(root, ".self-hosted"),
   file = (name) => join(dir, name);
@@ -238,6 +240,40 @@ function migrate(c) {
   const mode = local
     ? ["--local", "--persist-to", file("state")]
     : ["--remote"];
+  const inspect = (command) =>
+    JSON.parse(
+      wrangler(
+        [
+          "d1",
+          "execute",
+          "MAIN_DB",
+          "--config",
+          cfg("app"),
+          ...mode,
+          "--command",
+          command,
+          "--json",
+        ],
+        c,
+        { capture: true },
+      ),
+    );
+  const tables =
+    inspect(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('accounts','deployment_settings')",
+    )[0]?.results ?? [];
+  if (tables.some((row) => row.name === "accounts")) {
+    const existing = inspect(
+      "SELECT COUNT(*) AS account_count FROM accounts" +
+        (tables.some((row) => row.name === "deployment_settings")
+          ? "; SELECT mode FROM deployment_settings WHERE id=1"
+          : ""),
+    );
+    assertMigrationTarget(
+      existing[0]?.results?.[0]?.account_count,
+      existing[1]?.results?.[0]?.mode,
+    );
+  }
   wrangler(
     ["d1", "migrations", "apply", "MAIN_DB", "--config", cfg("app"), ...mode],
     c,
@@ -295,7 +331,10 @@ function migrate(c) {
 function build(c) {
   run("npm", ["run", "build:packages"], c);
   run("npm", ["run", "build", "-w", "@blogstack/dashboard"], c, {
-    extraEnv: { VITE_API_URL: installUrls(c, local).app },
+    extraEnv: {
+      VITE_API_URL: installUrls(c, local).app,
+      VITE_DEPLOYMENT_MODE: "self_hosted",
+    },
   });
 }
 function deploy(c) {
@@ -418,7 +457,7 @@ async function check(c) {
     headers: { accept: "text/html" },
     signal: AbortSignal.timeout(15000),
   });
-  if (!page.ok || !(await page.text()).includes('id="root"'))
+  if (!page.ok || !(await page.text()).includes('id="app"'))
     throw new Error("Dashboard installation check failed");
   const media = await fetch(urls.media + "/missing-installation-probe", {
     signal: AbortSignal.timeout(15000),

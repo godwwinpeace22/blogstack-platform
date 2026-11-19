@@ -34,6 +34,7 @@ export interface Bindings {
   ANALYTICS_DATASET?: string;
   DEPLOYMENT_MODE?: "hosted" | "self_hosted";
   LIFECYCLE_ON_MINUTE_CRON?: string;
+  OPERATIONS_ON_MINUTE_CRON?: string;
   POLAR_ACCESS_TOKEN?: string;
   POLAR_WEBHOOK_SECRET?: string;
   POLAR_SERVER?: "sandbox" | "production";

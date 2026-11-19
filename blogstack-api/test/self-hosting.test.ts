@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { app } from "../src/index.js";
+import worker, { app } from "../src/index.js";
 import {
   accountAccess,
   limitsFor,
@@ -15,6 +15,7 @@ import {
   workerConfigs,
   selfHostedSql,
   secretsFor,
+  assertMigrationTarget,
 } from "../../scripts/lib/self-hosting.mjs";
 
 const config = validateInstall({
@@ -57,6 +58,53 @@ async function request(
   );
 }
 describe("operator-owned full-platform installations", () => {
+  test("deployment preflight protects managed data before any migration runs", () => {
+    expect(() => assertMigrationTarget(1, "hosted")).toThrow(
+      "Refusing to migrate",
+    );
+    expect(() => assertMigrationTarget(1, undefined)).toThrow(
+      "Refusing to migrate",
+    );
+    expect(() => assertMigrationTarget(undefined, undefined)).toThrow(
+      "Could not verify",
+    );
+    expect(() => assertMigrationTarget(0, undefined)).not.toThrow();
+    expect(() => assertMigrationTarget(1, "self_hosted")).not.toThrow();
+  });
+  test("self-hosted operator backups remain available while payments stay disabled", async () => {
+    const f = selfHosted();
+    f.env.OPERATOR_EMAIL = "owner@example.com";
+    f.env.OPERATIONS = {
+      fetch: async () => Response.json({ queued: true }, { status: 202 }),
+    } as unknown as Fetcher;
+    const owner = await f.session();
+    expect(
+      (await request(f, "/internal/operations/backup", "POST", {}, owner))
+        .status,
+    ).toBe(202);
+    expect(
+      (
+        await request(
+          f,
+          "/internal/operations/backup",
+          "POST",
+          {},
+          await f.session("other"),
+        )
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await request(
+          f,
+          "/accounts/account/billing/checkout",
+          "POST",
+          { plan: "growth", interval: "month" },
+          owner,
+        )
+      ).status,
+    ).toBe(409);
+  });
   test("managed is the migration default and installer refuses an existing managed account database", async () => {
     const f = fixture();
     f.sql.run("UPDATE account_billing SET trial_ends_at=?", [f.now - 1]);
@@ -345,6 +393,8 @@ describe("operator-owned full-platform installations", () => {
     expect(secretsFor("app", secrets)).not.toHaveProperty("CF_BACKUP_TOKEN");
     expect(secretsFor("app", secrets)).not.toHaveProperty("POLAR_ACCESS_TOKEN");
     expect(configs.ops.workers_dev).toBe(false);
+    expect(configs.app.triggers.crons).toHaveLength(1);
+    expect(configs.ops.triggers.crons).toHaveLength(0);
     expect(configs.ops.r2_buckets[1].bucket_name).toBe(
       "test-publication-backups",
     );
@@ -362,5 +412,30 @@ describe("operator-owned full-platform installations", () => {
       { limits: { maxBlogs: -1 } },
     ])
       expect(() => validateInstall({ ...config, ...input })).toThrow();
+  });
+  test("one API cron drives private five-minute operations without changing legacy managed schedules", async () => {
+    const f = selfHosted();
+    const calls: string[] = [];
+    f.env.OPERATIONS = {
+      fetch: async (input: string) => {
+        calls.push(input);
+        return Response.json({ scheduled: true }, { status: 202 });
+      },
+    } as unknown as Fetcher;
+    const controller = (minute: number) =>
+      ({
+        cron: "* * * * *",
+        scheduledTime: Date.UTC(2026, 10, 19, 12, minute),
+      }) as ScheduledController;
+    await worker.scheduled(controller(5), f.env, f.ctx);
+    await Promise.all(f.pending);
+    expect(calls).toHaveLength(0);
+    f.env.OPERATIONS_ON_MINUTE_CRON = "true";
+    await worker.scheduled(controller(6), f.env, f.ctx);
+    await Promise.all(f.pending);
+    expect(calls).toHaveLength(0);
+    await worker.scheduled(controller(10), f.env, f.ctx);
+    await Promise.all(f.pending);
+    expect(calls).toEqual(["https://operations/tick"]);
   });
 });

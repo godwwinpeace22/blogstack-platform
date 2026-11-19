@@ -49,7 +49,7 @@ Open `.self-hosted/secrets.json` locally and fill `RESEND_API_KEY` and `CF_ANALY
 
 The default enables AI and reader analytics. Pass `--without-ai` or `--without-analytics` to `init` to omit those provider bindings. The publishing service still works; disabled reports/assistance show as unavailable. Link checking uses a separate public-egress worker without database bindings or credentials.
 
-To include automated backups and alerts, add `--with-operations` to `init` and set `CF_BACKUP_TOKEN` as well. The installer then creates a separate state database and private backup bucket, four queues and an operations worker with no public route. Backup credentials are never uploaded to the API, CDN or link scanner. Core installations use the durable D1 job outbox plus cron, with jobs starting on the next minute tick.
+To include automated backups and alerts, add `--with-operations` to `init` and set `CF_BACKUP_TOKEN` as well. The installer then creates a separate state database and private backup bucket, four queues and an operations worker with no public route. Backup credentials are never uploaded to the API, CDN or link scanner. Both installation profiles use one API cron. It drains the durable D1 job outbox every minute, runs lifecycle work hourly and invokes private operations every five minutes when enabled. Operations has no separate cron; this shares the API scheduler rather than providing an independent outage alarm.
 
 ## 3. Provision and deploy
 

@@ -90,7 +90,9 @@ function RegisterPage() {
           <CardDescription>
             {safeDestination(search.redirect).startsWith("/invite/")
               ? "Create an account to join the invited workspace."
-              : "Try Studio free for 14 days. No card required."}
+              : import.meta.env.VITE_DEPLOYMENT_MODE === "self_hosted"
+                ? "Create your self-hosted workspace. No BlogStack subscription required."
+                : "Try Studio free for 14 days. No card required."}
           </CardDescription>
         </CardHeader>
         <CardContent>
