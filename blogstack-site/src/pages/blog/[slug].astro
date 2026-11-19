@@ -1,6 +1,8 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
@@ -19,20 +21,7 @@ function formatDate(date: Date) {
 ---
 
 <Layout title={`${post.data.title} — BlogStack Blog`} description={post.data.description}>
-  <nav class="page-nav">
-    <a href="/" class="nav-logo"><div class="dot"></div>BlogStack</a>
-    <ul class="nav-links">
-      <li><a href="/#components">Features</a></li>
-      <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="/privacy">Privacy</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/login" class="btn btn-ghost">Sign in</a>
-      <a href="https://blogstack-app.hidden-silence-2d18.workers.dev/register" class="btn btn-primary">Get started →</a>
-    </div>
-  </nav>
+  <Navbar/>
 
   <main id="main-content" class="page-main">
     <article class="post-page">
@@ -64,17 +53,7 @@ function formatDate(date: Date) {
     </article>
   </main>
 
-  <footer class="page-footer">
-    <div class="footer-logo"><div class="dot"></div>BlogStack</div>
-    <ul class="footer-links">
-      <li><a href="/#components">Features</a></li>
-      <li><a href="/#pricing">Pricing</a></li>
-      <li><a href="/privacy">Privacy</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="https://blogstack-docs.hidden-silence-2d18.workers.dev">Docs</a></li>
-    </ul>
-    <div class="footer-copy">© 2026 BlogStack</div>
-  </footer>
+  <Footer/>
 </Layout>
 
 <style>

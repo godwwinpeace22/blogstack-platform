@@ -5,7 +5,7 @@ description: Request-time articles, native routes, metadata, sitemap and RSS.
 
 ## Create and connect a project
 
-BlogStack is currently in private preview. Signup is limited to the operator and invited clients; checkout is disabled.
+Build a personal blog, a company publication or a blog for a client. Follow these steps yourself, or use the [AI setup guide](/docs/ai-setup) to prepare a prompt for your coding assistant.
 
 1. Register and verify your email. Your no-card, 14-day Studio trial starts when you create your first blog.
 2. Create a blog. In project settings, set Website blog URL to your real route, for example https://example.com/blog.
@@ -60,6 +60,10 @@ npx shadcn@latest add https://blogstack-registry.hidden-silence-2d18.workers.dev
 
 The registry is shadcn compatible and the components remain MIT licensed. For local registry development, build blogstack-registry and run npm run serve there, then use http://localhost:4173/r/blog-post.json.
 
-## Invite the client
+## Add other authors when you need them
 
-Use Project → Members to invite a client. The invitation survives signup and verification. Client access does not start a separate trial in their own billing account.
+Use Project → Members to invite a teammate, contributor or client. The invitation survives signup and verification. Client access does not start a separate trial in their own billing account.
+
+## Host the frontend yourself
+
+The starter runs on your own Node.js server or Cloudflare. See the [self-hosting guide](/docs/self-hosting) for the minimal setup and what remains managed by BlogStack Cloud.

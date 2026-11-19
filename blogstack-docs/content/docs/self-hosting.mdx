@@ -1,0 +1,70 @@
+---
+title: Self-host your blog frontend
+description: Run the Next.js blog on your own Node.js server or Cloudflare while BlogStack manages publishing.
+---
+
+BlogStack separates the website from the publishing service. You can host and customize the **blog frontend** yourself using the public SDK, MIT-licensed React components and downloadable Next.js starter. BlogStack Cloud continues to provide the publishing dashboard, API, media delivery, analytics and AI.
+
+A complete independently hosted dashboard/backend package is not currently offered. These steps do not deploy that backend or remove the need for a BlogStack account.
+
+## What you need
+
+- A BlogStack project, its public slug and a published article.
+- A Node.js installation compatible with the starter's dependencies; Node 24 is the verified version.
+- Your website's final origin, such as `https://example.com`.
+- A Node.js server, a compatible container host, or your own Cloudflare account.
+
+No private BlogStack management key is required to render public articles.
+
+## Start with the standalone app
+
+[Download the Next.js starter](https://blogstack-registry.hidden-silence-2d18.workers.dev/downloads/blogstack-nextjs-0.2.0.tar.gz) into a new directory and extract it. Inspect its README and package manifest, then run:
+
+```sh
+npm install
+cp .env.example .env.local
+```
+
+Set these values in `.env.local`:
+
+```dotenv
+BLOGSTACK_PROJECT_SLUG=your-project
+BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev
+SITE_URL=https://example.com
+```
+
+In BlogStack, open your project settings and set **Website blog URL** to `https://example.com/blog`. The website checks that this matches its configured origin. For local testing, use `http://localhost:3003` for `SITE_URL` and `http://localhost:3003/blog` in project settings, then switch both values to your production address when deploying.
+
+```sh
+npm run build
+npm run start
+```
+
+The starter serves on port 3003. Put a reverse proxy with HTTPS in front of it for an internet-facing server, or configure the port in the starter's scripts for your host. Keep the process running with your host's normal process manager. These commands start the **website**, not a second publishing backend.
+
+The blog index is at `/blog`; articles use `/blog/[slug]`. Request-time fetching means published updates appear on the next request.
+
+## Add it to an existing site
+
+Follow the [Next.js quickstart](/docs/quickstart), copying only the blog routes, supporting components and styles. Preserve existing navigation, sitemap, robots rules, application routes and environment configuration. The reference uses Tailwind CSS 4; merge its source scanning and theme tokens into your existing setup rather than replacing your styles.
+
+The framework-independent [JavaScript client](/docs/sdk) can power other frontends. The complete reference routes currently target Next.js App Router.
+
+## Deploy to Cloudflare
+
+Use the official OpenNext Cloudflare adapter with your own account. The [quickstart](/docs/quickstart#deploy-on-cloudflare) records the verified adapter versions and configuration. Your website stays on Cloudflare; it does not require a Vercel project.
+
+## Check the running website
+
+- Open an article and inspect its initial HTML without JavaScript. The article body and metadata should already be present.
+- Check the cover image, canonical URL, social metadata and BlogPosting JSON-LD.
+- Open `/blog/sitemap.xml` and `/blog/feed.xml`.
+- Add the blog sitemap beside your existing website sitemap in robots configuration.
+- Save a private revision, confirm it is not public, then republish and check again.
+- Unpublish an article and confirm its public route returns 404.
+
+Public article rendering requires network access to the BlogStack API. Media is delivered through BlogStack's CDN. Your infrastructure, domain and any separate integration-provider charges remain yours to manage.
+
+## Set up with a coding assistant
+
+Use the [AI setup guide](/docs/ai-setup) and a generated prompt to help your coding assistant connect the starter to your existing codebase. Review its changes and run the checks before deploying.

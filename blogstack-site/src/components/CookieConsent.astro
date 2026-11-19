@@ -1,0 +1,56 @@
+---
+import { GOOGLE_ANALYTICS_ID } from "../lib/site";
+const measurementId = import.meta.env.PROD ? GOOGLE_ANALYTICS_ID : "";
+---
+<section class="cookie-notice" role="dialog" aria-modal="false" aria-labelledby="cookie-title" aria-describedby="cookie-description" data-cookie-notice data-measurement-id={measurementId} hidden>
+  <div class="cookie-heading"><h2 id="cookie-title">Your cookie choices</h2><button type="button" class="cookie-close" aria-label="Close cookie preferences" data-cookie-close hidden>Close</button></div>
+  <p id="cookie-description">With your permission, Google Analytics helps us see which pages are useful. Essential storage remembers your choice.</p>
+  <p class="privacy-signal" data-cookie-signal hidden>Your browser keeps optional analytics off.</p>
+  <div class="cookie-actions"><button type="button" data-cookie-choice="essential">Essential only</button><button type="button" data-cookie-choice="analytics">Accept analytics</button></div>
+  <a href="/privacy#website-cookies">Read our cookie policy</a>
+</section>
+<script>
+ import { CookiePreferences } from "../lib/consent";
+ const notice=document.querySelector<HTMLElement>("[data-cookie-notice]");
+ if(notice){
+   const id=notice.dataset.measurementId || "", globals=window as unknown as Record<string,any>;
+   const nav=navigator as Navigator & {globalPrivacyControl?:boolean};
+   const privacyRequested=nav.doNotTrack==="1" || nav.globalPrivacyControl===true;
+   let loaded=false, previousFocus:HTMLElement|null=null;
+   const queue=function(..._args:unknown[]){(globals.dataLayer ||= []).push(arguments);};
+   const apply=(enabled:boolean)=>{
+     if(!id)return;
+     globals["ga-disable-"+id]=!enabled;
+     if(enabled && !loaded){
+       loaded=true;globals.dataLayer ||= [];globals.gtag=queue;
+       queue("consent","default",{analytics_storage:"denied",ad_storage:"denied",ad_user_data:"denied",ad_personalization:"denied"});
+       queue("consent","update",{analytics_storage:"granted"});
+       queue("js",new Date());
+       let referrer="";try{referrer=new URL(document.referrer).origin;}catch{}
+       queue("config",id,{send_page_view:false,allow_google_signals:false,allow_ad_personalization_signals:false,cookie_domain:location.hostname,cookie_expires:15552000,page_location:location.origin+location.pathname,page_referrer:referrer});
+       queue("event","page_view",{page_location:location.origin+location.pathname,page_referrer:referrer,page_title:document.title});
+       const script=document.createElement("script");script.async=true;script.src="https://www.googletagmanager.com/gtag/js?id="+encodeURIComponent(id);script.dataset.blogstackAnalytics="";document.head.append(script);
+     }else if(!enabled && loaded){
+       document.querySelector("[data-blogstack-analytics]")?.remove();
+       const domains=[location.hostname,"."+location.hostname,""];
+       for(const name of document.cookie.split(";").map(v=>v.trim().split("=")[0] || "").filter(n=>/^_ga(?:_|$)|^_gid$|^_gat/.test(n))) for(const domain of domains) document.cookie=name+"=; Max-Age=0; Path=/; SameSite=Lax"+(domain?"; Domain="+domain:"");
+       location.reload();
+     }
+   };
+   let storage:Pick<Storage,"getItem"|"setItem">;
+   try{storage=localStorage;}catch{storage={getItem:()=>null,setItem:()=>{}};}
+   const preferences=new CookiePreferences({measurementId:id,storage,privacyRequested,apply});
+   const render=()=>{
+     notice.dataset.choice=preferences.choice || "unset";notice.dataset.analytics=String(preferences.enabled);
+     notice.querySelector<HTMLElement>("[data-cookie-signal]")!.hidden=!privacyRequested;
+     notice.querySelector<HTMLButtonElement>("[data-cookie-choice=analytics]")!.disabled=privacyRequested;
+     notice.querySelector<HTMLElement>("[data-cookie-close]")!.hidden=preferences.choice===null;
+   };
+   render();notice.hidden=preferences.choice!==null;
+   for(const button of notice.querySelectorAll<HTMLButtonElement>("[data-cookie-choice]")) button.addEventListener("click",()=>{preferences.choose(button.dataset.cookieChoice as "essential"|"analytics");render();notice.hidden=true;previousFocus?.focus();});
+   notice.querySelector("[data-cookie-close]")!.addEventListener("click",()=>{notice.hidden=true;previousFocus?.focus();});
+   for(const button of document.querySelectorAll<HTMLElement>("[data-cookie-settings]")) button.addEventListener("click",()=>{previousFocus=button;notice.hidden=false;render();notice.querySelector<HTMLButtonElement>("[data-cookie-choice=essential]")!.focus();});
+   window.addEventListener("storage",event=>{if(event.key==="blogstack-cookie-choice-v1")location.reload();});
+ }
+</script>
+<style>.cookie-notice[hidden],.cookie-notice [hidden]{display:none!important}.cookie-notice{position:fixed;bottom:22px;left:22px;z-index:100;padding:24px;width:min(470px,calc(100vw - 44px));background:#151517;border-radius:15px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 15px 65px rgba(0,0,0,.22)}.cookie-heading{display:flex;gap:16px;justify-content:space-between;align-items:center}.cookie-notice h2{font-size:1.05rem;font-weight:500;letter-spacing:-.02em}.cookie-notice p{font-size:.87rem;line-height:1.75;color:var(--text-muted);margin:12px 0 20px}.cookie-actions{display:flex;gap:12px}.cookie-actions button{flex:1;font:500 .85rem var(--sans);padding:11px 12px;border:1px solid rgba(255,255,255,.18);border-radius:7px;background:#232326;color:var(--text);cursor:pointer}.cookie-actions button:hover{background:#303033}.cookie-actions button:disabled{opacity:.45;cursor:default}.cookie-notice>a{display:inline-block;margin-top:17px;font-size:.76rem;text-decoration:underline;text-underline-offset:3px;color:var(--text-muted)}.cookie-close{background:none;color:var(--text-muted);font:400 .75rem var(--sans);border:0;cursor:pointer}.privacy-signal{color:#d9dfb8!important}@media(max-width:480px){.cookie-notice{left:12px;bottom:12px;width:calc(100vw - 24px);padding:20px}.cookie-notice h2{font-size:1rem}}</style>

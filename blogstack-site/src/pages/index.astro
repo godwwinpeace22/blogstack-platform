@@ -3,12 +3,16 @@ import Layout from "../layouts/Layout.astro";
 import PricingPlans from "../components/PricingPlans.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
+import Audiences from "../components/Audiences.astro";
+import AiAssistance from "../components/AiAssistance.astro";
+import SetupAssistant from "../components/SetupAssistant.astro";
+import Hosting from "../components/Hosting.astro";
 import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 ---
 
 <Layout
   title="BlogStack — Add a complete blog to any website"
-  description="Install native, editable blog pages in your existing website, then hand publishing to your client."
+  description="A blog for your personal website, company publication or client projects. Native components, a focused editor, SEO, analytics and AI assistance."
 >
   <Navbar/>
 
@@ -19,15 +23,15 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        Built for developers and agencies
+        For personal blogs, teams and client projects
       </div>
 
       <h1>Add a complete blog<br />to <em>any website</em></h1>
-      <p class="hero-sub">Install native blog pages that match the site, then hand writing and publishing to your client. You own the frontend; BlogStack runs everything behind it.</p>
+      <p class="hero-sub">Share what you know. Tell your company’s story. Build a publication that feels at home on your website, with an editor you’ll enjoy using and a stack you control.</p>
 
       <div class="hero-actions">
-        <a href={DEMO_URL} class="btn btn-primary">See the live blog →</a>
-        <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev/docs/quickstart" class="btn btn-ghost">Read the installation guide</a>
+        <a href={ACCESS_URL} class="btn btn-primary">Start free trial</a>
+        <a href={DEMO_URL} class="btn btn-ghost">Explore the live blog</a>
       </div>
 
       <div class="hero-code-preview">
@@ -42,7 +46,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
             <div class="code-tabs">
               <button type="button" class="code-tab active" data-tab-target="sdk">Install</button>
               <button type="button" class="code-tab" data-tab-target="components">Components</button>
-              <button type="button" class="code-tab" data-tab-target="editor">Handover</button>
+              <button type="button" class="code-tab" data-tab-target="editor">Publish</button>
             </div>
           </div>
           <div id="tab-sdk" class="tab-content active">
@@ -51,7 +55,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 1. Create a BlogStack project
 2. Copy the Next.js reference routes
 3. Set your project slug and website URL
-4. Invite your client from the dashboard
+4. Publish your first story
 
 ✓ Native blog index and article pages
 ✓ Metadata, JSON-LD, sitemap and RSS
@@ -76,16 +80,16 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
           <div id="tab-editor" class="tab-content">
 <pre>In the BlogStack dashboard:
 
-Project → Members → Invite client
-Role: Editor
+Write on your own, or add your team.
+Project → Members → Invite an author
 
-✓ Client writes in a focused workspace
-✓ Access stays limited to the project
+✓ A focused workspace for every publication
+✓ Choose who can write, edit and publish
 ✓ Autosaves remain private drafts
 ✓ Publishing requires an explicit action
 
 Studio and Growth:
-Use your agency name and logo</pre>
+Use your own workspace name and logo</pre>
           </div>
         </div>
       </div>
@@ -101,10 +105,12 @@ Use your agency name and logo</pre>
 
     <hr class="divider" />
 
+    <Audiences/>
+
     <section id="components" class="reveal">
       <div class="section-label">// What you get</div>
       <h2 class="section-title">Everything a publication needs.<br /><em>One connected stack.</em></h2>
-      <p class="section-sub">Install the native frontend, hand publishing to the client, and let BlogStack run the operational layer.</p>
+      <p class="section-sub">The parts you need to build, write and grow a blog. Your frontend stays in your codebase. Publishing, media and content delivery work together in BlogStack.</p>
 
       <div class="pillars">
         <div class="pillar">
@@ -142,15 +148,15 @@ Use your agency name and logo</pre>
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">BlogStack Cloud</div><div class="pillar-num">03</div></div>
           <div class="pillar-body">
-            <h3>Client handover and operations</h3>
-            <p>Invite the client to write and publish while BlogStack manages private drafts, media, SEO checks and content delivery.</p>
+            <h3>A workspace for your publication</h3>
+            <p>Write for yourself or bring your authors together. Manage drafts, media, search appearance and publishing from one focused workspace.</p>
             <div class="pillar-features">
-              <div class="pillar-feature">Client roles and invitations</div>
-              <div class="pillar-feature">Project-scoped client access</div>
+              <div class="pillar-feature">Author roles and invitations</div>
+              <div class="pillar-feature">Access scoped to each publication</div>
               <div class="pillar-feature">Comments integration slot</div>
               <div class="pillar-feature">Newsletter integration slot</div>
               <div class="pillar-feature">Analytics and AI assistance</div>
-              <div class="pillar-feature">Multi-project agency view</div>
+              <div class="pillar-feature">Manage multiple publications</div>
             </div>
           </div>
         </div>
@@ -188,7 +194,7 @@ Use your agency name and logo</pre>
                 <div class="blog-card-img blog-card-img-blue"><div class="blog-card-img-pattern"></div></div>
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Product</div>
-                  <div class="blog-card-title">Hand publishing to your client</div>
+                  <div class="blog-card-title">The story behind our latest release</div>
                   <div class="blog-card-meta"><span>Mar 8</span><div class="blog-card-meta-dot"></div><span>4 min read</span></div>
                 </div>
               </div>
@@ -217,7 +223,7 @@ Use your agency name and logo</pre>
 
           <div class="showcase-step"><div class="step-num">1</div><div class="step-content"><h4>Choose the existing site</h4><p>Connect your public project slug and set the blog URL in project settings.</p></div></div>
           <div class="showcase-step"><div class="step-num">2</div><div class="step-content"><h4>Generate the complete blog</h4><p>Use the Next.js reference integration for article routes, SEO metadata, sitemap and RSS.</p></div></div>
-          <div class="showcase-step"><div class="step-num">3</div><div class="step-content"><h4>Invite the client</h4><p>They publish through BlogStack while the agency keeps control of the website and project.</p></div></div>
+          <div class="showcase-step"><div class="step-num">3</div><div class="step-content"><h4>Make it yours</h4><p>Match your design, publish your first article, and invite other authors whenever you need them.</p></div></div>
         </div>
 
         <div class="code-window showcase-window">
@@ -261,6 +267,13 @@ app/blog/feed.xml/route.ts
 
     <hr class="divider" />
 
+    <AiAssistance/>
+    <div class="m-rule"></div>
+    <SetupAssistant/>
+    <div class="m-rule"></div>
+    <Hosting/>
+    <div class="m-rule"></div>
+
     <section id="pricing" class="reveal">
       <div class="pricing-intro">
         <div class="section-label pricing-label">// Pricing</div>
@@ -275,9 +288,9 @@ app/blog/feed.xml/route.ts
 
     <div class="cta-section reveal">
       <h2>Your blog.<br /><em>Your stack.</em></h2>
-      <p>Add the blog your website needs, then give your client a place to publish.</p>
+      <p>Your next idea deserves more than a draft. Give it a place on your website.</p>
       <div class="cta-actions-row">
-        <a href={ACCESS_URL} class="btn btn-primary cta-btn">{ACCESS_LABEL} →</a>
+        <a href={ACCESS_URL} class="btn btn-primary cta-btn">{ACCESS_LABEL}</a>
         <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev" class="btn btn-ghost cta-btn">Read the docs</a>
       </div>
     </div>

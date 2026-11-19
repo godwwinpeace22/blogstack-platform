@@ -1,24 +1,25 @@
 ---
-import { APP_URL, DOCS_URL, DEMO_URL, ACCESS_URL, ACCESS_LABEL } from "../lib/site";
-const links = [{ href: "/features", label: "Features" }, { href: "/pricing", label: "Pricing" }, { href: DEMO_URL, label: "Live demo" }, { href: DOCS_URL, label: "Docs" }];
+import { APP_URL, DOCS_URL, ACCESS_URL, ACCESS_LABEL } from "../lib/site";
+const links = [{ href: "/features", label: "Features" }, { href: "/pricing", label: "Pricing" }, { href: "/#self-hosting", label: "Self-hosting" }, { href: "/get-started", label: "AI setup" }, { href: DOCS_URL, label: "Docs" }];
 ---
 <header class="site-header">
   <div class="site-header-inner">
-    <a class="site-brand" href="/" aria-label="BlogStack home"><span aria-hidden="true"></span>BlogStack</a>
+    <a class="site-brand" href="/" aria-label="BlogStack home"><img src="/brand/blogstack-horizontal-on-dark.svg" alt="BlogStack" width="1000" height="256" /></a>
     <nav class="site-desktop-nav" aria-label="Main navigation">
-      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname === link.href ? "page" : undefined}>{link.label}</a>)}
+      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname.replace(/\/$/, "") === link.href ? "page" : undefined}>{link.label}</a>)}
     </nav>
-    <div class="site-actions"><a class="site-signin" href={APP_URL + "/login"}>Sign in</a><a class="site-access" href={ACCESS_URL}>{ACCESS_LABEL}<span aria-hidden="true"> →</span></a></div>
+    <div class="site-actions"><a class="site-signin" href={APP_URL + "/login"}>Sign in</a><a class="site-access" href={ACCESS_URL}>{ACCESS_LABEL}</a></div>
     <details class="site-mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation">{links.map(link => <a href={link.href}>{link.label}</a>)}<a href={ACCESS_URL}>{ACCESS_LABEL}</a></nav></details>
   </div>
 </header>
 <style>
-  .site-header{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--border);background:rgba(9,9,11,.94);backdrop-filter:blur(12px)}
+  .site-header{position:sticky;top:16px;z-index:50;max-width:1240px;margin:16px auto 0;border-radius:14px;background:rgba(17,17,19,.94);box-shadow:0 0 0 1px rgba(255,255,255,.07),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(12px)}
   .site-header-inner{max-width:1400px;margin:auto;min-height:64px;padding:10px 32px;display:flex;align-items:center;gap:28px}
-  .site-brand{display:inline-flex;gap:9px;align-items:center;font:500 15px var(--mono);letter-spacing:-.025em;color:var(--text);text-decoration:none;white-space:nowrap}
-  .site-brand>span{height:7px;width:7px;border-radius:50%;background:var(--accent)}
+  .site-brand{display:inline-flex;flex-shrink:0;align-items:center;text-decoration:none}
+  .site-brand img{display:block;width:156px;height:auto}
   .site-desktop-nav{display:flex;gap:28px;margin:auto;font-size:13px}.site-desktop-nav a,.site-signin{color:var(--text-muted);text-decoration:none}.site-desktop-nav a:hover,.site-desktop-nav a[aria-current],.site-signin:hover{color:var(--text)}
   .site-actions{display:flex;align-items:center;gap:20px;font-size:13px}.site-access{padding:9px 14px;background:var(--accent);color:var(--bg);border-radius:6px;text-decoration:none;font-weight:600;white-space:nowrap}.site-access:hover{background:var(--accent-dim)}
   .site-mobile-menu{display:none;position:relative;margin-left:auto}.site-mobile-menu summary{cursor:pointer;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px}.site-mobile-menu nav{position:absolute;top:48px;right:0;min-width:210px;display:grid;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 16px 36px #09090b99}.site-mobile-menu nav a{padding:12px;color:var(--text);font-size:14px;text-decoration:none;border-radius:6px}.site-mobile-menu nav a:hover{background:var(--surface-2)}
-  @media(max-width:760px){.site-header-inner{padding:10px 20px;gap:20px}.site-desktop-nav,.site-access{display:none}.site-actions{margin-left:auto}.site-mobile-menu{display:block;margin-left:0}}
+  @media(max-width:900px){.site-header{margin:12px 16px 0;top:12px}.site-header-inner{padding:10px 20px;gap:20px}.site-desktop-nav,.site-access{display:none}.site-actions{margin-left:auto}.site-mobile-menu{display:block;margin-left:0}}
+  @media(max-width:480px){.site-header-inner{padding:10px 14px;gap:12px}.site-brand img{width:132px}}
 </style>

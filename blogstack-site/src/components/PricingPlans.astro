@@ -1,6 +1,6 @@
 ---
 import { PLANS,type Plan } from "@blogstack/core";
-import { SIGNUP_OPEN, ACCESS_URL, ACCESS_LABEL, APP_URL } from "../lib/site";
+import { ACCESS_URL, APP_URL } from "../lib/site";
 const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
 ---
 <div class="plans-grid">
@@ -19,14 +19,13 @@ const plans=Object.entries(PLANS) as [Plan,(typeof PLANS)[Plan]][];
    <li>{plan.linkChecks.toLocaleString("en-US")} external link checks/month</li>
    <li>{plan.auditDays===null?"Manual":plan.auditDays===1?"Daily":"Weekly"} link audits</li>
    <li>{plan.aiCredits} AI credits/month</li>
-   <li>{plan.customBranding?"Agency branding and attribution removal":"BlogStack-branded client workspace"}</li>
+   <li>{plan.customBranding?"Custom workspace branding and no attribution":"BlogStack-branded workspace"}</li>
    <li>API, JavaScript SDK and editable React UI</li>
   </ul>
-  <a href={ACCESS_URL} class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>{SIGNUP_OPEN ? "Start 14-day Studio trial" : ACCESS_LABEL} →</a>
-  {SIGNUP_OPEN ? <a class="annual-link" href={APP_URL+"/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a> : <p class="annual-link">Monthly and annual billing at launch</p>}
+  <a href={ACCESS_URL} class:list={["btn",id==="studio"?"btn-primary":"btn-ghost"]}>Start 14-day Studio trial</a>
+  <a class="annual-link" href={APP_URL+"/register?plan="+id+"&interval=year"}>Choose {plan.name} annually</a>
  </article>)}
 </div>
-<p class="allowances">USD, per account. Applicable taxes are calculated at checkout. All allowances are shared across blogs. Each blog supports 1,000 posts; images can be up to 10 MiB. AI and link-check allowances reset monthly, including on annual subscriptions. No automatic overage charges.</p>
 <style>
 .plans-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;text-align:left}.plan-card{display:flex;flex-direction:column;border:1px solid var(--border,#28282e);border-radius:18px;background:var(--surface,#111114);padding:30px}.plan-card.featured{border-color:var(--accent,#c4f26a)}.plan-name{font-size:16px;color:var(--muted,#a1a1aa);margin:0 0 18px}.price{font-size:48px;font-weight:650;letter-spacing:-2px;margin:0;line-height:1.15}.price span{font-size:14px;font-weight:400;letter-spacing:0;color:var(--muted,#a1a1aa)}.annual{font-size:13px;color:var(--muted,#a1a1aa);margin:12px 0 24px}.plan-card ul{list-style:none;padding:0;margin:0 0 30px;flex:1}.plan-card li{font-size:13px;line-height:1.6;padding:6px 0;border-bottom:1px solid var(--border,#28282e)}.plan-card .btn{display:block;text-align:center;padding:12px 8px;border-radius:7px;text-decoration:none;border:1px solid var(--border,#28282e);font-size:13px}.plan-card .btn-primary{background:var(--accent,#c4f26a);color:#111}.annual-link{margin-top:15px;text-align:center;font-size:12px;color:var(--muted,#a1a1aa)}.allowances{margin:24px 0 0;max-width:900px;color:var(--muted,#a1a1aa);font-size:12px;line-height:1.8}@media(max-width:850px){.plans-grid{grid-template-columns:1fr}.plan-card{padding:25px}.price{font-size:40px}}
 </style>

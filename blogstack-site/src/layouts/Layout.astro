@@ -1,4 +1,6 @@
 ---
+import CookieConsent from "../components/CookieConsent.astro";
+import "../styles/marketing.css";
 interface Props {
   title?: string;
   description?: string;
@@ -8,11 +10,10 @@ interface Props {
 
 const {
   title = "BlogStack — Add a complete blog to any website",
-  description = "Install native, editable blog pages in your existing website, then hand publishing to your client.",
+  description = "A complete blog for your personal website, company publication or client projects. Native components, a hosted editor, SEO, analytics and AI assistance.",
   ogImage = "/og-default.png",
   canonicalUrl = Astro.url.href,
 } = Astro.props;
-const preview = import.meta.env.PUBLIC_SIGNUP_OPEN !== "true";
 const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
 ---
 
@@ -21,13 +22,18 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico?v=open-folio-1" sizes="16x16 32x32 48x48 64x64" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=open-folio-1" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#e8ff47" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Primary meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    {preview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph -->
@@ -38,7 +44,7 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
     <meta property="og:image" content={socialImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="BlogStack — native blog pages and client publishing" />
+    <meta property="og:image:alt" content="BlogStack — your ideas, your website, your blog" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -46,12 +52,7 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
 
     <style is:global>
       :root {
@@ -103,11 +104,11 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
         background: var(--bg);
         color: var(--text);
         font-family: var(--sans);
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.6;
         overflow-x: hidden;
       }
-      a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+      a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
       .skip-content{position:fixed;top:-80px;left:16px;z-index:1000;padding:10px 16px;background:var(--accent);color:var(--bg);border-radius:5px}
       .skip-content:focus{top:8px}
       @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.reveal{opacity:1!important;transform:none!important}}
@@ -118,7 +119,7 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
         inset: 0;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
         pointer-events: none;
-        z-index: 9999;
+        z-index: 90;
         opacity: 0.4;
       }
 
@@ -153,7 +154,7 @@ const socialImage = new URL(ogImage, Astro.site || Astro.url.origin).href;
   </head>
   <body>
     <a class="skip-content" href="#main-content">Skip to content</a>
-    {preview && <p style="padding:10px 20px;text-align:center;border-bottom:1px solid #27272a;color:#a1a1aa;font-size:13px">Private preview · Access is by invitation. Paid checkout is not open yet.</p>}
     <slot />
+    <CookieConsent />
   </body>
 </html>

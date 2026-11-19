@@ -1,0 +1,9 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import SetupAssistant from "../components/SetupAssistant.astro";
+import { ACCESS_URL, DOCS_URL } from "../lib/site";
+---
+<Layout title="Set up BlogStack with your AI coding assistant" description="Generate a tailored integration prompt, connect your BlogStack project and build native blog pages with your preferred coding assistant."><Navbar/><main id="main-content"><header class="m-section setup-intro"><div class="m-eyebrow">Your first post starts here</div><h1 class="m-title">From an idea<br/>to <em>your own blog.</em></h1><p class="m-copy">Create a BlogStack project, connect it to your website, and publish your first story. Follow the guide yourself or give your coding assistant a prompt built for your project.</p><div class="m-actions"><a class="m-button" href={ACCESS_URL}>Create your blog</a><a class="m-link" href={DOCS_URL+"/docs/quickstart"}>Follow the quickstart</a></div></header><div class="m-rule"></div><SetupAssistant/></main><Footer/></Layout>
+<style>.setup-intro{padding-top:100px;padding-bottom:80px}.setup-intro .m-title{font-size:clamp(3rem,7vw,5.2rem)}@media(max-width:700px){.setup-intro{padding-top:65px;padding-bottom:60px}}</style>

@@ -3,6 +3,8 @@
   "pages": [
     "index",
     "quickstart",
+    "ai-setup",
+    "self-hosting",
     "components",
     "sdk",
     "seo",

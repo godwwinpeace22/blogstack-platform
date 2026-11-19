@@ -1,0 +1,46 @@
+---
+title: Set up with an AI coding assistant
+description: Give your preferred coding assistant the right project context, installation steps and verification checklist.
+---
+
+You can connect BlogStack yourself with the [quickstart](/docs/quickstart), or use your preferred coding assistant to help with the code. This works as a guided integration prompt for tools such as Codex, Claude Code and Cursor; it is not a hosted installation agent or an MCP connection.
+
+The setup prompt does not use your BlogStack AI credits. Your coding assistant's own account and usage terms apply.
+
+## Generate your setup prompt
+
+1. Create and verify your BlogStack account, then create a project.
+2. Set the project's Website blog URL, for example `https://example.com/blog`.
+3. Open the [setup prompt builder](https://blogstack-site.hidden-silence-2d18.workers.dev/get-started#ai-setup).
+4. Enter the public project slug and your website origin.
+5. Copy the prompt into your coding assistant with your website's codebase open.
+
+You can also [read the default prompt](https://blogstack-site.hidden-silence-2d18.workers.dev/setup-prompt.txt) or provide the [agent documentation index](https://blogstack-site.hidden-silence-2d18.workers.dev/llms.txt). Neither contains private keys.
+
+## What the prompt asks your assistant to do
+
+- Inspect the framework, router, package manager and styles first.
+- Use the official public packages and the complete Next.js App Router starter.
+- Preserve existing pages, routes, styles, sitemap and robots rules.
+- Configure the public project slug, API URL and website origin.
+- Add request-time article rendering, SEO metadata, JSON-LD, sitemap and RSS.
+- Verify builds and the public article experience.
+- Ask before deploying, changing DNS, creating external accounts or adding third-party tracking.
+
+The complete starter targets Next.js App Router. If you use a different framework, ask the assistant to explain an SDK-based integration before making changes; do not assume the Next.js files can be copied unchanged.
+
+## Keep credentials out of the prompt
+
+A public blog integration only needs the project slug, public API origin and website origin. Do not paste passwords, payment credentials, provider tokens or private management keys into the setup form or frontend code.
+
+Creating a project and configuring its Website blog URL still happen in your authenticated BlogStack dashboard. The prompt does not grant access to your account or provision a self-hosted publishing backend.
+
+## Review and verify
+
+Read the code changes before applying them. Use your package manager's type checks and production build. Inspect an article's initial HTML, metadata, image, listing, RSS and blog sitemap, then test publishing a new revision and unpublishing it.
+
+See the [self-hosting guide](/docs/self-hosting) for running the frontend on your own Node.js server or Cloudflare.
+
+## AI inside BlogStack
+
+The setup prompt is separate from the [writing, SEO and linking assistants](/docs/agents). Those run inside the publishing workspace, consume the plan's AI credits, and prepare proposals that a person reviews before saving them as a draft.

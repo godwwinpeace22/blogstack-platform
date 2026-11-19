@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<title id="title">BlogStack app icon</title>
+<desc id="desc">BlogStack open folio: two rounded pages separated by an open gutter.</desc>
+<rect width="256" height="256" fill="#e8ff47"/><g transform="translate(25.60 25.60) scale(0.8)"><g id="symbol"><path fill="#09090b" d="M20 96 C20 78 30 63 48 58 L186 21 C201 17 212 27 212 42 V65 L106 93 C90 97 80 111 80 129 V236 H52 C32 236 20 224 20 204 Z"/><path fill="#09090b" d="M104 136 C104 119 112 108 128 104 L216 80.42 C228 77.2 236 86 236 99 V204 C236 224 224 236 204 236 H104 Z"/></g></g>
+</svg>

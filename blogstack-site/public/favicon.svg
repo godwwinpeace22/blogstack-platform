@@ -1,1 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#09090b"/><g fill="#e8ff47"><rect x="14" y="16" width="36" height="7" rx="2"/><rect x="14" y="29" width="28" height="7" rx="2"/><rect x="14" y="42" width="20" height="7" rx="2"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+<title id="title">BlogStack favicon</title>
+<desc id="desc">BlogStack open folio: two rounded pages separated by an open gutter.</desc>
+<rect width="256" height="256" rx="52" fill="#e8ff47"/><g transform="translate(25.60 25.60) scale(0.8)"><g id="symbol"><path fill="#09090b" d="M20 96 C20 78 30 63 48 58 L186 21 C201 17 212 27 212 42 V64 L102 93.47 C86 97.76 76 111 76 129 V236 H52 C32 236 20 224 20 204 Z"/><path fill="#09090b" d="M110 136 C110 121 118 110 132 106.25 L216 83.74 C228 80.52 236 89 236 102 V204 C236 224 224 236 204 236 H110 Z"/></g></g>
+</svg>

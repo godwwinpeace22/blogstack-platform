@@ -10,6 +10,7 @@ for (const [command, args] of [
       "blogstack-link-worker/test",
       "blogstack-ops-worker/test",
       "blogstack-core/test",
+      "blogstack-site/test",
     ],
   ],
   ["npm", ["test", "-w", "@blogstack/sdk"]],

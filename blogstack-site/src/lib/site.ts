@@ -1,7 +1,35 @@
-export const APP_URL = import.meta.env.PUBLIC_APP_URL || "https://blogstack-app.hidden-silence-2d18.workers.dev";
-export const DOCS_URL = import.meta.env.PUBLIC_DOCS_URL || "https://blogstack-docs.hidden-silence-2d18.workers.dev";
-export const DEMO_URL = import.meta.env.PUBLIC_DEMO_URL || "https://blogstack-blog.hidden-silence-2d18.workers.dev/blog";
-export const SUPPORT_EMAIL = import.meta.env.PUBLIC_SUPPORT_EMAIL || "hello@boldlaunchstudio.com";
-export const SIGNUP_OPEN = import.meta.env.PUBLIC_SIGNUP_OPEN === "true";
-export const ACCESS_URL = SIGNUP_OPEN ? APP_URL + "/register" : "/early-access";
-export const ACCESS_LABEL = SIGNUP_OPEN ? "Start free trial" : "Request early access";
+export const APP_URL =
+  import.meta.env.PUBLIC_APP_URL ||
+  "https://blogstack-app.hidden-silence-2d18.workers.dev";
+export const DOCS_URL =
+  import.meta.env.PUBLIC_DOCS_URL ||
+  "https://blogstack-docs.hidden-silence-2d18.workers.dev";
+export const DEMO_URL =
+  import.meta.env.PUBLIC_DEMO_URL ||
+  "https://blogstack-blog.hidden-silence-2d18.workers.dev/blog";
+export const SUPPORT_EMAIL =
+  import.meta.env.PUBLIC_SUPPORT_EMAIL || "hello@boldlaunchstudio.com";
+export const ACCESS_URL = APP_URL + "/register";
+export const ACCESS_LABEL = "Start free trial";
+// A GA4 measurement ID is public configuration, not a credential.
+export const GOOGLE_ANALYTICS_ID = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || "G-J3M19JGYVZ";
+export const STARTER_URL =
+  "https://blogstack-registry.hidden-silence-2d18.workers.dev/downloads/blogstack-nextjs-0.2.0.tar.gz";
+export const SOCIAL_LINKS = [
+  {
+    label: "GitHub",
+    href:
+      import.meta.env.PUBLIC_GITHUB_URL ||
+      "https://example.com/blogstack/github",
+  },
+  {
+    label: "X",
+    href: import.meta.env.PUBLIC_X_URL || "https://example.com/blogstack/x",
+  },
+  {
+    label: "LinkedIn",
+    href:
+      import.meta.env.PUBLIC_LINKEDIN_URL ||
+      "https://example.com/blogstack/linkedin",
+  },
+];
