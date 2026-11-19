@@ -1,0 +1,44 @@
+---
+import { DOCS_URL } from "../lib/site";
+const questions = [
+  {
+    question: "Do I need to redeploy for every post?",
+    answer: "The Next.js starter fetches articles when someone visits a page. Publish a change in the dashboard and it’s available on the next request.",
+    href: DOCS_URL + "/docs/quickstart#rendering-and-navigation",
+    link: "See how the starter renders posts",
+  },
+  {
+    question: "Do I need to move my website to Cloudflare?",
+    answer: "Your frontend can stay with its current host. Use BlogStack Cloud or run the publishing backend in your own Cloudflare account.",
+    href: DOCS_URL + "/docs/self-hosting",
+    link: "Read the self-hosting guide",
+  },
+  {
+    question: "What if my site uses a different framework?",
+    answer: "Use the public API or JavaScript SDK to fetch posts and tags, with author details on each article. Render the pages in your own framework.",
+    href: DOCS_URL + "/docs/sdk",
+    link: "See the SDK",
+  },
+];
+---
+<section class="m-section" id="questions" aria-labelledby="questions-title">
+  <div class="m-split questions">
+    <div><h2 class="m-title" id="questions-title">Will it fit<br/><em>my website?</em></h2></div>
+    <dl>
+      {questions.map(({ question, answer, href, link }) => (
+        <div>
+          <dt>{question}</dt>
+          <dd><p>{answer}</p><a class="m-link" href={href}>{link}</a></dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+<style>
+  .questions { align-items: start; }
+  .questions dl { margin: 0; }
+  .questions dl div { border-bottom: 1px solid var(--border); padding: 10px 0 20px; margin-bottom: 14px; }
+  .questions dt { font-size: 1.12rem; font-weight: 500; letter-spacing: -.02em; }
+  .questions dd { margin: 4px 0 0; }
+  .questions dd p { color: var(--text-muted); margin-bottom: 6px; }
+</style>

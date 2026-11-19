@@ -1,12 +1,12 @@
 ---
 const audiences = [
- {label:"Personal blogs",title:"A place for what you know.",text:"Share your projects, write tutorials, or keep a journal on your own website. Spend your time writing instead of maintaining a CMS."},
- {label:"Company publications",title:"Keep your team publishing.",text:"Bring product updates, engineering stories and company news into one publication. Give authors a focused workspace while your website stays in your stack."},
- {label:"Agencies & studios",title:"More websites. One workspace.",text:"Build blogs that fit each brand, manage multiple publications and invite clients when you need to. Studio and Growth include unlimited blogs."},
+ {label:"Personal websites",title:"Publish alongside your work.",text:"Add tutorials, project notes, or essays to the site that already has your portfolio. Open the editor whenever you have something to share."},
+ {label:"Company blogs",title:"Give your updates a permanent address.",text:"Publish release notes, engineering stories, and company news at yourcompany.com/blog. Give teammates a shared place to write and edit."},
+ {label:"Agencies & studios",title:"Build a blog into each client’s site.",text:"Reuse the same components and style them for each brand. Manage unlimited blogs on Studio or Growth and invite clients when they want to write."},
 ];
 ---
 <section class="m-section audiences" id="use-cases" aria-labelledby="audiences-title">
- <div class="m-split"><div><div class="m-eyebrow">Made for your kind of publishing</div><h2 class="m-title" id="audiences-title">One writer.<br/>A whole team.<br/><em>Your next idea.</em></h2><p class="m-copy">A personal corner of the internet, a company publication, or a collection of client websites. BlogStack fits the way you work.</p></div>
+ <div class="m-split"><div><div class="m-eyebrow">Who it’s for</div><h2 class="m-title" id="audiences-title">A blog for the work<br/><em>you already do.</em></h2></div>
  <div class="audience-list">{audiences.map(item=><article><span>{item.label}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></div>
 </section>
 <style>.audience-list{display:grid}.audience-list article{padding:28px 0;border-bottom:1px solid rgba(255,255,255,.075)}.audience-list article:first-child{padding-top:0}.audience-list article:last-child{border-bottom:0;padding-bottom:0}.audience-list span{font:500 .72rem var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.08em}.audience-list h3{margin:10px 0 12px;font-size:1.45rem}.audience-list p{color:var(--text-muted);max-width:53ch}</style>

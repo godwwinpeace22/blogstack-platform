@@ -4,15 +4,21 @@ import PricingPlans from "../components/PricingPlans.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import Audiences from "../components/Audiences.astro";
+import ArticleGraphic from "../components/ArticleGraphic.astro";
+import BuyerQuestions from "../components/BuyerQuestions.astro";
+import GrowthTools from "../components/GrowthTools.astro";
+import PublishingFlow from "../components/PublishingFlow.astro";
+import PublishingOwnership from "../components/PublishingOwnership.astro";
 import AiAssistance from "../components/AiAssistance.astro";
 import SetupAssistant from "../components/SetupAssistant.astro";
 import Hosting from "../components/Hosting.astro";
-import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
+import { PLANS } from "@blogstack/core";
+import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
 ---
 
 <Layout
-  title="BlogStack — Add a complete blog to any website"
-  description="A blog for your personal website, company publication or client projects. Native components, a focused editor, SEO, analytics and AI assistance."
+  title="BlogStack | Add a blog to your existing website"
+  description="Write in BlogStack and publish at yoursite.com/blog. Get editable blog pages, private drafts, SEO checks, and reader analytics. Managed hosting or self-host on Cloudflare."
 >
   <Navbar/>
 
@@ -23,15 +29,15 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
-        For personal blogs, teams and client projects
+        Open-source blog publishing
       </div>
 
-      <h1>Add a complete blog<br />to <em>any website</em></h1>
-      <p class="hero-sub">Share what you know. Tell your company’s story. Build a publication that feels at home on your website, with an editor you’ll enjoy using and a stack you control.</p>
+      <h1>Add a blog to<br /><em>the site you built.</em></h1>
+      <p class="hero-sub">Write in BlogStack and publish at <strong>yoursite.com/blog</strong>. Edit the pages to match your design, then see how readers find your posts and which links they click.</p>
 
       <div class="hero-actions">
         <a href={ACCESS_URL} class="btn btn-primary">Start free trial</a>
-        <a href={DEMO_URL} class="btn btn-ghost">Explore the live blog</a>
+        <a href={DEMO_URL} class="btn btn-ghost">See it on a live site</a>
       </div>
 
       <div class="hero-code-preview">
@@ -42,14 +48,17 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
               <div class="code-dot"></div>
               <div class="code-dot"></div>
             </div>
-            <span class="code-filename">blog.tsx</span>
+            <span class="code-filename">How BlogStack works</span>
             <div class="code-tabs">
-              <button type="button" class="code-tab active" data-tab-target="sdk">Install</button>
-              <button type="button" class="code-tab" data-tab-target="components">Components</button>
-              <button type="button" class="code-tab" data-tab-target="editor">Publish</button>
+              <button type="button" class="code-tab active" data-tab-target="editor" aria-controls="tab-editor" aria-pressed="true">Publish</button>
+              <button type="button" class="code-tab" data-tab-target="sdk" aria-controls="tab-sdk" aria-pressed="false">Install</button>
+              <button type="button" class="code-tab" data-tab-target="components" aria-controls="tab-components" aria-pressed="false">Components</button>
             </div>
           </div>
-          <div id="tab-sdk" class="tab-content active">
+          <div id="tab-editor" class="tab-content active">
+            <PublishingFlow />
+          </div>
+          <div id="tab-sdk" class="tab-content">
 <pre>npm install @blogstack/sdk @blogstack/ui
 
 1. Create a BlogStack project
@@ -57,9 +66,9 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 3. Set your project slug and website URL
 4. Publish your first story
 
-✓ Native blog index and article pages
-✓ Metadata, JSON-LD, sitemap and RSS
-✓ Your website, domain and design</pre>
+✓ Blog index and article pages at /blog
+✓ Search metadata, sitemap and RSS
+✓ Pages styled to match your site</pre>
           </div>
           <div id="tab-components" class="tab-content">
 <pre><span class="t-keyword">import</span> { <span class="t-type">Blog</span> } <span class="t-keyword">from</span> <span class="t-str">'@/components/ui/blog'</span>
@@ -77,30 +86,16 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL } from "../lib/site";
 
 <span class="t-comment">// Search, tags, pagination and article pages are included</span></pre>
           </div>
-          <div id="tab-editor" class="tab-content">
-<pre>In the BlogStack dashboard:
-
-Write on your own, or add your team.
-Project → Members → Invite an author
-
-✓ A focused workspace for every publication
-✓ Choose who can write, edit and publish
-✓ Autosaves remain private drafts
-✓ Publishing requires an explicit action
-
-Studio and Growth:
-Use your own workspace name and logo</pre>
-          </div>
         </div>
       </div>
     </div>
 
     <div class="stats-bar">
-      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Complete templates</div></div>
-      <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">The complete platform</div></div>
-      <div class="stat"><div class="stat-num">Any</div><div class="stat-label">Fetch-compatible host</div></div>
-      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Source-owned UI</div></div>
-      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Iframes required</div></div>
+      <div class="stat"><div class="stat-num">/blog</div><div class="stat-label">On your own domain</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Editable blog layouts</div></div>
+      <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">The whole platform</div></div>
+      <div class="stat"><div class="stat-num">${PLANS.solo.monthly}</div><div class="stat-label">Cloud starting price per month</div></div>
+      <div class="stat"><div class="stat-num">{PLANS.growth.storageBytes / 1e9} GB</div><div class="stat-label">Media storage on Growth</div></div>
     </div>
 
     <hr class="divider" />
@@ -108,23 +103,23 @@ Use your own workspace name and logo</pre>
     <Audiences/>
 
     <section id="components" class="reveal">
-      <div class="section-label">// What you get</div>
-      <h2 class="section-title">Everything a publication needs.<br /><em>One connected stack.</em></h2>
-      <p class="section-sub">The parts you need to build, write and grow a blog. Your frontend stays in your codebase. Publishing, media and content delivery work together in BlogStack.</p>
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">Build the pages once.<br /><em>Publish from the editor.</em></h2>
+      <p class="section-sub">Install the blog pages in your website, then use the publishing dashboard for posts, images, and edits. Everyday updates happen in the editor.</p>
 
       <div class="pillars">
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">@blogstack/ui</div><div class="pillar-num">01</div></div>
           <div class="pillar-body">
-            <h3>A complete, editable blog</h3>
-            <p>Install production-ready React pages styled with Tailwind. Start with the whole experience, then change any source you need.</p>
+            <h3>Start with pages you can edit</h3>
+            <p>Add a blog index and article pages, then adjust the fonts, spacing, and layout to match the rest of your website.</p>
             <div class="pillar-features">
               <div class="pillar-feature">Blog index and article pages</div>
               <div class="pillar-feature">Search, tags and pagination</div>
               <div class="pillar-feature">Loading, empty and retry states</div>
               <div class="pillar-feature">Editable Tailwind source</div>
-              <div class="pillar-feature">Host-owned routes and links</div>
-              <div class="pillar-feature">Optional supporting components</div>
+              <div class="pillar-feature">Navigation in your own site</div>
+              <div class="pillar-feature">Install individual components</div>
             </div>
           </div>
         </div>
@@ -132,27 +127,27 @@ Use your own workspace name and logo</pre>
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">@blogstack/sdk</div><div class="pillar-num">02</div></div>
           <div class="pillar-body">
-            <h3>Framework-native integration</h3>
-            <p>Start with the Next.js reference integration for native routes and server rendering. The public JavaScript client works in any Fetch-compatible environment.</p>
+            <h3>Serve articles from your website</h3>
+            <p>Copy the Next.js routes for server-rendered articles. For another framework, fetch the same posts using the JavaScript SDK or public JSON API.</p>
             <div class="pillar-features">
-              <div class="pillar-feature">SSR, SSG or client rendering</div>
+              <div class="pillar-feature">Server, static, or client rendering</div>
               <div class="pillar-feature">Metadata and JSON-LD</div>
               <div class="pillar-feature">Sitemap and RSS generation</div>
               <div class="pillar-feature">Type-safe JavaScript SDK</div>
               <div class="pillar-feature">Edge-runtime compatible</div>
-              <div class="pillar-feature">Headless escape hatch</div>
+              <div class="pillar-feature">Public JSON API</div>
             </div>
           </div>
         </div>
 
         <div class="pillar">
-          <div class="pillar-header"><div class="pillar-tag">BlogStack Cloud</div><div class="pillar-num">03</div></div>
+          <div class="pillar-header"><div class="pillar-tag">Publishing dashboard</div><div class="pillar-num">03</div></div>
           <div class="pillar-body">
-            <h3>A workspace for your publication</h3>
-            <p>Write for yourself or bring your authors together. Manage drafts, media, search appearance and publishing from one focused workspace.</p>
+            <h3>Give each blog a place to write</h3>
+            <p>Draft a new post or revise an existing one in private. When you’re ready, publish it yourself or invite editors to help.</p>
             <div class="pillar-features">
               <div class="pillar-feature">Author roles and invitations</div>
-              <div class="pillar-feature">Access scoped to each publication</div>
+              <div class="pillar-feature">Permissions for each blog</div>
               <div class="pillar-feature">Comments integration slot</div>
               <div class="pillar-feature">Newsletter integration slot</div>
               <div class="pillar-feature">Analytics and AI assistance</div>
@@ -166,9 +161,9 @@ Use your own workspace name and logo</pre>
     <hr class="divider" />
 
     <section class="reveal">
-      <div class="section-label">// Native frontend</div>
-      <h2 class="section-title">Looks like your website.<br /><em>Because it is.</em></h2>
-      <p class="section-sub">Real routes, real markup, and editable Tailwind source inside the application. No iframe and no separately themed hosted blog.</p>
+      <div class="section-label">Blog layouts</div>
+      <h2 class="section-title">A layout for the way<br /><em>you write.</em></h2>
+      <p class="section-sub">Use a grid for tutorials, a featured story for a company journal, or a clean list for personal notes. Each layout is editable source you can style in your own project.</p>
 
       <div class="component-preview-wrap">
         <div class="component-preview">
@@ -183,7 +178,7 @@ Use your own workspace name and logo</pre>
           <div class="component-canvas">
             <div class="blog-cards-grid">
               <div class="blog-card-demo">
-                <div class="blog-card-img"><div class="blog-card-img-pattern"></div></div>
+                <ArticleGraphic kind="routes" />
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Engineering</div>
                   <div class="blog-card-title">Publish a blog inside your own website</div>
@@ -191,7 +186,7 @@ Use your own workspace name and logo</pre>
                 </div>
               </div>
               <div class="blog-card-demo">
-                <div class="blog-card-img blog-card-img-blue"><div class="blog-card-img-pattern"></div></div>
+                <ArticleGraphic kind="release" />
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Product</div>
                   <div class="blog-card-title">The story behind our latest release</div>
@@ -199,7 +194,7 @@ Use your own workspace name and logo</pre>
                 </div>
               </div>
               <div class="blog-card-demo">
-                <div class="blog-card-img blog-card-img-green"><div class="blog-card-img-pattern"></div></div>
+                <ArticleGraphic kind="draft" />
                 <div class="blog-card-body">
                   <div class="blog-card-tag">Tutorial</div>
                   <div class="blog-card-title">Keep drafts private until they are ready</div>
@@ -217,19 +212,20 @@ Use your own workspace name and logo</pre>
     <section id="sdk" class="reveal">
       <div class="showcase-grid">
         <div class="showcase-info">
-          <div class="section-label">// Next.js integration</div>
-          <h2 class="section-title showcase-title">Use your framework.<br /><em>Keep your routes.</em></h2>
-          <p class="section-sub showcase-sub">The public JavaScript client works independently of a framework. Start with the complete Next.js example for native routes and server-rendered articles.</p>
+          <div class="section-label">Next.js integration</div>
+          <h2 class="section-title showcase-title">Get your first post<br /><em>to /blog.</em></h2>
+          <p class="section-sub showcase-sub">The Next.js starter includes an index, article pages, a sitemap, and RSS. Add the routes to your existing project and connect them to your BlogStack workspace.</p>
 
-          <div class="showcase-step"><div class="step-num">1</div><div class="step-content"><h4>Choose the existing site</h4><p>Connect your public project slug and set the blog URL in project settings.</p></div></div>
-          <div class="showcase-step"><div class="step-num">2</div><div class="step-content"><h4>Generate the complete blog</h4><p>Use the Next.js reference integration for article routes, SEO metadata, sitemap and RSS.</p></div></div>
-          <div class="showcase-step"><div class="step-num">3</div><div class="step-content"><h4>Make it yours</h4><p>Match your design, publish your first article, and invite other authors whenever you need them.</p></div></div>
+          <div class="showcase-step"><div class="step-num" aria-hidden="true">1</div><div class="step-content"><h4>Create a blog</h4><p>Choose a project slug and set the address your readers will visit.</p></div></div>
+          <div class="showcase-step"><div class="step-num" aria-hidden="true">2</div><div class="step-content"><h4>Add the routes</h4><p>Copy the starter into your site and set the project slug and API URL.</p></div></div>
+          <div class="showcase-step"><div class="step-num" aria-hidden="true">3</div><div class="step-content"><h4>Publish the first post</h4><p>Preview your draft in the editor, publish it, and open the article on your website.</p></div></div>
+          <a class="m-link" href={DOCS_URL+"/docs/quickstart"}>Follow the Next.js quickstart</a>
         </div>
 
         <div class="code-window showcase-window">
           <div class="code-titlebar">
             <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-            <span class="code-filename">blogstack.config.ts</span>
+            <span class="code-filename">.env.local</span>
           </div>
 <pre>BLOGSTACK_PROJECT_SLUG=acme
 BLOGSTACK_API_URL=https://blogstack-app.hidden-silence-2d18.workers.dev
@@ -249,36 +245,37 @@ app/blog/feed.xml/route.ts
     <hr class="divider" />
 
     <section id="editor" class="reveal">
-      <div class="section-label">// Complete publication</div>
-      <h2 class="section-title">Content, audience, and operations.<br /><em>Handled together.</em></h2>
+      <div class="section-label">Publishing tools</div>
+      <h2 class="section-title">Give every post<br /><em>a better chance to be read.</em></h2>
 
       <div class="feature-grid">
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><h3>Rich text editor</h3><p>Write with images, headings, lists, quotes and highlighted code in the hosted publishing dashboard.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>SEO metadata</h3><p>Built-in title, description, OG image, and canonical URL fields. Auto-generates structured data JSON-LD.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><h3>Media library</h3><p>Upload and manage images up to 10 MiB each, with shared account storage and CDN delivery.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 0v10l6 3"/></svg><h3>Safe drafts</h3><p>Save revisions privately and publish when ready. Your live article stays unchanged while you edit.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg><h3>AI writing assist</h3><p>Generate outlines, expand bullet points, improve tone, and auto-generate meta descriptions.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg><h3>Analytics</h3><p>Page views, referrer domains and article-link clicks, with opt-out and clearly labeled estimates.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4z"/></svg><h3>Comments</h3><p>Bring your own comments component through a named integration slot. Provider accounts and fees are separate.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg><h3>Newsletter</h3><p>Add a subscription form from your email provider through the newsletter slot. Delivery and subscriber management stay with your provider.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9h8M8 15h8"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg><h3>API and reviewable AI</h3><p>Let writing, SEO and linking assistants prepare changes for review. Publishing stays in your control.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><h3>Write with images and code</h3><p>Put screenshots and examples right where they help. The editor supports image blocks, quotes, lists, and highlighted code.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Preview your search result</h3><p>Set the title and description, choose a social image, and see which headings or image descriptions need attention.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><h3>Keep your images together</h3><p>Upload cover art, screenshots, and illustrations in the dashboard. BlogStack serves them on your published pages.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 0v10l6 3"/></svg><h3>Revise a post in private</h3><p>Save edits as a draft and preview them. Readers see the published version until you send the update live.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4z"/></svg><h3>Make room for replies</h3><p>Place a comments component from your provider below an article.</p></div>
+        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg><h3>Let readers subscribe</h3><p>Place your newsletter signup form on the blog. Your email provider handles the list and sends the newsletter.</p></div>
       </div>
     </section>
 
     <hr class="divider" />
 
+    <GrowthTools/>
+    <div class="m-rule"></div>
     <AiAssistance/>
     <div class="m-rule"></div>
     <SetupAssistant/>
+    <div class="m-rule"></div>
+    <PublishingOwnership/>
     <div class="m-rule"></div>
     <Hosting/>
     <div class="m-rule"></div>
 
     <section id="pricing" class="reveal">
       <div class="pricing-intro">
-        <div class="section-label pricing-label">// Pricing</div>
-        <h2 class="section-title">Simple, <em>honest</em> pricing</h2>
-        <p class="section-sub pricing-sub">No seat fees. No surprise overages. Scale as you grow.</p>
+        <div class="section-label pricing-label">BlogStack Cloud pricing</div>
+        <h2 class="section-title">One blog or <em>an entire portfolio.</em></h2>
+        <p class="section-sub pricing-sub">Solo covers one blog. Studio and Growth include unlimited blogs and custom branding, and Growth has {PLANS.growth.storageBytes / 1e9} GB for media.</p>
       </div>
 
       <PricingPlans/>
@@ -286,12 +283,15 @@ app/blog/feed.xml/route.ts
 
     <hr class="divider" />
 
+    <BuyerQuestions/>
+    <div class="m-rule"></div>
+
     <div class="cta-section reveal">
-      <h2>Your blog.<br /><em>Your stack.</em></h2>
-      <p>Your next idea deserves more than a draft. Give it a place on your website.</p>
+      <h2>Publish your first post<br /><em>on your own site.</em></h2>
+      <p>Try BlogStack Cloud for 14 days without a card, or read the quickstart and see how the pages fit into your project.</p>
       <div class="cta-actions-row">
         <a href={ACCESS_URL} class="btn btn-primary cta-btn">{ACCESS_LABEL}</a>
-        <a href="https://blogstack-docs.hidden-silence-2d18.workers.dev" class="btn btn-ghost cta-btn">Read the docs</a>
+        <a href={DOCS_URL+"/docs/quickstart"} class="btn btn-ghost cta-btn">Read the quickstart</a>
       </div>
     </div>
   </main>
@@ -500,10 +500,9 @@ app/blog/feed.xml/route.ts
     }
 
     .hero-code-preview {
-      margin-top: 80px;
+      margin-top: 56px;
       width: 100%;
       max-width: 860px;
-      animation: fadeUp 0.8s 0.4s ease both;
       position: relative;
     }
 
@@ -791,32 +790,6 @@ app/blog/feed.xml/route.ts
       border-color: var(--border-light);
       transform: translateY(-1px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    }
-
-    .blog-card-img {
-      height: 140px;
-      background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #1a1a1f 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .blog-card-img-blue { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
-    .blog-card-img-green { background: linear-gradient(135deg, #1a1f1a 0%, #0f1f0f 100%); }
-
-    .blog-card-img::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(232, 255, 71, 0.05), transparent);
-    }
-
-    .blog-card-img-pattern {
-      position: absolute;
-      inset: 0;
-      background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 21px);
     }
 
     .blog-card-body {
@@ -1270,6 +1243,10 @@ app/blog/feed.xml/route.ts
     }
 
     @media (max-width: 520px) {
+      .hero-code-preview {
+        margin-top: 40px;
+      }
+
       .nav-cta,
       .hero-actions,
       .cta-actions-row,
@@ -1307,6 +1284,11 @@ app/blog/feed.xml/route.ts
         padding: 24px;
       }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-badge, .hero h1, .hero-sub, .hero-actions { animation: none; }
+      .reveal.will-reveal { opacity: 1; transform: none; transition: none; }
+    }
   </style>
 
   <script is:inline>
@@ -1316,9 +1298,13 @@ app/blog/feed.xml/route.ts
     tabButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const target = button.getAttribute("data-tab-target");
-        tabButtons.forEach((tab) => tab.classList.remove("active"));
+        tabButtons.forEach((tab) => {
+          tab.classList.remove("active");
+          tab.setAttribute("aria-pressed", "false");
+        });
         tabPanels.forEach((panel) => panel.classList.remove("active"));
         button.classList.add("active");
+        button.setAttribute("aria-pressed", "true");
         document.getElementById(`tab-${target}`)?.classList.add("active");
       });
     });

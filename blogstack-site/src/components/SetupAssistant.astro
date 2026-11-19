@@ -3,8 +3,8 @@ import { buildSetupPrompt } from "../lib/setup";
 import { APP_URL, DOCS_URL } from "../lib/site";
 ---
 <section class="m-section" id="ai-setup" aria-labelledby="setup-title"><div class="m-split">
- <div><div class="m-eyebrow">Set up with your coding assistant</div><h2 class="m-title" id="setup-title">Bring your agent.<br/><em>We'll bring the context.</em></h2><p class="m-copy">Give your coding assistant a useful starting point. Create a setup prompt with your blog details, the right packages and the installation guide, then let it help connect BlogStack to your existing code.</p><p class="m-copy">Use it with Codex, Claude Code, Cursor or your preferred coding assistant. You review the changes and stay in control of your website.</p><a class="m-link setup-guide" href={DOCS_URL+"/docs/ai-setup"}>Read the AI setup guide</a></div>
- <div class="m-shell"><div class="m-panel prompt-builder" data-prompt-builder><div class="prompt-heading"><span>Make it yours</span><span class="m-small">Setup prompt</span></div>
+ <div><div class="m-eyebrow">AI setup help</div><h2 class="m-title" id="setup-title">Give your coding assistant<br/><em>a head start.</em></h2><p class="m-copy">Enter your blog details and copy a prompt with the packages, starter routes, and verification steps for your site.</p><p class="m-copy">Paste it into Codex, Claude Code, Cursor, or the assistant you already use. Review the proposed files before you merge them.</p><a class="m-link setup-guide" href={DOCS_URL+"/docs/ai-setup"}>Read the AI setup guide</a></div>
+ <div class="m-shell"><div class="m-panel prompt-builder" data-prompt-builder><div class="prompt-heading"><span>Your setup prompt</span></div>
  <form>
   <label for="setup-slug">Blog slug<input id="setup-slug" name="slug" value="my-blog" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="100" required autocomplete="off"/></label>
   <label for="setup-url">Your website<input id="setup-url" name="website" type="url" value="https://yourwebsite.com" required autocomplete="url"/></label>
