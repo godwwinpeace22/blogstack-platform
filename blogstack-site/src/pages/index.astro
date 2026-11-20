@@ -9,6 +9,7 @@ import BuyerQuestions from "../components/BuyerQuestions.astro";
 import GrowthTools from "../components/GrowthTools.astro";
 import LiveDemo from "../components/LiveDemo.astro";
 import PublishingFlow from "../components/PublishingFlow.astro";
+import PublishingTools from "../components/PublishingTools.astro";
 import PublishingOwnership from "../components/PublishingOwnership.astro";
 import AiAssistance from "../components/AiAssistance.astro";
 import SetupAssistant from "../components/SetupAssistant.astro";
@@ -34,8 +35,8 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
       </div>
 
       <h1>Add a blog to<br /><em>the site you built.</em></h1>
-      <p class="hero-sub">Write in BlogStack and publish at <strong>yoursite.com/blog</strong>. Edit the pages to match your design, then see how readers find your posts and which links they click.</p>
-      <p class="hero-framework"><a href={DOCS_URL + "/docs/quickstart"}>Next.js starter</a>. <a href={DOCS_URL + "/docs/sdk"}>JavaScript SDK</a> and <a href={DOCS_URL + "/docs/api-reference"}>API</a> for other frameworks.</p>
+      <p class="hero-sub">Publish at <strong>yoursite.com/blog</strong> with editable pages, SEO, and opt-in analytics.</p>
+      <p class="hero-framework"><a href={DOCS_URL + "/docs/quickstart"}>Next.js starter</a>. <a href={DOCS_URL + "/docs/sdk"}>JavaScript SDK</a> and <a href={DOCS_URL + "/docs/api-reference"}>JSON API</a> for other frameworks.</p>
 
       <div class="hero-actions">
         <a href={ACCESS_URL} class="btn btn-primary">Start free trial</a>
@@ -114,7 +115,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">@blogstack/ui</div><div class="pillar-num">01</div></div>
           <div class="pillar-body">
-            <h3>Start with pages you can edit</h3>
+            <h3>UI components</h3>
             <p>Add a blog index and article pages, then adjust the fonts, spacing, and layout to match the rest of your website.</p>
             <div class="pillar-features">
               <div class="pillar-feature">Blog index and article pages</div>
@@ -130,7 +131,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">@blogstack/sdk</div><div class="pillar-num">02</div></div>
           <div class="pillar-body">
-            <h3>Serve articles from your website</h3>
+            <h3>SDK and API</h3>
             <p>Copy the Next.js routes for server-rendered articles. For another framework, fetch the same posts using the JavaScript SDK or public JSON API.</p>
             <div class="pillar-features">
               <div class="pillar-feature">Server, static, or client rendering</div>
@@ -146,7 +147,7 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
         <div class="pillar">
           <div class="pillar-header"><div class="pillar-tag">Publishing dashboard</div><div class="pillar-num">03</div></div>
           <div class="pillar-body">
-            <h3>Give each blog a place to write</h3>
+            <h3>Dashboard</h3>
             <p>Draft a new post or revise an existing one in private. When you’re ready, publish it yourself or invite editors to help.</p>
             <div class="pillar-features">
               <div class="pillar-feature">Author roles and invitations</div>
@@ -160,6 +161,10 @@ import { ACCESS_URL, ACCESS_LABEL, DEMO_URL, DOCS_URL } from "../lib/site";
         </div>
       </div>
     </section>
+
+    <hr class="divider" />
+
+    <PublishingTools />
 
     <hr class="divider" />
 
@@ -242,22 +247,6 @@ app/blog/feed.xml/route.ts
 
 <span class="t-comment">// Merge the blog sitemap into your existing robots config.</span></pre>
         </div>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <section id="editor" class="reveal">
-      <div class="section-label">Publishing tools</div>
-      <h2 class="section-title">Give every post<br /><em>a better chance to be read.</em></h2>
-
-      <div class="feature-grid">
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><h3>Write with images and code</h3><p>Put screenshots and examples right where they help. The editor supports image blocks, quotes, lists, and highlighted code.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><h3>Preview your search result</h3><p>Set the title and description, choose a social image, and see which headings or image descriptions need attention.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><h3>Keep your images together</h3><p>Upload cover art, screenshots, and illustrations in the dashboard. BlogStack serves them on your published pages.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm0 0v10l6 3"/></svg><h3>Revise a post in private</h3><p>Save edits as a draft and preview them. Readers see the published version until you send the update live.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a4 4 0 01-4 4H8l-5 3V7a4 4 0 014-4h10a4 4 0 014 4z"/></svg><h3>Make room for replies</h3><p>Place a comments component from your provider below an article.</p></div>
-        <div class="feature-card"><svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg><h3>Let readers subscribe</h3><p>Place your newsletter signup form on the blog. Your email provider handles the list and sends the newsletter.</p></div>
       </div>
     </section>
 
@@ -762,7 +751,6 @@ app/blog/feed.xml/route.ts
     }
 
     .pillar-body p,
-    .feature-card p,
     .pricing-features li {
       font-size: 13px;
       color: var(--text-muted);
@@ -904,8 +892,7 @@ app/blog/feed.xml/route.ts
       font-size: 11px;
     }
 
-    .step-content h4,
-    .feature-card h3 {
+    .step-content h4 {
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 6px;
@@ -915,48 +902,6 @@ app/blog/feed.xml/route.ts
     .showcase-window {
       height: fit-content;
       margin-top: 8px;
-    }
-
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 60px;
-    }
-
-    .feature-card {
-      background: var(--bg);
-      padding: 36px 32px;
-      position: relative;
-      transition: background 0.2s;
-    }
-
-    .feature-card:hover {
-      background: var(--surface);
-    }
-
-    .feature-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--accent-subtle-2);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .feature-card:hover::after {
-      opacity: 1;
-    }
-
-    .feature-icon {
-      width: 36px;
-      height: 36px;
-      margin-bottom: 20px;
-      color: var(--accent);
     }
 
     .pricing-intro {
@@ -1226,7 +1171,6 @@ app/blog/feed.xml/route.ts
       .pillars,
       .pricing-grid,
       .showcase-grid,
-      .feature-grid,
       .blog-cards-grid {
         grid-template-columns: 1fr;
       }

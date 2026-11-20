@@ -1,0 +1,123 @@
+---
+const groups = [
+  {
+    name: "Editor",
+    features: [
+      ["Code blocks", "Syntax highlighting on published posts"],
+      ["Images", "Drag and drop, alt-text checks"],
+      ["Rich text", "Headings, quotes, and lists"],
+      ["Drafts", "Edit privately, preview, then publish"],
+    ],
+  },
+  {
+    name: "Site",
+    features: [
+      ["Tags", "Organize and filter posts"],
+      ["Authors", "Roles and invitations"],
+      ["RSS", "Automatically generated blog feed"],
+      ["Sitemap", "Automatically generated blog sitemap"],
+      ["Media library", "Browse your blog’s uploaded images"],
+    ],
+  },
+  {
+    name: "SEO",
+    features: [
+      ["Meta tags", "Title, description, and social image"],
+      ["JSON-LD", "BlogPosting structured data"],
+      ["Search preview", "See how a draft can appear in search"],
+      ["Link checker", "Find broken links and redirects"],
+    ],
+  },
+  {
+    name: "Integrations",
+    features: [
+      ["Comments", "Bring your own provider"],
+      ["Newsletter", "Bring your own provider"],
+      ["Analytics", "Opt-in tracking with reader opt-out"],
+      ["Public API and SDK", "Fetch published posts in any framework"],
+    ],
+  },
+];
+---
+
+<section class="m-section publishing-tools" id="editor" aria-labelledby="publishing-tools-title">
+  <div class="m-eyebrow">Publishing tools</div>
+  <h2 class="m-title" id="publishing-tools-title">Everything <em>a blog needs.</em></h2>
+
+  <div class="tools-catalog">
+    {groups.map(({ name, features }) => (
+      <div class="tools-group">
+        <h3>{name}</h3>
+        <dl>
+          {features.map(([feature, detail]) => (
+            <div>
+              <dt>{feature}</dt>
+              <dd>{detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .tools-catalog {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    margin-top: 40px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--border);
+  }
+
+  .tools-group {
+    padding: 24px;
+    background: var(--surface);
+  }
+
+  .tools-group h3 {
+    margin: 0 0 18px;
+    padding: 0 0 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--accent);
+  }
+
+  .tools-group dl {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .tools-group dt {
+    font-size: .94rem;
+    font-weight: 600;
+  }
+
+  .tools-group dd {
+    margin: 3px 0 0;
+    color: var(--text-muted);
+    font-size: .835rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .tools-catalog {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 530px) {
+    .tools-catalog {
+      grid-template-columns: 1fr;
+      margin-top: 28px;
+    }
+
+    .tools-group {
+      padding: 22px;
+    }
+  }
+</style>

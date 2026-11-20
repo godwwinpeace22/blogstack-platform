@@ -6,6 +6,7 @@ import Audiences from "../components/Audiences.astro";
 import ArticleGraphic from "../components/ArticleGraphic.astro";
 import BuyerQuestions from "../components/BuyerQuestions.astro";
 import PublishingShowcase from "../components/PublishingShowcase.astro";
+import PublishingTools from "../components/PublishingTools.astro";
 import PublishingOwnership from "../components/PublishingOwnership.astro";
 import GrowthTools from "../components/GrowthTools.astro";
 import AiAssistance from "../components/AiAssistance.astro";
@@ -39,10 +40,44 @@ import { ACCESS_URL, DEMO_URL, DOCS_URL } from "../lib/site";
       <figcaption class="m-small">Example article layout</figcaption>
     </figure>
   </header>
-  <div class="m-rule"></div><PublishingShowcase/><div class="m-rule"></div>
-  <section class="m-section frontend-section" aria-labelledby="frontend-title"><div class="m-eyebrow">Pages and components</div><h2 class="m-title" id="frontend-title">Give your blog the same<br/><em>look as your site.</em></h2><p class="m-copy">Add article pages inside your existing project. Set their type, layout, and navigation to suit your readers and the rest of your site.</p><div class="frontend-layouts"><article><div class="layout-visual visual-grid" aria-hidden="true"><i></i><i></i><i></i></div><h3>Start with the full blog</h3><p>Blog index, article pages, search, tags and pagination. Loading, empty and error states are included.</p></article><article><div class="layout-visual visual-editorial" aria-hidden="true"><i></i><div><b></b><b></b><b></b></div></div><h3>Make the components yours</h3><p>Use the React packages or install source from the component registry. MIT licensing keeps your frontend flexible.</p></article><article><div class="layout-visual visual-code"><code>new BlogStackClient(...)</code></div><h3>Fetch posts from your framework</h3><p>Use the Next.js starter for ready-made routes, or fetch posts in another framework with the JavaScript SDK or JSON API.</p></article></div><a class="m-link" href={DOCS_URL+"/docs/components"}>Explore the components</a></section>
+  <div class="m-rule"></div>
+  <PublishingTools />
+  <div class="m-rule"></div>
+  <PublishingShowcase />
+  <div class="m-rule"></div>
+  <section class="m-section frontend-section" aria-labelledby="frontend-title">
+    <h2 class="m-title" id="frontend-title">UI components</h2>
+    <p class="m-copy">Add article pages inside your existing project. Set their type, layout, and navigation to suit your site.</p>
+    <div class="frontend-layouts">
+      <article>
+        <div class="layout-visual visual-grid" aria-hidden="true"><i></i><i></i><i></i></div>
+        <h3>Blog pages</h3>
+        <p>Blog index, article pages, search, tags, and pagination. Loading, empty, and error states are included.</p>
+      </article>
+      <article>
+        <div class="layout-visual visual-editorial" aria-hidden="true"><i></i><div><b></b><b></b><b></b></div></div>
+        <h3>Editable source</h3>
+        <p>Use the MIT-licensed React package or copy source from the component registry.</p>
+      </article>
+      <article>
+        <div class="layout-visual visual-code"><code>new BlogStackClient(...)</code></div>
+        <h3>SDK and API</h3>
+        <p>Use the Next.js starter for ready-made routes, or fetch posts in another framework with the JavaScript SDK or JSON API.</p>
+      </article>
+    </div>
+    <a class="m-link" href={DOCS_URL + "/docs/components"}>Explore the components</a>
+  </section>
   <div class="m-rule"></div><GrowthTools/><div class="m-rule"></div><AiAssistance/><div class="m-rule"></div><Audiences/><div class="m-rule"></div><SetupAssistant/><div class="m-rule"></div><PublishingOwnership/><div class="m-rule"></div><Hosting/>
-  <section class="m-section integrations"><div class="m-split"><div><div class="m-eyebrow">Comments and newsletters</div><h2 class="m-title">Give readers a way<br/><em>to stay in touch.</em></h2></div><div><p class="m-copy">Add a comments component below a post or a newsletter signup on the blog. Use the providers you already have.</p><p class="m-small">Provider accounts and charges are separate.</p><a class="m-link" href={DOCS_URL+"/docs/integrations"}>See the integration guide</a></div></div></section>
+  <section class="m-section integrations" aria-labelledby="integrations-title">
+    <div class="m-split">
+      <h2 class="m-title" id="integrations-title">Comments and <em>newsletters</em></h2>
+      <div>
+        <p class="m-copy">Add your own comments component below a post and a newsletter signup form on the blog.</p>
+        <p class="m-small">Provider accounts and charges are separate.</p>
+        <a class="m-link" href={DOCS_URL + "/docs/integrations"}>See the integration guide</a>
+      </div>
+    </div>
+  </section>
   <div class="m-rule"></div><BuyerQuestions/><div class="m-rule"></div>
   <section class="m-section features-cta"><div class="m-eyebrow">BlogStack Cloud</div><h2 class="m-title">Get your first post<br/><em>onto your website.</em></h2><div class="m-actions"><a class="m-button" href={ACCESS_URL}>Start your free trial</a><a class="m-link" href="/pricing">Find your plan</a></div></section>
  </main><Footer/>
